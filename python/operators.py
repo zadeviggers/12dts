@@ -62,9 +62,9 @@ def space_remaining():
     print(f"Space remaining: {space_remaining} units")
 
 
-# total_three_ints()
-# average_4_ints()
-# price_per_person()
-# find_area_of_rect()
-# volume_of_box()
+total_three_ints()
+average_4_ints()
+price_per_person()
+find_area_of_rect()
+volume_of_box()
 space_remaining()
