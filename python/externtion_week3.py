@@ -115,7 +115,12 @@ def main():
     for i in range(number_of_players):
         player = {
             "number": i,
-            "cards": []
+            "cards": [],
+            "stats": {
+                "pairs": 0,
+                "tripples": 0,
+                "quads": 0
+            }
         }
         players.append(player)
 
