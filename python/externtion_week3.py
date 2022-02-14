@@ -67,9 +67,9 @@ You can type "quit", "q", or "exit" to quit the program
                 meaning that parsed_input is a valid number.
                 """
                 if lower_limit is not None and parsed_input < lower_limit:
-                    print(out_of_range_message)
+                    print(range_message)
                 elif upper_limit is not None and parsed_input > upper_limit:
-                    print(out_of_range_message)
+                    print(range_message)
                 else:
                     result = parsed_input
 
