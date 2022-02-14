@@ -119,10 +119,25 @@ def main():
             "stats": {
                 "pairs": 0,
                 "tripples": 0,
-                "quads": 0
+                "quads": 0,
+                "points": 0
             }
         }
         players.append(player)
+
+    # Deal cards to players
+    next_player_index = 0
+    for card in deck:
+        players[next_player_index]["cards"].append(card)
+
+        if next_player_index == number_of_players-1:
+            next_player_index = 0
+        else:
+            next_player_index += 1
+
+    # Work out points
+    for player in players:
+        pass
 
 
 # Only run if not being imported
