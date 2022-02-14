@@ -8,9 +8,18 @@ optional_int_or_bool = Optional[number]
 
 # Variables
 exit_message = "Okay. Exiting..."
+deck_size = 52
+suits = {
+    "clubs": "♧",
+    "spades": "♤",
+    "diamonds": "♢",
+    "hearts": "♡"
 
+}
 
 # Functions
+
+
 def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: optional_int_or_bool = None, upper_limit: optional_int_or_bool = None):
     """
     A utility function that takes a number type to try and cast to,
@@ -43,7 +52,7 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
         print(prompt_text)
         raw_input = input("> ")
 
-        # Show help message if the user aks for help
+        # Show help message if the user asks for help
         if raw_input == "help" or raw_input == "h":
             print(f"""
 {"-"*10} Help {"-"*10}
@@ -83,9 +92,32 @@ You can type "quit", "q", or "exit" to quit the program
 
 # Main program
 def main():
-    num_players = get_number_input(
+    # Variables
+    deck = []
+    players = []
+
+    # Generate the deck
+    for suit in suits:
+        for i in range(deck_size / 4):
+            card = {
+                "suit": suit,
+                "number": i,
+                "text": f"{suit} {i}"
+            }
+            deck.append(card)
+
+    # Shuffle the deck
+    random.shuffle(deck)
+
+    # Generate players
+    number_of_players = get_number_input(
         int, "How many players? ", lower_limit=2, upper_limit=5)
-    print(f"{num_players} players")
+    for i in range(number_of_players):
+        player = {
+            "number": i,
+            "cards": []
+        }
+        players.append(player)
 
 
 # Only run if not being imported
