@@ -3,12 +3,12 @@ from typing import Optional, Union
 
 # Types
 number = Union[int, float]
-optional_int_or_bool = Optional[number]
+optional_int_or_float = Optional[number]
 
 
 # Variables
 exit_message = "Okay. Exiting..."
-deck_size = 52
+default_deck_size = 52
 suits = {
     "clubs": "♧",
     "spades": "♤",
@@ -16,11 +16,12 @@ suits = {
     "hearts": "♡"
 
 }
+royals = [[11, "Jack"], [12, "Queen"], [13, "Queen"]]
 
 # Functions
 
 
-def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: optional_int_or_bool = None, upper_limit: optional_int_or_bool = None):
+def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: optional_int_or_float = None, upper_limit: optional_int_or_float = None, default: Optional[str] = None):
     """
     A utility function that takes a number type to try and cast to,
     a message to promt the user with,
@@ -96,24 +97,9 @@ def main():
     deck = []
     players = []
 
-    # Generate the deck
-    for suit in suits:
-        for i in range(round(deck_size / 4)):
-            suit_symbol = suits[suit]
-            card = {
-                "suit": suit,
-                "suit_symbol": suit_symbol,
-                "number": i + 1,
-                "text": f"{suit_symbol} {i}"
-            }
-            deck.append(card)
-
-    # Shuffle the deck
-    random.shuffle(deck)
-
     # Generate players
     number_of_players = get_number_input(
-        int, "How many players? ", lower_limit=2, upper_limit=5)
+        int, "How many players? ", lower_limit=2, upper_limit=420)
     for i in range(number_of_players):
         player = {
             "index": i,
@@ -128,8 +114,36 @@ def main():
         }
         players.append(player)
 
+    deck_size = max(default_deck_size, number_of_players *
+                    random.randrange(14, 19))
+
+    # Generate the deck
+    for suit in suits:
+        for i in range(round(deck_size / 4)):
+            suit_symbol = suits[suit]
+            number = i + 1
+            number_text = str(number)
+            for royal in royals:
+                if number % royal[0] == 0:
+                    number_text = royal[1]
+                    if number != royal[0]:
+                        number_text += f" #{royal[0]%number}"
+
+            card = {
+                "suit": suit,
+                "suit_symbol": suit_symbol,
+                "number": number,
+                "number_text": number_text,
+                "text": f"{suit_symbol} {number_text}"
+            }
+            deck.append(card)
+
+    # Shuffle the deck
+    random.shuffle(deck)
+    random.shuffle(deck)
+
     # Deal cards to players
-    next_player_index = 0
+    next_player_index = random.randrange(0, number_of_players-1)
     for card in deck:
         players[next_player_index]["cards"].append(card)
 
@@ -148,26 +162,31 @@ def main():
                 amounts[card["number"]] += 1
 
         for (number, amount) in amounts.items():
-            if amount == 2:
-                players[player["index"]]["stats"]["pairs"] += 1
-            elif amount == 3:
-                players[player["index"]]["stats"]["tripples"] += 1
-            elif amount == 4:
-                players[player["index"]]["stats"]["quads"] += 1
-
-            players[player["index"]]["stats"]["score"] += amount * 1.1
+            if amount in [2, 3, 4]:
+                players[player["index"]]["stats"]["score"] += amount * 1.1
+                if amount == 2:
+                    players[player["index"]]["stats"]["pairs"] += 1
+                elif amount == 3:
+                    players[player["index"]]["stats"]["tripples"] += 1
+                elif amount == 4:
+                    players[player["index"]]["stats"]["quads"] += 1
 
     # Determin winner
     winner: Optional[dict] = None
     best_score_so_far = -1
+    tie = False
     for player in players:
+        print(
+            f'Player {player["number"]}\'s hand: {", ".join(card["text"] for card in player["cards"])}')
         if player["stats"]["score"] > best_score_so_far:
             best_score_so_far = player["stats"]["score"]
             winner = player
-    if winner is None:
+            tie = False
+        elif player["stats"]["score"] == best_score_so_far:
+            tie = True
+    if tie:
         print("Tie!")
     else:
-        # print(winner)
         print(
             f'Player {winner["number"]} wins with a  score of {winner["stats"]["score"]:.1f}!!')
 
