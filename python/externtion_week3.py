@@ -221,10 +221,14 @@ if __name__ == "__main__":
         # Replay loop
         playing = True
         while playing:
+            # Run game
             main()
+
+            # Ask the player if they want to play again
+            # Keep asking until a valid response is received.
             getting_input = True
             while getting_input:
-                print("Do youy want to play again? (yes/no)")
+                print("Do youy want to play again? (yes or no)")
                 inputted_value = input(
                     "> ").lower()
                 if inputted_value == "y" or inputted_value == "yes":
