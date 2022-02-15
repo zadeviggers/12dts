@@ -98,10 +98,10 @@ def main():
 
     # Generate the deck
     for suit in suits:
-        for i in range(deck_size / 4):
+        for i in range(round(deck_size / 4)):
             card = {
                 "suit": suit,
-                "number": i,
+                "number": i + 1,
                 "text": f"{suit} {i}"
             }
             deck.append(card)
@@ -114,13 +114,14 @@ def main():
         int, "How many players? ", lower_limit=2, upper_limit=5)
     for i in range(number_of_players):
         player = {
-            "number": i,
+            "index": i,
+            "number": i + 1,
             "cards": [],
             "stats": {
-                "pairs": 0,
-                "tripples": 0,
-                "quads": 0,
-                "points": 0
+                "pairs": 0.0,
+                "tripples": 0.0,
+                "quads": 0.0,
+                "score": 0.0
             }
         }
         players.append(player)
@@ -137,7 +138,28 @@ def main():
 
     # Work out points
     for player in players:
-        pass
+        amounts = {}
+        for card in player["cards"]:
+            if not card["number"] in amounts:
+                amounts[card["number"]] = 1
+            else:
+                amounts[card["number"]] += 1
+
+        for (number, amount) in amounts.items():
+            players[player["index"]]["stats"]["score"] += amount * 1.1
+
+    # Determin winner
+    winner: Optional[dict] = None
+    best_score_so_far = -1
+    for player in players:
+        if player["stats"]["score"] > best_score_so_far:
+            best_score_so_far = player["stats"]["score"]
+            winner = player
+    if winner is None:
+        print("Tie!")
+    else:
+        print(
+            f'Player {winner["number"]} wins with a  score of {winner["stats"]["score"]}!!')
 
 
 # Only run if not being imported
