@@ -218,7 +218,25 @@ def main():
 # Only run if not being imported
 if __name__ == "__main__":
     try:
-        main()
+        # Replay loop
+        playing = True
+        while playing:
+            main()
+            getting_input = True
+            while getting_input:
+                print("Do youy want to play again? (yes/no)")
+                inputted_value = input(
+                    "> ").lower()
+                if inputted_value == "y" or inputted_value == "yes":
+                    getting_input = False
+                elif inputted_value == "n" or inputted_value == "no":
+                    playing = False
+                    getting_input = False
+                else:
+                    print('Invalid input. Please type "yes" or "no".')
+
+        print("Thanks for playing!")
+
     # Handle CTRL+C
     except KeyboardInterrupt:
         print(f"\n{exit_message}")
