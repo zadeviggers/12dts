@@ -42,9 +42,14 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
             range_message += " and"
     if upper_limit is not None:
         range_message += f" at most {upper_limit}"
-    range_message += "."
 
-    print(range_message)
+    default_message = ""
+    if default is not None:
+        default_message = f" or just press enter to use the default ({default})"
+
+    input_help_message = f"{range_message}{default_message}."
+
+    print(input_help_message)
 
     # Loop until the user provides a valid input
     result: Optional[type_to_cast_to] = None
@@ -53,8 +58,13 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
         print(prompt_text)
         raw_input = input("> ")
 
+        # If the users just pressed enter and there's a default value, then use it
+        if default is not None and raw_input == "":
+            result = default
+            print(f"Defaulted to {default}.")
+
         # Show help message if the user asks for help
-        if raw_input == "help" or raw_input == "h":
+        elif raw_input == "help" or raw_input == "h":
             print(f"""
 {"-"*10} Help {"-"*10}
 Required number type: numeric {type_help_text}.
@@ -63,10 +73,13 @@ Required number type: numeric {type_help_text}.
 You can type "help" or "h" to display this message.
 You can type "quit", "q", or "exit" to quit the program 
             """)
+
         # Quit the program if the user requests it
         elif raw_input == "quit" or raw_input == "q" or raw_input == "q":
             print(exit_message)
             exit(0)
+
+        # It's probably a number
         else:
             try:
                 # Try to cast the user's input to the type supplied to the function
@@ -77,9 +90,9 @@ You can type "quit", "q", or "exit" to quit the program
                 meaning that parsed_input is a valid number.
                 """
                 if lower_limit is not None and parsed_input < lower_limit:
-                    print(range_message)
+                    print(input_help_message)
                 elif upper_limit is not None and parsed_input > upper_limit:
-                    print(range_message)
+                    print(input_help_message)
                 else:
                     result = parsed_input
 
@@ -99,7 +112,7 @@ def main():
 
     # Generate players
     number_of_players = get_number_input(
-        int, "How many players? ", lower_limit=2, upper_limit=420)
+        int, "How many players? ", lower_limit=2, default=3)
     for i in range(number_of_players):
         player = {
             "index": i,
@@ -114,8 +127,10 @@ def main():
         }
         players.append(player)
 
-    deck_size = max(default_deck_size, number_of_players *
-                    random.randrange(14, 19))
+    minimum_deck_size = max(52, number_of_players * 2)
+
+    deck_size = get_number_input(
+        int, "How many cards in the deck? ", lower_limit=minimum_deck_size, default=minimum_deck_size)
 
     # Generate the deck
     for suit in suits:
@@ -139,7 +154,6 @@ def main():
             deck.append(card)
 
     # Shuffle the deck
-    random.shuffle(deck)
     random.shuffle(deck)
 
     # Deal cards to players
