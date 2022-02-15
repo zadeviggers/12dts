@@ -205,18 +205,21 @@ def main():
     print("Determining winner...")
     winner: Optional[dict] = None
     best_score_so_far = -1
-    tie = False
+    tiers = None
     for player in players:
-        print(
-            f'Player {player["number"]}\'s hand: {", ".join(card["text"] for card in player["cards"])}')
+        # print(
+        #     f'Player {player["number"]}\'s hand: {", ".join(card["text"] for card in player["cards"])}')
         if player["stats"]["score"] > best_score_so_far:
             best_score_so_far = player["stats"]["score"]
             winner = player
-            tie = False
+            tiers = None
         elif player["stats"]["score"] == best_score_so_far:
-            tie = True
-    if tie:
-        print("Tie!")
+            if tiers is None:
+                tiers = []
+            tiers.append(player)
+    if tiers is not None:
+        print(
+            f"""Tie between {', '.join(f'Player {player["number"]} (score: {Fore.CYAN}{player["stats"]["score"]}{Fore.RESET})' for player in tiers)}!""")
     else:
         print(
             f'Player {winner["number"]} wins with a  score of {Fore.CYAN}{winner["stats"]["score"]:.1f}{Fore.RESET}!!')
