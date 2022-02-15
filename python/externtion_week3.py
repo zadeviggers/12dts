@@ -17,6 +17,7 @@ suits = {
     "clubs": f"{Fore.BLACK}♧{Fore.RESET}",
     "spades": f"{Fore.BLACK}♤{Fore.RESET}",
     "diamonds": f"{Fore.RED}♢{Fore.RESET}",
+    "hearts": f"{Fore.RED}♡{Fore.RESET}",
     "hearts": f"{Fore.RED}♡{Fore.RESET}"
 
 }
@@ -28,12 +29,63 @@ point_giving_card_amounts = [2, 3, 4, 5, 10,
 # Functions
 
 
+def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[str] = None, helper_text: Optional[str] = None, help_command_text: Optional[str] = None, type_help_text: Optional[str] = None):
+    """
+    A utility function that takes a type to try and cast to,
+    a message to promt the user with,
+    and optionaly a default value.
+    """
+
+    if helper_text is not None:
+        print(helper_text)
+
+    # Loop until the user provides a valid input
+    result: Optional[type_to_cast_to] = None
+
+    while result == None:
+        # Prompt the user for a value
+        print(prompt_text)
+        raw_input = input(f"> {Fore.GREEN}")
+        # Stop text colour from spreading where it shouldn't
+        print(Fore.RESET, end="")
+
+        # If the users just pressed enter and there's a default value, then use it
+        if default is not None and raw_input == "":
+            result = default
+            print(f"Defaulted to {Fore.CYAN}{default}{Fore.RESET}.")
+
+        # Show help message if the user asks for help
+        elif help_command_text is not None and (raw_input == "help" or raw_input == "h"):
+            print(help_command_text)
+
+        # Quit the program if the user requests it
+        elif raw_input == "quit" or raw_input == "q" or raw_input == "q":
+            print(exit_message)
+            exit(0)
+
+        # It's probably a the correct type
+        else:
+            try:
+                # Try to cast the user's input to the type supplied to the function
+                result = type_to_cast_to(raw_input)
+            # The user provided an invalid input
+            except ValueError:
+                if type_help_text is not None:
+                    print(
+                        f"You didn't provide a valid input. Please only input a {type_help_text}.")
+                else:
+                    print("Invalid input.")
+
+    return result
+
+
 def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: optional_int_or_float = None, upper_limit: optional_int_or_float = None, default: Optional[str] = None):
     """
-    A utility function that takes a number type to try and cast to,
+    A utility function that wraps the get_input function
+    It takes a number type to try and cast to,
     a message to promt the user with,
     and optionaly upper and/or lower limits for the
-    number supplied by the user.
+    number supplied by the user, and a default value.
     """
 
     # Variables
@@ -56,35 +108,18 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
 
     input_help_message = f"{range_message}{default_message}."
 
-    print(input_help_message)
-
-    # Loop until the user provides a valid input
-    result: Optional[type_to_cast_to] = None
-    while result == None:
-        # Prompt the user for a value
-        print(prompt_text)
-        raw_input = input(f"> {Fore.GREEN}")
-        # Stop text colour from spreading where it shouldn't
-        print(Fore.RESET, end="")
-
-        # If the users just pressed enter and there's a default value, then use it
-        if default is not None and raw_input == "":
-            result = default
-            print(f"Defaulted to {Fore.CYAN}{default}{Fore.RESET}.")
-
-        # Show help message if the user asks for help
-        elif raw_input == "help" or raw_input == "h":
-            print(f"""
+    result: number = get_input(
+        number, prompt_text, default=default, helper_text=input_help_message, help_command_text=f"""
 {"-"*10} Help {"-"*10}
 Required number type: {Fore.BLUE}numeric {type_help_text}{Fore.RESET}.
 {f"Minimum value: {Fore.CYAN}{lower_limit}{Fore.RESET}" if lower_limit else ""}
 {f"Maximum value: {Fore.CYAN}{upper_limit}{Fore.RESET}" if upper_limit else ""}
 You can type "{Fore.GREEN}help{Fore.RESET}" or "{Fore.GREEN}h{Fore.RESET}" to display this message.
-You can type "{Fore.GREEN}quit{Fore.RESET}", "{Fore.GREEN}q{Fore.RESET}", or "{Fore.GREEN}exit{Fore.RESET}" to quit the program 
-            """)
+You can type "{Fore.GREEN}quit{Fore.RESET}", "{Fore.GREEN}q{Fore.RESET}", or "{Fore.GREEN}exit{Fore.RESET}" to quit the program
+            """, type_help_text=type_help_text)
 
-        # Quit the program if the user requests it
-        elif raw_input == "quit" or raw_input == "q" or raw_input == "q":
+       # Quit the program if the user requests it
+       elif raw_input == "quit" or raw_input == "q" or raw_input == "q":
             print(exit_message)
             exit(0)
 
@@ -145,7 +180,7 @@ def main():
     # Generate the deck
     print("Generating the deck...")
     for suit in suits:
-        for i in range(round(deck_size / 4)):
+        for i in range(round(deck_size / len(suits))):
             suit_symbol = suits[suit]
             number = i + 1
             number_text = str(number)
