@@ -17,6 +17,8 @@ suits = {
 
 }
 royals = [[11, "Jack"], [12, "Queen"], [13, "Queen"]]
+point_giving_card_amounts = [2, 3, 4, 5, 10,
+                             50, 100, 500, 1000, 5000, 10000, 100000, 1000000]
 
 # Functions
 
@@ -111,6 +113,7 @@ def main():
     players = []
 
     # Generate players
+    print("Generating players...")
     number_of_players = get_number_input(
         int, "How many players? ", lower_limit=2, default=3)
     for i in range(number_of_players):
@@ -133,6 +136,7 @@ def main():
         int, "How many cards in the deck? ", lower_limit=minimum_deck_size, default=minimum_deck_size)
 
     # Generate the deck
+    print("Generating the deck...")
     for suit in suits:
         for i in range(round(deck_size / 4)):
             suit_symbol = suits[suit]
@@ -154,9 +158,11 @@ def main():
             deck.append(card)
 
     # Shuffle the deck
+    print("Shuffling the deck...")
     random.shuffle(deck)
 
     # Deal cards to players
+    print("Dealing cards...")
     next_player_index = random.randrange(0, number_of_players-1)
     for card in deck:
         players[next_player_index]["cards"].append(card)
@@ -167,7 +173,9 @@ def main():
             next_player_index += 1
 
     # Work out points
+    print("Calculating points...")
     for player in players:
+        # Coutn how many of each card number a player has
         amounts = {}
         for card in player["cards"]:
             if not card["number"] in amounts:
@@ -175,8 +183,9 @@ def main():
             else:
                 amounts[card["number"]] += 1
 
+        # Loop over the amounts and update the player's stats
         for (number, amount) in amounts.items():
-            if amount in [2, 3, 4]:
+            if amount in point_giving_card_amounts:
                 players[player["index"]]["stats"]["score"] += amount * 1.1
                 if amount == 2:
                     players[player["index"]]["stats"]["pairs"] += 1
@@ -185,7 +194,8 @@ def main():
                 elif amount == 4:
                     players[player["index"]]["stats"]["quads"] += 1
 
-    # Determin winner
+    # Determine winner
+    print("Determining winner...")
     winner: Optional[dict] = None
     best_score_so_far = -1
     tie = False
