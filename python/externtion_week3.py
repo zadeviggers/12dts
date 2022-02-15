@@ -99,10 +99,12 @@ def main():
     # Generate the deck
     for suit in suits:
         for i in range(round(deck_size / 4)):
+            suit_symbol = suits[suit]
             card = {
                 "suit": suit,
+                "suit_symbol": suit_symbol,
                 "number": i + 1,
-                "text": f"{suit} {i}"
+                "text": f"{suit_symbol} {i}"
             }
             deck.append(card)
 
@@ -118,9 +120,9 @@ def main():
             "number": i + 1,
             "cards": [],
             "stats": {
-                "pairs": 0.0,
-                "tripples": 0.0,
-                "quads": 0.0,
+                "pairs": 0,
+                "tripples": 0,
+                "quads": 0,
                 "score": 0.0
             }
         }
@@ -146,6 +148,13 @@ def main():
                 amounts[card["number"]] += 1
 
         for (number, amount) in amounts.items():
+            if amount == 2:
+                players[player["index"]]["stats"]["pairs"] += 1
+            elif amount == 3:
+                players[player["index"]]["stats"]["tripples"] += 1
+            elif amount == 4:
+                players[player["index"]]["stats"]["quads"] += 1
+
             players[player["index"]]["stats"]["score"] += amount * 1.1
 
     # Determin winner
@@ -158,8 +167,9 @@ def main():
     if winner is None:
         print("Tie!")
     else:
+        # print(winner)
         print(
-            f'Player {winner["number"]} wins with a  score of {winner["stats"]["score"]}!!')
+            f'Player {winner["number"]} wins with a  score of {winner["stats"]["score"]:.1f}!!')
 
 
 # Only run if not being imported
