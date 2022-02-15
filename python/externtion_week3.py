@@ -236,7 +236,7 @@ if __name__ == "__main__":
             getting_input = True
             while getting_input:
                 print(
-                    f"Do youy want to play again? ({Fore.GREEN}yes{Fore.RESET} or {Fore.GREEN}no{Fore.RESET})")
+                    f"Do you want to play again? ({Fore.GREEN}yes{Fore.RESET} or {Fore.GREEN}no{Fore.RESET})")
                 inputted_value = input(
                     f"> {Fore.GREEN}").lower()
                 # Stop text colour from spreading where it shouldn't
