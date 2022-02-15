@@ -1,5 +1,9 @@
 import random
 from typing import Optional, Union
+from colorama import init, Fore, Back, Style
+
+# Configure modules
+init(autoreset=True)
 
 # Types
 number = Union[int, float]
@@ -7,16 +11,17 @@ optional_int_or_float = Optional[number]
 
 
 # Variables
-exit_message = "Okay. Exiting..."
+exit_message = f"{Fore.MAGENTA}Okay. Exiting...{Fore.RESET}"
 default_deck_size = 52
 suits = {
-    "clubs": "♧",
-    "spades": "♤",
-    "diamonds": "♢",
-    "hearts": "♡"
+    "clubs": f"{Fore.BLACK}♧{Fore.RESET}",
+    "spades": f"{Fore.BLACK}♤{Fore.RESET}",
+    "diamonds": f"{Fore.RED}♢{Fore.RESET}",
+    "hearts": f"{Fore.RED}♡{Fore.RESET}"
 
 }
-royals = [[11, "Jack"], [12, "Queen"], [13, "Queen"]]
+royals = [[11, f"{Fore.YELLOW}Jack{Fore.RESET}"], [
+    12, f"{Fore.YELLOW}Queen{Fore.RESET}"], [13, f"{Fore.YELLOW}King{Fore.RESET}"]]
 point_giving_card_amounts = [2, 3, 4, 5, 10,
                              50, 100, 500, 1000, 5000, 10000, 100000, 1000000]
 
@@ -38,16 +43,16 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
 
     range_message = "Please enter a number that is"
     if lower_limit is not None:
-        range_message += f" at least {lower_limit}"
+        range_message += f" at least {Fore.CYAN}{lower_limit}{Fore.RESET}"
         # Add joiner string if an upper limit as also supplied
         if upper_limit is not None:
             range_message += " and"
     if upper_limit is not None:
-        range_message += f" at most {upper_limit}"
+        range_message += f" at most {Fore.CYAN}{upper_limit}{Fore.RESET}"
 
     default_message = ""
     if default is not None:
-        default_message = f" or just press enter to use the default ({default})"
+        default_message = f" or just press enter to use the default ({Fore.CYAN}{default}{Fore.RESET})"
 
     input_help_message = f"{range_message}{default_message}."
 
@@ -58,22 +63,24 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
     while result == None:
         # Prompt the user for a value
         print(prompt_text)
-        raw_input = input("> ")
+        raw_input = input(f"> {Fore.GREEN}")
+        # Stop text colour from spreading where it shouldn't
+        print(Fore.RESET, end="")
 
         # If the users just pressed enter and there's a default value, then use it
         if default is not None and raw_input == "":
             result = default
-            print(f"Defaulted to {default}.")
+            print(f"Defaulted to {Fore.CYAN}{default}{Fore.RESET}.")
 
         # Show help message if the user asks for help
         elif raw_input == "help" or raw_input == "h":
             print(f"""
 {"-"*10} Help {"-"*10}
-Required number type: numeric {type_help_text}.
-{f"Minimum value: {lower_limit}" if lower_limit else ""}
-{f"Maximum value: {upper_limit}" if upper_limit else ""}
-You can type "help" or "h" to display this message.
-You can type "quit", "q", or "exit" to quit the program 
+Required number type: {Fore.BLUE}numeric {type_help_text}{Fore.RESET}.
+{f"Minimum value: {Fore.CYAN}{lower_limit}{Fore.RESET}" if lower_limit else ""}
+{f"Maximum value: {Fore.CYAN}{upper_limit}{Fore.RESET}" if upper_limit else ""}
+You can type "{Fore.GREEN}help{Fore.RESET}" or "{Fore.GREEN}h{Fore.RESET}" to display this message.
+You can type "{Fore.GREEN}quit{Fore.RESET}", "{Fore.GREEN}q{Fore.RESET}", or "{Fore.GREEN}exit{Fore.RESET}" to quit the program 
             """)
 
         # Quit the program if the user requests it
@@ -212,7 +219,7 @@ def main():
         print("Tie!")
     else:
         print(
-            f'Player {winner["number"]} wins with a  score of {winner["stats"]["score"]:.1f}!!')
+            f'Player {winner["number"]} wins with a  score of {Fore.CYAN}{winner["stats"]["score"]:.1f}{Fore.RESET}!!')
 
 
 # Only run if not being imported
@@ -228,18 +235,22 @@ if __name__ == "__main__":
             # Keep asking until a valid response is received.
             getting_input = True
             while getting_input:
-                print("Do youy want to play again? (yes or no)")
+                print(
+                    f"Do youy want to play again? ({Fore.GREEN}yes{Fore.RESET} or {Fore.GREEN}no{Fore.RESET})")
                 inputted_value = input(
-                    "> ").lower()
+                    f"> {Fore.GREEN}").lower()
+                # Stop text colour from spreading where it shouldn't
+                print(Fore.RESET, end="")
                 if inputted_value == "y" or inputted_value == "yes":
                     getting_input = False
                 elif inputted_value == "n" or inputted_value == "no":
                     playing = False
                     getting_input = False
                 else:
-                    print('Invalid input. Please type "yes" or "no".')
+                    print(
+                        f'Invalid input. Please type "{Fore.GREEN}yes{Fore.RESET}" or "{Fore.GREEN}no{Fore.RESET}".')
 
-        print("Thanks for playing!")
+        print(f"{Fore.MAGENTA}Thanks for playing!{Fore.RESET}")
 
     # Handle CTRL+C
     except KeyboardInterrupt:
