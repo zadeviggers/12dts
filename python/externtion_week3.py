@@ -1,3 +1,4 @@
+from email.policy import default
 import random
 from typing import Optional, Union
 from colorama import init, Fore, Back, Style
@@ -26,18 +27,28 @@ royals = [[11, f"{Fore.YELLOW}Jack{Fore.RESET}"], [
 point_giving_card_amounts = [2, 3, 4, 5, 10,
                              50, 100, 500, 1000, 5000, 10000, 100000, 1000000]
 
+
 # Functions
 
-
-def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[str] = None, helper_text: Optional[str] = None, help_command_text: Optional[str] = None, type_help_text: Optional[str] = None):
+def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[type] = None, default_text=Optional[str], helper_text: Optional[str] = None, help_command_text: Optional[str] = None, type_help_text: Optional[str] = None):
     """
     A utility function that takes a type to try and cast to,
     a message to promt the user with,
     and optionaly a default value.
     """
 
+    default_message: Optional[str] = None
+    if default is not None:
+        if default_text is not None:
+            default_message = default_text
+        else:
+            default_message = str(default)
+
+    input_hint = ""
     if helper_text is not None:
-        print(helper_text)
+        input_hint += f"Please type in {helper_text}"
+    if default_message is not None:
+        input_hint += f" or just press enter to use the default ({Fore.CYAN}{default}{Fore.RESET})"
 
     # Loop until the user provides a valid input
     result: Optional[type_to_cast_to] = None
@@ -45,6 +56,8 @@ def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[str] = 
     while result == None:
         # Prompt the user for a value
         print(prompt_text)
+        if input_hint != "":
+            print(input_hint)
         raw_input = input(f"> {Fore.GREEN}")
         # Stop text colour from spreading where it shouldn't
         print(Fore.RESET, end="")
@@ -52,7 +65,8 @@ def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[str] = 
         # If the users just pressed enter and there's a default value, then use it
         if default is not None and raw_input == "":
             result = default
-            print(f"Defaulted to {Fore.CYAN}{default}{Fore.RESET}.")
+
+            print(f"Defaulted to {Fore.CYAN}{default_message}{Fore.RESET}.")
 
         # Show help message if the user asks for help
         elif help_command_text is not None and (raw_input == "help" or raw_input == "h"):
@@ -106,49 +120,64 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
     if default is not None:
         default_message = f" or just press enter to use the default ({Fore.CYAN}{default}{Fore.RESET})"
 
-    input_help_message = f"{range_message}{default_message}."
+    input_help_message = f"{range_message}."
 
-    result: number = get_input(
-        number, prompt_text, default=default, helper_text=input_help_message, help_command_text=f"""
-{"-"*10} Help {"-"*10}
-Required number type: {Fore.BLUE}numeric {type_help_text}{Fore.RESET}.
-{f"Minimum value: {Fore.CYAN}{lower_limit}{Fore.RESET}" if lower_limit else ""}
-{f"Maximum value: {Fore.CYAN}{upper_limit}{Fore.RESET}" if upper_limit else ""}
-You can type "{Fore.GREEN}help{Fore.RESET}" or "{Fore.GREEN}h{Fore.RESET}" to display this message.
-You can type "{Fore.GREEN}quit{Fore.RESET}", "{Fore.GREEN}q{Fore.RESET}", or "{Fore.GREEN}exit{Fore.RESET}" to quit the program
-            """, type_help_text=type_help_text)
+    result: number = 0
+    getting_input = True
+    while getting_input:
+        result = get_input(
+            type_to_cast_to, prompt_text, default=default, default_text=default_message, helper_text=input_help_message, help_command_text=f"""
+    {"-"*10} Help {"-"*10}
+    Required number type: {Fore.BLUE}numeric {type_help_text}{Fore.RESET}.
+    {f"Minimum value: {Fore.CYAN}{lower_limit}{Fore.RESET}" if lower_limit else ""}
+    {f"Maximum value: {Fore.CYAN}{upper_limit}{Fore.RESET}" if upper_limit else ""}
+    You can type "{Fore.GREEN}help{Fore.RESET}" or "{Fore.GREEN}h{Fore.RESET}" to display this message.
+    You can type "{Fore.GREEN}quit{Fore.RESET}", "{Fore.GREEN}q{Fore.RESET}", or "{Fore.GREEN}exit{Fore.RESET}" to quit the program
+                """, type_help_text=type_help_text)
 
-       # Quit the program if the user requests it
-       elif raw_input == "quit" or raw_input == "q" or raw_input == "q":
-            print(exit_message)
-            exit(0)
-
-        # It's probably a number
+        if lower_limit is not None and result < lower_limit:
+            print(input_help_message)
+        elif upper_limit is not None and result > upper_limit:
+            print(input_help_message)
         else:
-            try:
-                # Try to cast the user's input to the type supplied to the function
-                parsed_input: number = type_to_cast_to(raw_input)
+            getting_input = False
 
-                """
-                This code only runs if the type cast above does not throw an error,
-                meaning that parsed_input is a valid number.
-                """
-                if lower_limit is not None and parsed_input < lower_limit:
-                    print(input_help_message)
-                elif upper_limit is not None and parsed_input > upper_limit:
-                    print(input_help_message)
-                else:
-                    result = parsed_input
+    return result
 
-            # The user provided an invalid input
-            except ValueError:
-                print(
-                    f"You didn't provide a valid input. Please only input a numeric {type_help_text}.")
+
+def get_bool_input(prompt: str, default: Optional[bool] = None, default_text: Optional[str] = None):
+    helper_text = f"{Fore.GREEN}yes{Fore.RESET} or {Fore.GREEN}no{Fore.RESET}"
+
+    result: Optional[bool] = None
+    getting_input = True
+    while getting_input:
+        inputted_value = get_input(str, prompt, default=default,
+                                   default_text=default_text, helper_text=helper_text)
+        if inputted_value == True or inputted_value == False:
+            result = inputted_value
+            getting_input = False
+        else:
+            inputted_string: str = inputted_value.lower()
+            if inputted_string == "true":
+                result = True
+                getting_input = False
+            elif inputted_string == "false":
+                result = False
+                getting_input = False
+            elif inputted_string == "y" or inputted_string == "yes":
+                result = True
+                getting_input = False
+            elif inputted_string == "n" or inputted_string == "no":
+                result = False
+                getting_input = False
+            else:
+                print(f"Invalid input. Please type {helper_text}.")
 
     return result
 
 
 # Main program
+
 def main():
     # Variables
     deck = []
@@ -271,22 +300,8 @@ if __name__ == "__main__":
 
             # Ask the player if they want to play again
             # Keep asking until a valid response is received.
-            getting_input = True
-            while getting_input:
-                print(
-                    f"Do you want to play again? ({Fore.GREEN}yes{Fore.RESET} or {Fore.GREEN}no{Fore.RESET})")
-                inputted_value = input(
-                    f"> {Fore.GREEN}").lower()
-                # Stop text colour from spreading where it shouldn't
-                print(Fore.RESET, end="")
-                if inputted_value == "y" or inputted_value == "yes":
-                    getting_input = False
-                elif inputted_value == "n" or inputted_value == "no":
-                    playing = False
-                    getting_input = False
-                else:
-                    print(
-                        f'Invalid input. Please type "{Fore.GREEN}yes{Fore.RESET}" or "{Fore.GREEN}no{Fore.RESET}".')
+            playing = get_bool_input(
+                "Do you want to play again?", default=False, default_text="no")
 
         print(f"{Fore.MAGENTA}Thanks for playing!{Fore.RESET}")
 
