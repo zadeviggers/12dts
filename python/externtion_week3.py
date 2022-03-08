@@ -30,25 +30,22 @@ point_giving_card_amounts = [2, 3, 4, 5, 10,
 
 # Functions
 
-def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[type] = None, default_text=Optional[str], helper_text: Optional[str] = None, help_command_text: Optional[str] = None, type_help_text: Optional[str] = None):
+def get_input(type_to_cast_to: type, prompt_text: str, default: Optional[type] = None, default_text: Optional[str] = None, helper_text: Optional[str] = None, help_command_text: Optional[str] = None, type_help_text: Optional[str] = None):
     """
     A utility function that takes a type to try and cast to,
     a message to promt the user with,
     and optionaly a default value.
     """
 
-    default_message: Optional[str] = None
-    if default is not None:
-        if default_text is not None:
-            default_message = default_text
-        else:
-            default_message = str(default)
+    default_message = default
+    if default_text is not None:
+        default_message = default_text
 
     input_hint = ""
     if helper_text is not None:
         input_hint += f"Please type in {helper_text}"
     if default_message is not None:
-        input_hint += f" or just press enter to use the default ({Fore.CYAN}{default}{Fore.RESET})"
+        input_hint += f" Or just press enter to use the default ({Fore.CYAN}{default_message}{Fore.RESET})."
 
     # Loop until the user provides a valid input
     result: Optional[type_to_cast_to] = None
@@ -107,7 +104,7 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
     if type_to_cast_to is float:
         type_help_text = "floating point number (a number with a decimal place)"
 
-    range_message = "Please enter a number that is"
+    range_message = "a number that is"
     if lower_limit is not None:
         range_message += f" at least {Fore.CYAN}{lower_limit}{Fore.RESET}"
         # Add joiner string if an upper limit as also supplied
@@ -116,17 +113,13 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
     if upper_limit is not None:
         range_message += f" at most {Fore.CYAN}{upper_limit}{Fore.RESET}"
 
-    default_message = ""
-    if default is not None:
-        default_message = f" or just press enter to use the default ({Fore.CYAN}{default}{Fore.RESET})"
-
     input_help_message = f"{range_message}."
 
     result: number = 0
     getting_input = True
     while getting_input:
         result = get_input(
-            type_to_cast_to, prompt_text, default=default, default_text=default_message, helper_text=input_help_message, help_command_text=f"""
+            type_to_cast_to, prompt_text, default=default, helper_text=input_help_message, help_command_text=f"""
     {"-"*10} Help {"-"*10}
     Required number type: {Fore.BLUE}numeric {type_help_text}{Fore.RESET}.
     {f"Minimum value: {Fore.CYAN}{lower_limit}{Fore.RESET}" if lower_limit else ""}
@@ -145,9 +138,11 @@ def get_number_input(type_to_cast_to: number, prompt_text: str, lower_limit: opt
     return result
 
 
-def get_bool_input(prompt: str, default: Optional[bool] = None, default_text: Optional[str] = None):
+def get_bool_input(prompt: str, default: bool = False):
     helper_text = f"{Fore.GREEN}yes{Fore.RESET} or {Fore.GREEN}no{Fore.RESET}"
-
+    default_text = "no"
+    if default == True:
+        default_text = "yes"
     result: Optional[bool] = None
     getting_input = True
     while getting_input:
@@ -271,8 +266,6 @@ def main():
     best_score_so_far = -1
     tiers = None
     for player in players:
-        # print(
-        #     f'Player {player["number"]}\'s hand: {", ".join(card["text"] for card in player["cards"])}')
         if player["stats"]["score"] > best_score_so_far:
             best_score_so_far = player["stats"]["score"]
             winner = player
@@ -288,6 +281,19 @@ def main():
         print(
             f'Player {winner["number"]} wins with a  score of {Fore.CYAN}{winner["stats"]["score"]:.1f}{Fore.RESET}!!')
 
+    # Print hands
+    wants_to_see_hands = get_bool_input(
+        "Do you want to see player statistics?", default=False)
+    if wants_to_see_hands:
+        for player in players:
+            print(f'Player {player["number"]}:')
+            print(
+                f'''  Hand: {", ".join(card["text"] for card in player["cards"])}
+  Score: {player["stats"]["score"]}
+  Pairs: {player["stats"]["pairs"]}
+  Tripples: {player["stats"]["tripples"]}
+  Quads: {player["stats"]["quads"]}''')
+
 
 # Only run if not being imported
 if __name__ == "__main__":
@@ -301,7 +307,7 @@ if __name__ == "__main__":
             # Ask the player if they want to play again
             # Keep asking until a valid response is received.
             playing = get_bool_input(
-                "Do you want to play again?", default=False, default_text="no")
+                "Do you want to play again?", default=False)
 
         print(f"{Fore.MAGENTA}Thanks for playing!{Fore.RESET}")
 
