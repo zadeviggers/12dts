@@ -8,19 +8,19 @@ drag = 2
 player_height = 20
 player_width = 10
 player_colour = (255, 0, 0)
-player_jump_height = 300
+player_jump_height = 0.8
 player_walk_speed = 3
 player_max_speed = [15, 1600]
-extra_jumps = 1
-jump_cooldown = 0.5
+allowed_jump_amount = 3
 
 # Variables
 player_velocity = [0, 0]
 player_position = [0, 0]
-extra_jumps_left = extra_jumps
-jump_cooldown_remaining = 0
+jumps_remaining = allowed_jump_amount
 game_is_running = True
 previous_time = time()
+player_is_on_ground = False
+
 
 # Start pygame
 pygame.init()
@@ -42,18 +42,31 @@ while game_is_running:
     delta_time = current_time - previous_time
     previous_time = current_time
 
-    # Decrement jump cooldown
-    if jump_cooldown_remaining > 0:
-        jump_cooldown_remaining -= delta_time
-    elif jump_cooldown_remaining < 0:
-        jump_cooldown_remaining = 0
+    # Keep track of it player is grounded
+    if player_position[1] == window.get_height()-player_height:
+        player_is_on_ground = True
+    else:
+        player_is_on_ground = False
+
+    # Reset jump counter if player is on ground
+    if player_is_on_ground:
+        jumps_remaining = allowed_jump_amount
 
     # Loop over events that have happened
     for event in pygame.event.get():
-
         # When close button pressed, stop game loop
         if event.type == pygame.QUIT:
             game_is_running = False
+        elif event.type == pygame.KEYDOWN:
+            # Jumping should only happen is a key was pressed down, not if it's held.
+            if event.key == pygame.K_UP:
+                # If the player has jumps left
+                if jumps_remaining > 0:
+                    # Player Y position is from the top of the screen down, so subtracting makes it go up
+                    player_velocity[1] = player_jump_height * -1
+
+                    # Decrement the remaining jumps counter
+                    jumps_remaining -= 1
 
     keys = pygame.key.get_pressed()
 
@@ -63,29 +76,6 @@ while game_is_running:
     # Movement right
     if keys[pygame.K_RIGHT]:
         player_velocity[0] += player_walk_speed * delta_time
-
-    # Jumping
-    def jump():
-        # Player Y position is from the top of the screen down, so subtracting makes it go up
-        player_velocity[1] -= player_jump_height * delta_time
-
-    # Make sure that the jump key is pressed and the jump cooldown is done
-    if keys[pygame.K_UP] and jump_cooldown_remaining == 0:
-        jump_cooldown_remaining = jump_cooldown
-        # Make sure the player is on the ground before allowing them to jump
-        if player_position[1] == window.get_height()-player_height:
-            jump()
-            # Reset extra jumps counter becuase the player touched the ground
-            extra_jumps_left = extra_jumps
-
-            # Reset jump cooldown because player is on the ground
-            jump_cooldown = 0
-
-        # If the player isn't on the ground bu still has extra jumps left
-        elif extra_jumps_left > 0:
-            jump()
-            # Decrement the extra jumps counter
-            extra_jumps_left -= 1
 
     # Apply gravity
     # Player Y position is from the top of the screen down, so adding makes it go down
