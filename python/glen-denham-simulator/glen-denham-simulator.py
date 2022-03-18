@@ -1,8 +1,12 @@
 from cmath import rect
+import json
+import os
+import sys
 from time import time
 import pygame
 
 # Game settings
+window_title = "Glen Denham Simulator"
 gravity = 3
 drag = 2
 player_height = 20
@@ -12,6 +16,10 @@ player_jump_height = 0.8
 player_walk_speed = 3
 player_max_speed = [15, 1600]
 allowed_jump_amount = 3
+levels = []
+with open(os.path.join(sys.path[0], "levels.json")) as f:
+    levels = json.load(f)
+
 
 # Variables
 player_velocity = [0, 0]
@@ -20,16 +28,31 @@ jumps_remaining = allowed_jump_amount
 game_is_running = True
 previous_time = time()
 player_is_on_ground = False
+current_level = None
+
+
+# Functions
+def load_level(level_number: int):
+    # Update current level variable
+    current_level = levels[level_number]
+
+    # Update window size
+    pygame.display.set_mode(
+        (current_level["window"]["width"], current_level["window"]["height"]))
+
+    # Update window title
+    pygame.display.set_caption(window_title + " - " + current_level["name"])
 
 
 # Start pygame
 pygame.init()
 
-# Create a 500px by 500px window
-window = pygame.display.set_mode((501, 502))
 
-# Give window a title
-pygame.display.set_caption("Glen Denham Simulator")
+# Load the level
+load_level(0)
+
+# Get the window
+window = pygame.display.get_surface()
 
 # Start player in center
 player_position[0] = (window.get_width()//2)-(player_width//2)

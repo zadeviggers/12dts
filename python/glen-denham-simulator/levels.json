@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Level 1",
+    "window": {
+      "width": 800,
+      "height": 800
+    },
+    "layout": {
+      "platforms": [
+        {
+          "x": 10,
+          "y": 10,
+          "width": 15,
+          "height": 3
+        }
+      ]
+    }
+  }
+]
