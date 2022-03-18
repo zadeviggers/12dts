@@ -26,7 +26,7 @@ previous_time = time()
 pygame.init()
 
 # Create a 500px by 500px window
-window = pygame.display.set_mode((500, 500))
+window = pygame.display.set_mode((501, 502))
 
 # Give window a title
 pygame.display.set_caption("Glen Denham Simulator")
@@ -118,6 +118,14 @@ while game_is_running:
     if player_position[1] >= window.get_height()-player_height:
         player_position[1] = window.get_height()-player_height
         player_velocity[1] = 0
+
+    # Stop player walking off screen
+    if player_position[0] < 0:
+        player_position[0] = 0
+        player_velocity[0] = 0
+    if player_position[0] > window.get_width() - player_width:
+        player_position[0] = window.get_width() - player_width
+        player_velocity[0] = 0
 
     # Clear window
     window.fill((0, 0, 0))
