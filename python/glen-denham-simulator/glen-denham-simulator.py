@@ -47,6 +47,12 @@ def load_level(window: pygame.Surface, level_number: int):
 
     if level_number > len(levels)-1:
         game_won = True
+
+        # Update window size
+        pygame.display.set_mode((game["width"], game["height"]))
+
+        # Update window title
+        pygame.display.set_caption("You win!" + " - " + game["title"])
     else:
         # Update current level variable
         current_level = levels[level_number]
@@ -57,7 +63,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Update window title
         pygame.display.set_caption(
-            game["title"] + " - " + current_level["name"])
+            current_level["name"] + " - " + game["title"])
 
         # Reset player position
         reset_player_position(window)
