@@ -1,0 +1,51 @@
+{
+	"title": "Glen Denham Simulator",
+	"width": 500,
+	"height": 500,
+	"background_colour": [0, 0, 0],
+	"player_colour": [255, 0, 0],
+	"level_end_marker_colour": [200, 0, 100],
+	"gravity": 2,
+	"drag": 2,
+	"player_height": 20,
+	"player_width": 10,
+	"player_jump_height": 0.5,
+	"player_walk_speed": 3,
+	"player_max_speed": [6, 1],
+	"player_allowed_jump_amount": 3,
+	"levels": [
+		{
+			"name": "Level 1",
+			"window": {
+				"width": 500,
+				"height": 500
+			},
+			"layout": {
+				"platform_colour": [255, 255, 255],
+				"objects": [
+					{
+						"type": "platform",
+						"x": 30,
+						"y": 280,
+						"width": 100,
+						"height": 12
+					},
+					{
+						"type": "platform",
+						"x": 80,
+						"y": 200,
+						"width": 120,
+						"height": 12
+					},
+					{
+						"type": "level-end",
+						"x": 370,
+						"y": 10,
+						"width": 20,
+						"height": 20
+					}
+				]
+			}
+		}
+	]
+}
