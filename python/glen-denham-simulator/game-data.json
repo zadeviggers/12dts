@@ -7,9 +7,10 @@
 	"level_end_marker_colour": [200, 0, 100],
 	"gravity": 2,
 	"drag": 2,
+	"platform_drag_multiplier": 0.0002,
 	"player_height": 20,
 	"player_width": 10,
-	"player_jump_height": 0.5,
+	"player_jump_speed": 0.4,
 	"player_walk_speed": 3,
 	"player_max_speed": [6, 1],
 	"player_allowed_jump_amount": 3,
@@ -18,11 +19,26 @@
 			"name": "Level 1",
 			"window": {
 				"width": 500,
-				"height": 500
+				"height": 500,
+				"resizable": true
 			},
 			"layout": {
 				"platform_colour": [255, 255, 255],
 				"objects": [
+					{
+						"type": "platform",
+						"x": 275,
+						"y": 400,
+						"width": 20,
+						"height": 24
+					},
+					{
+						"type": "platform",
+						"x": 150,
+						"y": 300,
+						"width": 20,
+						"height": 24
+					},
 					{
 						"type": "platform",
 						"x": 30,
@@ -51,7 +67,8 @@
 			"name": "Level 2",
 			"window": {
 				"width": 300,
-				"height": 800
+				"height": 600,
+				"resizable": false
 			},
 			"layout": {
 				"platform_colour": [255, 200, 255],
@@ -59,21 +76,21 @@
 					{
 						"type": "platform",
 						"x": 0,
-						"y": 650,
+						"y": 550,
 						"width": 100,
 						"height": 150
 					},
 					{
 						"type": "platform",
 						"x": 200,
-						"y": 500,
+						"y": 450,
 						"width": 100,
-						"height": 300
+						"height": 280
 					},
 					{
 						"type": "platform",
 						"x": 100,
-						"y": 350,
+						"y": 250,
 						"width": 100,
 						"height": 10
 					},
