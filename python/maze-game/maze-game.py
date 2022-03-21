@@ -301,6 +301,11 @@ while game_is_running:
             player_y_velocity = 0
 
         # Collision with level objects
+        # Why aren't I using pygame's Rect classes and built in clossions detection?
+        # I tried. I tried so hard. But nothing worked when using pygame Rects.
+        # Also their collision detection didn't tell my what side the collision
+        # was on so I would have had to create fake 1-pizel-wide rectandles for each side
+        # and test all of them. This just works.
         for object in current_level["layout"]["objects"]:
 
             # If the player could be coliding with the object on the X axis...
@@ -316,9 +321,8 @@ while game_is_running:
                         stops_movment = on_object_hit(window, object)
 
                         if stops_movment:
-                            # Reset their position to the bottom side of the object
-                            player_y_position = object["y"] - \
-                                game["player_height"]
+                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                            player_y_position = old_player_y_position
                             player_y_velocity = 0
 
                 # If the player is moving up...
@@ -331,8 +335,8 @@ while game_is_running:
                         stops_movment = on_object_hit(window, object)
 
                         if stops_movment:
-                            # Reset their position to the top side of the object
-                            player_y_position = object["y"] + object["height"]
+                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                            player_y_position = old_player_y_position
                             player_y_velocity = 0
 
             # If the player could be coliding with the object on the Y axis...
@@ -348,9 +352,8 @@ while game_is_running:
                         stops_movment = on_object_hit(window, object)
 
                         if stops_movment:
-                            # Reset their position to the left side of the object
-                            player_x_position = object["x"] - \
-                                game["player_width"]
+                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                            player_x_position = old_player_x_position
                             player_x_velocity = 0
 
                 # If the player is moving left...
@@ -363,8 +366,8 @@ while game_is_running:
                         stops_movment = on_object_hit(window, object)
 
                         if stops_movment:
-                            # Reset their position to the right side of the object
-                            player_x_position = object["x"] + object["width"]
+                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                            player_x_position = old_player_x_position
                             player_x_velocity = 0
 
         # Drawing #
