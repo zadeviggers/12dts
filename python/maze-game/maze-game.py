@@ -1,3 +1,4 @@
+from typing import Union
 import json
 from math import floor
 import os
@@ -8,7 +9,7 @@ import pygame
 # Constant
 configuration_file = "game-data.json"
 
-# Load game settings
+# Load game settings from config file
 game = None
 levels = []
 with open(os.path.join(sys.path[0], configuration_file)) as f:
@@ -62,7 +63,7 @@ def draw_level(window: pygame.Surface):
 
     # Draw objects
     for object in current_level["layout"]["objects"]:
-        colour = current_level["layout"]["platform_colour"]
+        colour = current_level["layout"]["wall_colour"]
         if object["type"] == "level-end":
             colour = game["level_end_marker_colour"]
         pygame.draw.rect(window, colour,
@@ -77,14 +78,22 @@ def draw_everything(window: pygame.Surface):
     draw_level(window)
 
 
-def reset_player_position(window: pygame.Surface):
+def reset_player_position(window: pygame.Surface, x_position: Union[int, None], y_position: Union[int, None]):
     global game
     global player_x_position
     global player_y_position
 
-    # Put the player in the bottom center
-    player_x_position = (window.get_width()//2)-(game["player_width"]//2)
-    player_y_position = window.get_height() - game["player_height"]
+    # Put the player in the bottom center by defualt
+    if x_position is not None:
+        player_x_position = x_position
+    else:
+        player_x_position = (window.get_width()//2)-(game["player_width"]//2)
+
+    if y_position is not None:
+        player_y_position = y_position
+    else:
+        player_y_position = window.get_height() - game["player_height"]
+
     draw_player(window)
 
 
@@ -121,7 +130,12 @@ def load_level(window: pygame.Surface, level_number: int):
         draw_level(window)
 
         # Reset player position
-        reset_player_position(window)
+        # "player_start_position": [0, 0],
+        if "player_start_position" in current_level:
+            reset_player_position(
+                window, current_level["player_start_position"][0], current_level["player_start_position"][1])
+        else:
+            reset_player_position(window, None, None)
 
 
 def on_object_hit(window: pygame.Surface, object) -> bool:
@@ -129,8 +143,8 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
     global current_level_number
     global current_level
 
-    # Platforms just colide
-    if object["type"] == "platform":
+    # walls just colide
+    if object["type"] == "wall":
         return True
 
     # Level-end objects don't colide and load the next level
