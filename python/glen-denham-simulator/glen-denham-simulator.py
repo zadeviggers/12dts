@@ -366,8 +366,10 @@ while game_is_running:
             draw_player(window)
 
     # Render all changes
-    if len(dirty_rectangles) > 0:
-        print(dirty_rectangles)
+    print(dirty_rectangles)
+    print(dirty_rectangles)
+    print(dirty_rectangles)
+    print(dirty_rectangles)
     pygame.display.update(dirty_rectangles)
 
     # Empty list of dirty rectangles
