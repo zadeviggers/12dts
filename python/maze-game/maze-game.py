@@ -140,9 +140,6 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         return False
 
 
-
-
-
 # Start pygame
 pygame.init()
 
@@ -363,10 +360,6 @@ while game_is_running:
             draw_player(window)
 
     # Render all changes
-    print(dirty_rectangles)
-    print(dirty_rectangles)
-    print(dirty_rectangles)
-    print(dirty_rectangles)
     pygame.display.update(dirty_rectangles)
 
     # Empty list of dirty rectangles
