@@ -3,8 +3,9 @@ import json
 from math import floor
 import os
 import sys
-from time import sleep, time
+from time import time
 import pygame
+import colorsys
 
 # Constant
 configuration_file = "game-data.json"
@@ -33,12 +34,17 @@ game_lost = False
 lose_win_message_rendered = False
 win_lose_font = None
 # Used for things that change colour
-loop_ticker = 0
+loop_ticker = 0.0
 # Track parts of the screen that have changed
 dirty_rectangles = []
 
 
 # Functions
+
+# Credit for this awsome function goes to @cory-kramer on stack overflow.
+#  Source: https://stackoverflow.com/a/24852375
+def hsv_to_rgb(h, s, v):
+    return tuple(abs(round((i * 255))) for i in colorsys.hsv_to_rgb(h, s, v))
 
 
 def draw_player(window: pygame.Surface):
@@ -57,20 +63,18 @@ def draw_player(window: pygame.Surface):
         (floor(player_x_position), floor(player_y_position), game["player_width"] + 1, game["player_height"] + 1))
 
 
-def draw_level_effect_objects(window: pygame.Surface, ticker: int):
+def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
     # Called every tick
     global dirty_rectangles
-    print("E")
     for object in current_level["layout"]["objects"]:
-
         if object["type"] == "level-end":
-            colour = game["level_end_marker_colour"]
-            opacity = ticker
-
-            s = pygame.Surface((object["width"], object["height"]))
-            s.fill(colour)
-            s.set_alpha(opacity)
-            window.blit(s, (object["x"], object["y"]))
+            # Draw changing-colour square with border to make it stand out
+            colour = hsv_to_rgb(loop_ticker, 0.5, 0.9)
+            border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
+            pygame.draw.rect(
+                window,  border_colour, (object["x"], object["y"], object["width"], object["height"]))
+            pygame.draw.rect(
+                window, colour, (object["x"]+3, object["y"]+3, object["width"] - 6, object["height"] - 6))
             dirty_rectangles.append(
                 (object["x"], object["y"], object["width"], object["height"]))
 
@@ -85,8 +89,6 @@ def draw_level(window: pygame.Surface):
     # Draw objects
     for object in current_level["layout"]["objects"]:
         colour = current_level["layout"]["wall_colour"]
-        if object["type"] == "level-end":
-            colour = game["level_end_marker_colour"]
         pygame.draw.rect(window, colour,
                          (object["x"], object["y"], object["width"], object["height"]))
 
@@ -203,9 +205,9 @@ while game_is_running:
             draw_everything(window)
 
     # Utility for drawing changing colour things
-    loop_ticker += 0.05
+    loop_ticker += 0.00001
     if (loop_ticker > 255):
-        loop_ticker = 0
+        loop_ticker = 0.0
 
     # If game is won or lost
     if game_lost or game_won:
@@ -399,8 +401,7 @@ while game_is_running:
         # Drawing #
 
         # Draw animated level objects
-        if (isinstance(loop_ticker, int)) or loop_ticker.is_integer():
-            draw_level_effect_objects(window, loop_ticker)
+        draw_level_effect_objects(window, loop_ticker)
 
         # Draw the player if they've moved
         if player_x_position - old_player_x_position != 0 or player_y_position-old_player_y_position != 0:
