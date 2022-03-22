@@ -13,45 +13,53 @@
   "levels": [
     {
       "name": "Level 1",
+      "player_start_position": [90, 90],
       "window": {
-        "width": 500,
-        "height": 500,
-        "resizable": true
+        "width": 150,
+        "height": 200,
+        "resizable": false
       },
       "layout": {
-        "wall_colour": [255, 255, 255],
+        "wall_colour": [200, 255, 200],
         "objects": [
           {
             "type": "wall",
-            "x": 275,
-            "y": 400,
-            "width": 20,
-            "height": 24
-          },
-          {
-            "type": "wall",
-            "x": 150,
-            "y": 300,
-            "width": 200,
-            "height": 24
-          },
-          {
-            "type": "wall",
-            "x": 30,
-            "y": 280,
-            "width": 100,
-            "height": 12
-          },
-          {
-            "type": "wall",
             "x": 80,
-            "y": 200,
-            "width": 120,
-            "height": 12
+            "y": 20,
+            "width": 10,
+            "height": 180
+          },
+          {
+            "type": "wall",
+            "x": 90,
+            "y": 20,
+            "width": 30,
+            "height": 10
+          },
+          {
+            "type": "wall",
+            "x": 110,
+            "y": 20,
+            "width": 10,
+            "height": 160
+          },
+          {
+            "type": "wall",
+            "x": 140,
+            "y": 0,
+            "width": 10,
+            "height": 200
+          },
+          {
+            "type": "wall",
+            "x": 50,
+            "y": 0,
+            "width": 10,
+            "height": 180
           },
           {
             "type": "level-end",
-            "x": 370,
+            "x": 10,
             "y": 10,
             "width": 20,
             "height": 20
@@ -101,41 +109,6 @@
             "type": "level-end",
             "x": 15,
             "y": 275,
-            "width": 20,
-            "height": 20
-          }
-        ]
-      }
-    },
-    {
-      "name": "Level 3",
-      "player_start_position": [90, 90],
-      "window": {
-        "width": 200,
-        "height": 200,
-        "resizable": false
-      },
-      "layout": {
-        "wall_colour": [200, 255, 200],
-        "objects": [
-          {
-            "type": "wall",
-            "x": 80,
-            "y": 20,
-            "width": 10,
-            "height": 180
-          },
-          {
-            "type": "wall",
-            "x": 90,
-            "y": 110,
-            "width": 30,
-            "height": 10
-          },
-          {
-            "type": "level-end",
-            "x": 0,
-            "y": 0,
             "width": 20,
             "height": 20
           }
