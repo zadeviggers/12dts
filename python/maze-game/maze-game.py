@@ -5,7 +5,6 @@ import os
 import sys
 from time import time
 import pygame
-import colorsys
 
 # Constant
 configuration_file = "game-data.json"
@@ -41,10 +40,30 @@ dirty_rectangles = []
 
 # Functions
 
-# Credit for this awsome function goes to @cory-kramer on stack overflow.
-#  Source: https://stackoverflow.com/a/24852375
+# Credit for this awsome function goes to Tcll on stack overflow.
+#  Source: https://stackoverflow.com/a/26856771
 def hsv_to_rgb(h, s, v):
-    return tuple(abs(round((i * 255))) for i in colorsys.hsv_to_rgb(h, s, v))
+    if s == 0.0:
+        v *= 255
+        return (v, v, v)
+    i = int(h*6.)  # XXX assume int() truncates!
+    f = (h*6.)-i
+    p, q, t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))
+                                       ), int(255*(v*(1.-s*(1.-f))))
+    v *= 255
+    i %= 6
+    if i == 0:
+        return (v, t, p)
+    if i == 1:
+        return (q, v, p)
+    if i == 2:
+        return (p, v, t)
+    if i == 3:
+        return (p, q, v)
+    if i == 4:
+        return (t, p, v)
+    if i == 5:
+        return (v, p, q)
 
 
 def draw_player(window: pygame.Surface):
@@ -204,10 +223,17 @@ while game_is_running:
         if event.type == pygame.VIDEORESIZE:
             draw_everything(window)
 
+    # Setup #
+
+    # Calculate delta time for animation calculations
+    current_time = time()
+    delta_time = current_time - previous_time
+    previous_time = current_time
+
     # Utility for drawing changing colour things
-    loop_ticker += 0.00001
+    loop_ticker += 0.1 * delta_time
     if (loop_ticker > 255):
-        loop_ticker = 0.0
+        loop_ticker = 0
 
     # If game is won or lost
     if game_lost or game_won:
@@ -233,13 +259,6 @@ while game_is_running:
 
     # Gameplay
     else:
-
-        # Setup #
-
-        # Calculate delta time for physics calculations
-        current_time = time()
-        delta_time = current_time - previous_time
-        previous_time = current_time
 
         keys = pygame.key.get_pressed()
 
