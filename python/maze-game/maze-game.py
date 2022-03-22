@@ -32,6 +32,8 @@ game_won = False
 game_lost = False
 lose_win_message_rendered = False
 win_lose_font = None
+# Used for things that change colour
+loop_ticker = 0
 # Track parts of the screen that have changed
 dirty_rectangles = []
 
@@ -55,7 +57,26 @@ def draw_player(window: pygame.Surface):
         (floor(player_x_position), floor(player_y_position), game["player_width"] + 1, game["player_height"] + 1))
 
 
+def draw_level_effect_objects(window: pygame.Surface, ticker: int):
+    # Called every tick
+    global dirty_rectangles
+    print("E")
+    for object in current_level["layout"]["objects"]:
+
+        if object["type"] == "level-end":
+            colour = game["level_end_marker_colour"]
+            opacity = ticker
+
+            s = pygame.Surface((object["width"], object["height"]))
+            s.fill(colour)
+            s.set_alpha(opacity)
+            window.blit(s, (object["x"], object["y"]))
+            dirty_rectangles.append(
+                (object["x"], object["y"], object["width"], object["height"]))
+
+
 def draw_level(window: pygame.Surface):
+    # Called at level start
     global dirty_rectangles
 
     # Add a black background
@@ -180,6 +201,11 @@ while game_is_running:
         # When the user re-sizes the window, re-draw everything
         if event.type == pygame.VIDEORESIZE:
             draw_everything(window)
+
+    # Utility for drawing changing colour things
+    loop_ticker += 0.05
+    if (loop_ticker > 255):
+        loop_ticker = 0
 
     # If game is won or lost
     if game_lost or game_won:
@@ -371,6 +397,10 @@ while game_is_running:
                             player_x_velocity = 0
 
         # Drawing #
+
+        # Draw animated level objects
+        if (isinstance(loop_ticker, int)) or loop_ticker.is_integer():
+            draw_level_effect_objects(window, loop_ticker)
 
         # Draw the player if they've moved
         if player_x_position - old_player_x_position != 0 or player_y_position-old_player_y_position != 0:
