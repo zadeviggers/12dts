@@ -94,7 +94,8 @@ function onDataLoaded() {
 		gameData,
 		gameSettings,
 		onGameSettingInputChange,
-		createdElements
+		createdElements,
+		"game_"
 	);
 
 	for (const levelNumber in gameData.levels) {
@@ -112,11 +113,12 @@ function addSettingsControls(
 	dataSource,
 	settingsList,
 	onInputChange,
-	createdElementsList
+	createdElementsList,
+	idPrefix
 ) {
 	for (const [key, type] of settingsList) {
 		const inputElement = document.createElement("input");
-		inputElement.setAttribute("id", key);
+		inputElement.setAttribute("id", idPrefix + key);
 		inputElement.setAttribute("name", key);
 		inputElement.setAttribute("value", dataSource[key]);
 		if (type === "string") {
@@ -145,7 +147,7 @@ function addSettingsControls(
 
 		const labelElement = document.createElement("label");
 		labelElement.textContent = key;
-		labelElement.setAttribute("for", key);
+		labelElement.setAttribute("for", idPrefix + key);
 		labelElement.appendChild(inputElement);
 		wrapperElement.appendChild(labelElement);
 
@@ -185,11 +187,13 @@ function loadLevelEditor(levelNumber) {
 		gameData.levels[levelNumber],
 		levelSettings,
 		onLevelSettingInputChange,
-		levelEditorCreatedElements
+		levelEditorCreatedElements,
+		"level_"
 	);
 
 	// Radio buttons
 	const objectTypeRadioWrapper = document.createElement("div");
+	levelEditorCreatedElements.push(objectTypeRadioWrapper);
 
 	const objectTypeTitle = document.createElement("h3");
 	objectTypeTitle.innerText = "Object type to place:";
@@ -200,7 +204,7 @@ function loadLevelEditor(levelNumber) {
 	for (const type of levelObjectTypes) {
 		const radioElement = document.createElement("input");
 		radioElement.setAttribute("type", "radio");
-		radioElement.setAttribute("id", type);
+		radioElement.setAttribute("id", "level_object_type_" + type);
 		radioElement.setAttribute("value", type);
 		radioElement.setAttribute("name", "object-type"); // Radio button group
 		radioElement.addEventListener("change", onObjectTypeChange);
@@ -210,12 +214,22 @@ function loadLevelEditor(levelNumber) {
 		}
 
 		const labelElement = document.createElement("label");
-		labelElement.setAttribute("for", type);
+		labelElement.setAttribute("for", "level_object_type_" + type);
 		labelElement.innerText = type;
 		labelElement.appendChild(radioElement);
 
 		objectTypeRadioWrapper.appendChild(labelElement);
 	}
+
+	const canvas = document.createElement("canvas");
+	canvas.setAttribute("width", gameData.levels[levelNumber].width);
+	canvas.setAttribute("height", gameData.levels[levelNumber].height);
+	canvas.addEventListener("mousedown", () => {});
+	canvas.addEventListener("mouseup", () => {});
+	const ctx = canvas.getContext("2d");
+
+	levelEditorWrapper.appendChild(canvas);
+	levelEditorCreatedElements.push(canvas);
 }
 
 function onObjectTypeChange() {
