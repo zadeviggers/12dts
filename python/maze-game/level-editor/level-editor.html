@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Level editor</title>
+		<style>
+			label {
+				display: block;
+			}
+			label > input {
+				margin-left: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<label for="game-file-input">
+			Load game data file:
+			<input
+				type="file"
+				name="game-file"
+				id="game-file-input"
+				accept=".json,application/json" />
+		</label>
+		<button id="save-button">Save updated game data file</button>
+		<form action="#" id="game-settings-form"></form>
+		<script src="level-editor.js"></script>
+	</body>
+</html>
