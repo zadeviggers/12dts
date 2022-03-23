@@ -134,7 +134,10 @@ function addSettingsControls(
 			);
 		} else if (type === "boolean") {
 			inputElement.setAttribute("type", "checkbox");
-			inputElement.setAttribute("checked", dataSource[key]);
+			console.log(dataSource[key]);
+			if (dataSource[key]) {
+				inputElement.setAttribute("checked", true);
+			}
 		}
 
 		inputElement.addEventListener("change", onInputChange);
