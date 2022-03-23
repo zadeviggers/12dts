@@ -21,6 +21,8 @@ const levelSettings = [
 	["player_start_position_x", "number"],
 	["player_start_position_y", "number"],
 ];
+const levelObjectTypes = ["wall", "level-end"];
+
 // Game data will be stored here when generated
 let gameData = null;
 // Keep track of created elements so that they can be deleted later
@@ -185,6 +187,42 @@ function loadLevelEditor(levelNumber) {
 		onLevelSettingInputChange,
 		levelEditorCreatedElements
 	);
+
+	// Radio buttons
+	const objectTypeRadioWrapper = document.createElement("div");
+
+	const objectTypeTitle = document.createElement("h3");
+	objectTypeTitle.innerText = "Object type to place:";
+	objectTypeRadioWrapper.appendChild(objectTypeTitle);
+
+	levelEditorWrapper.appendChild(objectTypeRadioWrapper);
+
+	for (const type of levelObjectTypes) {
+		const radioElement = document.createElement("input");
+		radioElement.setAttribute("type", "radio");
+		radioElement.setAttribute("id", type);
+		radioElement.setAttribute("value", type);
+		radioElement.setAttribute("name", "object-type"); // Radio button group
+		radioElement.addEventListener("change", onObjectTypeChange);
+		// The default option is walls
+		if (type === "wall") {
+			radioElement.setAttribute("checked", "true");
+		}
+
+		const labelElement = document.createElement("label");
+		labelElement.setAttribute("for", type);
+		labelElement.innerText = type;
+		labelElement.appendChild(radioElement);
+
+		objectTypeRadioWrapper.appendChild(labelElement);
+	}
+}
+
+function onObjectTypeChange() {
+	const currentValue = document.querySelector(
+		'input[name="object-type"]:checked'
+	).value;
+	console.log(currentValue);
 }
 
 function onLevelSettingInputChange(event) {
