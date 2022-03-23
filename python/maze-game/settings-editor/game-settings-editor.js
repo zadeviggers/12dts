@@ -16,15 +16,18 @@ const levelSettings = [
 	["name", "string"],
 	["width", "number"],
 	["height", "number"],
-	["background_colour", "colour"],
+	["window_resizable", "boolean"],
+	["wall_colour", "colour"],
+	["player_start_position_x", "number"],
+	["player_start_position_y", "number"],
 ];
 // Game data will be stored here when generated
 let gameData = null;
 // Keep track of created elements so that they can be deleted later
 let createdElements = [];
 let levelEditorCreatedElements = [];
-// Level that's currently being edited
-let activeLevel = null;
+// The number of the level being edited
+currentLevelNumber = null;
 
 // Get elements
 const saveButton = document.getElementById("save-button");
@@ -84,34 +87,14 @@ activeLevelSelector.addEventListener("change", (event) => {
 function onDataLoaded() {
 	removeAllCreatedElements(createdElements);
 	removeAllCreatedElements(levelEditorCreatedElements);
-	for (const [key, type] of gameSettings) {
-		const inputElement = document.createElement("input");
-		inputElement.setAttribute("id", key);
-		inputElement.setAttribute("name", key);
-		inputElement.setAttribute("value", gameData[key]);
-		if (type === "string") {
-			inputElement.setAttribute("type", "text");
-		} else if (type === "number") {
-			inputElement.setAttribute("type", "number");
-		} else if (type === "colour") {
-			inputElement.setAttribute("type", "color");
-			// Colour input elements use hex values
-			inputElement.setAttribute(
-				"value",
-				rgbToHex(gameData[key][0], gameData[key][1], gameData[key][2])
-			);
-		}
+	addSettingsControls(
+		gameSettingsWrapper,
+		gameData,
+		gameSettings,
+		onGameSettingInputChange,
+		createdElements
+	);
 
-		inputElement.addEventListener("change", onGameSettingInputChange);
-
-		const labelElement = document.createElement("label");
-		labelElement.textContent = key;
-		labelElement.setAttribute("for", key);
-		labelElement.appendChild(inputElement);
-		gameSettingsWrapper.appendChild(labelElement);
-
-		createdElements.push(inputElement, labelElement);
-	}
 	for (const levelNumber in gameData.levels) {
 		const level = gameData.levels[levelNumber];
 		const levelOptionElement = document.createElement("option");
@@ -121,6 +104,49 @@ function onDataLoaded() {
 		createdElements.push(levelOptionElement);
 	}
 	loadLevelEditor(0);
+}
+function addSettingsControls(
+	wrapperElement,
+	dataSource,
+	settingsList,
+	onInputChange,
+	createdElementsList
+) {
+	for (const [key, type] of settingsList) {
+		const inputElement = document.createElement("input");
+		inputElement.setAttribute("id", key);
+		inputElement.setAttribute("name", key);
+		inputElement.setAttribute("value", dataSource[key]);
+		if (type === "string") {
+			inputElement.setAttribute("type", "text");
+		} else if (type === "number") {
+			inputElement.setAttribute("type", "number");
+		} else if (type === "colour") {
+			inputElement.setAttribute("type", "color");
+			// Colour input elements use hex values
+			inputElement.setAttribute(
+				"value",
+				rgbToHex(
+					dataSource[key][0],
+					dataSource[key][1],
+					dataSource[key][2]
+				)
+			);
+		} else if (type === "boolean") {
+			inputElement.setAttribute("type", "checkbox");
+			inputElement.setAttribute("checked", dataSource[key]);
+		}
+
+		inputElement.addEventListener("change", onInputChange);
+
+		const labelElement = document.createElement("label");
+		labelElement.textContent = key;
+		labelElement.setAttribute("for", key);
+		labelElement.appendChild(inputElement);
+		wrapperElement.appendChild(labelElement);
+
+		createdElementsList.push(inputElement, labelElement);
+	}
 }
 
 function removeAllCreatedElements(toRemove) {
@@ -138,17 +164,41 @@ function onGameSettingInputChange(event) {
 		gameData[element.id] = Number(element.value);
 	} else if (type === "color") {
 		gameData[element.id] = hexToRgb(element.value);
+	} else if (type === "boolean") {
+		gameData[element.id] = element.checked;
 	}
 }
 
 function loadLevelEditor(levelNumber) {
-	activeLevel = gameData.levels[levelNumber];
+	currentLevelNumber = levelNumber;
 	removeAllCreatedElements(levelEditorCreatedElements);
 	const title = document.createElement("h2");
-	title.innerText = `Level #${levelNumber} ("${activeLevel.name}")`;
+	title.innerText = `Level #${levelNumber} ("${gameData.levels[levelNumber].name}")`;
 	levelEditorWrapper.appendChild(title);
 	levelEditorCreatedElements.push(title);
-	console.log(activeLevel);
+	addSettingsControls(
+		levelEditorWrapper,
+		gameData.levels[levelNumber],
+		levelSettings,
+		onLevelSettingInputChange,
+		levelEditorCreatedElements
+	);
+}
+
+function onLevelSettingInputChange(event) {
+	const element = event.target;
+	const type = element.getAttribute("type");
+	if (type === "text") {
+		gameData.levels[currentLevelNumber][element.id] = element.value;
+	} else if (type === "number") {
+		gameData.levels[currentLevelNumber][element.id] = Number(element.value);
+	} else if (type === "color") {
+		gameData.levels[currentLevelNumber][element.id] = hexToRgb(
+			element.value
+		);
+	} else if (type === "boolean") {
+		gameData.levels[currentLevelNumber][element.id] = element.checked;
+	}
 }
 
 // These colour functions are modifed from this answer: https://stackoverflow.com/a/5624139

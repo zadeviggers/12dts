@@ -173,9 +173,9 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Reset player position
         # "player_start_position": [0, 0],
-        if "player_start_position" in current_level:
+        if "player_start_position_x" in current_level and "player_start_position_y" in current_level:
             reset_player_position(
-                window, current_level["player_start_position"][0], current_level["player_start_position"][1])
+                window, current_level["player_start_position_x"], current_level["player_start_position_y"])
         else:
             reset_player_position(window, None, None)
 
