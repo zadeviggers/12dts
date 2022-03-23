@@ -12,15 +12,32 @@ const gameSettings = [
 	["player_walk_speed", "number"],
 	["player_max_speed", "number"],
 ];
+const levelSettings = [
+	["title", "string"],
+	["width", "number"],
+	["height", "number"],
+	["background_colour", "colour"],
+	["player_colour", "colour"],
+	["drag", "number"],
+	["player_height", "number"],
+	["player_width", "number"],
+	["player_walk_speed", "number"],
+	["player_max_speed", "number"],
+];
 // Game data will be stored here when generated
 let gameData = null;
 // Keep track of created elements so that they can be deleted later
 let createdElements = [];
+let levelEditorCreatedElements = [];
+// Level that's currently being edited
+let activeLevel = null;
 
 // Get elements
 const saveButton = document.getElementById("save-button");
-const gameSettingsForm = document.getElementById("game-settings-form");
 const gameFileInput = document.getElementById("game-file-input");
+const gameSettingsWrapper = document.getElementById("game-settings-wrapper");
+const activeLevelSelector = document.getElementById("active-level-selector");
+const levelEditorWrapper = document.getElementById("level-editor-wrapper");
 
 // Event listeners
 saveButton.addEventListener("click", (event) => {
@@ -46,22 +63,33 @@ gameFileInput.addEventListener("change", (event) => {
 	fileReader.addEventListener("load", () => {
 		try {
 			gameData = JSON.parse(fileReader.result);
+		} catch (error) {
+			console.error(error);
+			alert("Error parsing file: " + error);
+		}
+		try {
 			onDataLoaded();
 		} catch (error) {
-			alert("Error parsing file: " + error);
+			console.error(error);
+			alert("Error initliazing editor: " + error);
 		}
 	});
 
 	fileReader.addEventListener("error", () => {
+		console.error(fileReader.error);
 		alert("Error decoding file: " + fileReader.error);
 	});
 
 	fileReader.readAsText(file);
 });
+activeLevelSelector.addEventListener("change", (event) => {
+	loadLevelEditor(Number(event.target.value));
+});
 
 // Functions
 function onDataLoaded() {
-	removeAllCreatedElements();
+	removeAllCreatedElements(createdElements);
+	removeAllCreatedElements(levelEditorCreatedElements);
 	for (const [key, type] of gameSettings) {
 		const inputElement = document.createElement("input");
 		inputElement.setAttribute("id", key);
@@ -86,14 +114,23 @@ function onDataLoaded() {
 		labelElement.textContent = key;
 		labelElement.setAttribute("for", key);
 		labelElement.appendChild(inputElement);
-		gameSettingsForm.appendChild(labelElement);
+		gameSettingsWrapper.appendChild(labelElement);
 
 		createdElements.push(inputElement, labelElement);
 	}
+	for (const levelNumber in gameData.levels) {
+		const level = gameData.levels[levelNumber];
+		const levelOptionElement = document.createElement("option");
+		levelOptionElement.setAttribute("value", levelNumber);
+		levelOptionElement.innerText = `${levelNumber} ("${level.name}")`;
+		activeLevelSelector.appendChild(levelOptionElement);
+		createdElements.push(levelOptionElement);
+	}
+	loadLevelEditor(0);
 }
 
-function removeAllCreatedElements() {
-	for (const element of createdElements) {
+function removeAllCreatedElements(toRemove) {
+	for (const element of toRemove) {
 		element.remove();
 	}
 }
@@ -110,7 +147,17 @@ function onGameSettingInputChange(event) {
 	}
 }
 
-// These functiuons are from this answer: https://stackoverflow.com/a/5624139
+function loadLevelEditor(levelNumber) {
+	activeLevel = gameData.levels[levelNumber];
+	removeAllCreatedElements(levelEditorCreatedElements);
+	const title = document.createElement("h2");
+	title.innerText = `Level #${levelNumber} ("${activeLevel.name}")`;
+	levelEditorWrapper.appendChild(title);
+	levelEditorCreatedElements.push(title);
+	console.log(activeLevel);
+}
+
+// These colour functions are modifed from this answer: https://stackoverflow.com/a/5624139
 function rgbToHex(r, g, b) {
 	function componentToHex(c) {
 		const hex = c.toString(16);

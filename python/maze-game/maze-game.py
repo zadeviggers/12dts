@@ -27,7 +27,7 @@ old_player_y_position = 0
 game_is_running = True
 previous_time = time()
 current_level = None
-current_level_number = 1
+current_level_number = 0
 game_won = False
 game_lost = False
 lose_win_message_rendered = False
@@ -85,7 +85,7 @@ def draw_player(window: pygame.Surface):
 def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
     # Called every tick
     global dirty_rectangles
-    for object in current_level["layout"]["objects"]:
+    for object in current_level["objects"]:
         if object["type"] == "level-end":
             # Draw changing-colour square with border to make it stand out
             colour = hsv_to_rgb(loop_ticker, 0.5, 0.9)
@@ -106,8 +106,8 @@ def draw_level(window: pygame.Surface):
     window.fill(game["background_colour"])
 
     # Draw objects
-    for object in current_level["layout"]["objects"]:
-        colour = current_level["layout"]["wall_colour"]
+    for object in current_level["objects"]:
+        colour = current_level["wall_colour"]
         pygame.draw.rect(window, colour,
                          (object["x"], object["y"], object["width"], object["height"]))
 
@@ -353,7 +353,7 @@ while game_is_running:
         # Also their collision detection didn't tell my what side the collision
         # was on so I would have had to create fake 1-pizel-wide rectandles for each side
         # and test all of them. This just works.
-        for object in current_level["layout"]["objects"]:
+        for object in current_level["objects"]:
 
             # If the player could be coliding with the object on the X axis...
             if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:

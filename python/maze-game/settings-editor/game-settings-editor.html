@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Level editor</title>
+		<title>Game settings editor</title>
 		<style>
 			label {
 				display: block;
@@ -14,6 +14,7 @@
 		</style>
 	</head>
 	<body>
+		<h1>Game settings editor</h1>
 		<label for="game-file-input">
 			Load game data file:
 			<input
@@ -23,7 +24,16 @@
 				accept=".json,application/json" />
 		</label>
 		<button id="save-button">Save updated game data file</button>
-		<form action="#" id="game-settings-form"></form>
-		<script src="level-editor.js"></script>
+		<section id="game-settings-wrapper"></section>
+		<section id="level-editor-wrapper">
+			<label for="active-level-selector">
+				Select a level to edit:
+				<select
+					name="active-level"
+					id="active-level-selector"
+					value="0"></select
+			></label>
+		</section>
+		<script src="game-settings-editor.js"></script>
 	</body>
 </html>

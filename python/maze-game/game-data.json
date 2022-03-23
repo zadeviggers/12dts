@@ -18,130 +18,126 @@
 				"height": 200,
 				"resizable": true
 			},
-			"layout": {
-				"wall_colour": [200, 255, 200],
-				"objects": [
-					{
-						"type": "wall",
-						"x": 80,
-						"y": 20,
-						"width": 10,
-						"height": 180
-					},
-					{
-						"type": "wall",
-						"x": 90,
-						"y": 20,
-						"width": 30,
-						"height": 10
-					},
-					{
-						"type": "wall",
-						"x": 110,
-						"y": 20,
-						"width": 10,
-						"height": 160
-					},
-					{
-						"type": "wall",
-						"x": 140,
-						"y": 0,
-						"width": 10,
-						"height": 200
-					},
-					{
-						"type": "wall",
-						"x": 50,
-						"y": 0,
-						"width": 10,
-						"height": 180
-					},
-					{
-						"type": "level-end",
-						"x": 10,
-						"y": 10,
-						"width": 20,
-						"height": 20
-					}
-				]
-			}
+			"wall_colour": [200, 255, 200],
+			"objects": [
+				{
+					"type": "wall",
+					"x": 80,
+					"y": 20,
+					"width": 10,
+					"height": 180
+				},
+				{
+					"type": "wall",
+					"x": 90,
+					"y": 20,
+					"width": 30,
+					"height": 10
+				},
+				{
+					"type": "wall",
+					"x": 110,
+					"y": 20,
+					"width": 10,
+					"height": 160
+				},
+				{
+					"type": "wall",
+					"x": 140,
+					"y": 0,
+					"width": 10,
+					"height": 200
+				},
+				{
+					"type": "wall",
+					"x": 50,
+					"y": 0,
+					"width": 10,
+					"height": 180
+				},
+				{
+					"type": "level-end",
+					"x": 10,
+					"y": 10,
+					"width": 20,
+					"height": 20
+				}
+			]
 		},
 		{
 			"name": "Level 2",
 			"player_start_position": [590, 0],
+			"wall_colour": [255, 200, 255],
 			"window": {
 				"width": 600,
 				"height": 200,
 				"resizable": false
 			},
-			"layout": {
-				"wall_colour": [255, 200, 255],
-				"objects": [
-					{
-						"type": "wall",
-						"x": 20,
-						"y": 0,
-						"width": 5,
-						"height": 20
-					},
-					{
-						"type": "wall",
-						"x": 20,
-						"y": 20,
-						"width": 560,
-						"height": 10
-					},
-					{
-						"type": "wall",
-						"x": 570,
-						"y": 50,
-						"width": 10,
-						"height": 130
-					},
-					{
-						"type": "wall",
-						"x": 530,
-						"y": 30,
-						"width": 10,
-						"height": 100
-					},
-					{
-						"type": "wall",
-						"x": 530,
-						"y": 150,
-						"width": 10,
-						"height": 30
-					},
-					{
-						"type": "wall",
-						"x": 470,
-						"y": 170,
-						"width": 100,
-						"height": 10
-					},
-					{
-						"type": "wall",
-						"x": 440,
-						"y": 100,
-						"width": 10,
-						"height": 130
-					},
-					{
-						"type": "wall",
-						"x": 470,
-						"y": 80,
-						"width": 10,
-						"height": 130
-					},
-					{
-						"type": "level-end",
-						"x": 0,
-						"y": 0,
-						"width": 20,
-						"height": 20
-					}
-				]
-			}
+			"objects": [
+				{
+					"type": "wall",
+					"x": 20,
+					"y": 0,
+					"width": 5,
+					"height": 20
+				},
+				{
+					"type": "wall",
+					"x": 20,
+					"y": 20,
+					"width": 560,
+					"height": 10
+				},
+				{
+					"type": "wall",
+					"x": 570,
+					"y": 50,
+					"width": 10,
+					"height": 130
+				},
+				{
+					"type": "wall",
+					"x": 530,
+					"y": 30,
+					"width": 10,
+					"height": 100
+				},
+				{
+					"type": "wall",
+					"x": 530,
+					"y": 150,
+					"width": 10,
+					"height": 30
+				},
+				{
+					"type": "wall",
+					"x": 470,
+					"y": 170,
+					"width": 100,
+					"height": 10
+				},
+				{
+					"type": "wall",
+					"x": 440,
+					"y": 100,
+					"width": 10,
+					"height": 130
+				},
+				{
+					"type": "wall",
+					"x": 470,
+					"y": 80,
+					"width": 10,
+					"height": 130
+				},
+				{
+					"type": "level-end",
+					"x": 0,
+					"y": 0,
+					"width": 20,
+					"height": 20
+				}
+			]
 		}
 	]
 }
