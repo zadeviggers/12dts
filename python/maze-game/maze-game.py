@@ -157,12 +157,12 @@ def load_level(window: pygame.Surface, level_number: int):
         # Update current level variable
         current_level = levels[level_number]
         flags = 0
-        if current_level["window"]["resizable"]:
+        if current_level["window_resizable"]:
             flags |= pygame.RESIZABLE
 
         # Update window size
         pygame.display.set_mode(
-            (current_level["window"]["width"], current_level["window"]["height"]), flags=flags)
+            (current_level["width"], current_level["height"]), flags=flags)
 
         # Update window title
         pygame.display.set_caption(

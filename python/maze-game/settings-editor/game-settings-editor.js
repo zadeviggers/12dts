@@ -13,16 +13,10 @@ const gameSettings = [
 	["player_max_speed", "number"],
 ];
 const levelSettings = [
-	["title", "string"],
+	["name", "string"],
 	["width", "number"],
 	["height", "number"],
 	["background_colour", "colour"],
-	["player_colour", "colour"],
-	["drag", "number"],
-	["player_height", "number"],
-	["player_width", "number"],
-	["player_walk_speed", "number"],
-	["player_max_speed", "number"],
 ];
 // Game data will be stored here when generated
 let gameData = null;
