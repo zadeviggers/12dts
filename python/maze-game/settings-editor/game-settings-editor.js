@@ -31,8 +31,18 @@ let levelEditorCreatedElements = [];
 // The number of the level being edited
 currentLevelNumber = null;
 // Level editor
+let currentObjectType = "wall";
 let canvas;
 let ctx;
+let canvas_overlay;
+let ctx_overlay;
+let canvasIsMouseDown = false;
+let startX;
+let startY;
+let prevStartX = 0;
+let prevStartY = 0;
+let prevWidth = 0;
+let prevHeight = 0;
 
 // Get elements
 const saveButton = document.getElementById("save-button");
@@ -224,22 +234,79 @@ function loadLevelEditor(levelNumber) {
 		objectTypeRadioWrapper.appendChild(labelElement);
 	}
 
+	// Drawing system modifed from https://stackoverflow.com/a/65376701
+
+	const canvasWrapper = document.createElement("div");
+	canvasWrapper.setAttribute("id", "canvas-wrapper");
+	levelEditorWrapper.appendChild(canvasWrapper);
+	levelEditorCreatedElements.push(canvasWrapper);
+
 	canvas = document.createElement("canvas");
 	canvas.setAttribute("width", gameData.levels[levelNumber].width);
 	canvas.setAttribute("height", gameData.levels[levelNumber].height);
-	canvas.addEventListener("mousedown", () => {});
-	canvas.addEventListener("mouseup", () => {});
 	ctx = canvas.getContext("2d");
 
-	levelEditorWrapper.appendChild(canvas);
-	levelEditorCreatedElements.push(canvas);
+	canvas_overlay = document.createElement("canvas");
+	canvas_overlay.setAttribute("width", gameData.levels[levelNumber].width);
+	canvas_overlay.setAttribute("height", gameData.levels[levelNumber].height);
+	ctx_overlay = canvas_overlay.getContext("2d");
+
+	ctx.strokeStyle = "blue";
+	ctx.lineWidth = 1;
+	ctx_overlay.strokeStyle = "blue";
+	ctx_overlay.lineWidth = 1;
+
+	// Need normal canvas to be on top so that it gets mouse events
+	canvasWrapper.appendChild(canvas_overlay);
+	canvasWrapper.appendChild(canvas);
+
+	canvas.addEventListener("mousedown", (event) => {
+		console.log(event);
+		canvasIsMouseDown = true;
+	});
+	canvas.addEventListener("mouseup", (event) => {
+		canvasIsMouseDown = false;
+
+		// Stop drawing rect
+		ctx_overlay.strokeRect(prevStartX, prevStartY, prevWidth, prevHeight);
+	});
+	canvas.addEventListener("mouseout", (event) => {
+		canvasIsMouseDown = false;
+	});
+	canvas.addEventListener("mousemove", (event) => {
+		if (!canvasIsMouseDown) return;
+
+		// get the current mouse position
+		mouseX = parseInt(event.clientX - canvas.offsetLeft);
+		mouseY = parseInt(event.clientY - canvas.offsetTop);
+
+		// Put your mousemove stuff here
+
+		// calculate the rectangle width/height based
+		// on starting vs current mouse position
+		const width = mouseX - startX;
+		const height = mouseY - startY;
+
+		// clear the canvas
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		// draw a new rect from the start position
+		// to the current mouse position
+		ctx.strokeRect(startX, startY, width, height);
+
+		prevStartX = startX;
+		prevStartY = startY;
+
+		prevWidth = width;
+		prevHeight = height;
+	});
 }
 
 function onObjectTypeChange() {
 	const currentValue = document.querySelector(
 		'input[name="object-type"]:checked'
 	).value;
-	console.log(currentValue);
+	currentObjectType = currentValue;
 }
 
 function onLevelSettingInputChange(event) {
@@ -259,8 +326,10 @@ function onLevelSettingInputChange(event) {
 	}
 	if (id === "level_width" && canvas) {
 		canvas.setAttribute("width", event.target.value);
+		canvas_overlay.setAttribute("width", event.target.value);
 	} else if (id === "level_height" && canvas) {
 		canvas.setAttribute("height", event.target.value);
+		canvas_overlay.setAttribute("height", event.target.value);
 	}
 }
 
