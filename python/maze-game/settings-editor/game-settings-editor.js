@@ -30,6 +30,9 @@ let createdElements = [];
 let levelEditorCreatedElements = [];
 // The number of the level being edited
 currentLevelNumber = null;
+// Level editor
+let canvas;
+let ctx;
 
 // Get elements
 const saveButton = document.getElementById("save-button");
@@ -221,12 +224,12 @@ function loadLevelEditor(levelNumber) {
 		objectTypeRadioWrapper.appendChild(labelElement);
 	}
 
-	const canvas = document.createElement("canvas");
+	canvas = document.createElement("canvas");
 	canvas.setAttribute("width", gameData.levels[levelNumber].width);
 	canvas.setAttribute("height", gameData.levels[levelNumber].height);
 	canvas.addEventListener("mousedown", () => {});
 	canvas.addEventListener("mouseup", () => {});
-	const ctx = canvas.getContext("2d");
+	ctx = canvas.getContext("2d");
 
 	levelEditorWrapper.appendChild(canvas);
 	levelEditorCreatedElements.push(canvas);
@@ -242,6 +245,7 @@ function onObjectTypeChange() {
 function onLevelSettingInputChange(event) {
 	const element = event.target;
 	const type = element.getAttribute("type");
+	const id = element.getAttribute("id");
 	if (type === "text") {
 		gameData.levels[currentLevelNumber][element.id] = element.value;
 	} else if (type === "number") {
@@ -252,6 +256,11 @@ function onLevelSettingInputChange(event) {
 		);
 	} else if (type === "boolean") {
 		gameData.levels[currentLevelNumber][element.id] = element.checked;
+	}
+	if (id === "level_width" && canvas) {
+		canvas.setAttribute("width", event.target.value);
+	} else if (id === "level_height" && canvas) {
+		canvas.setAttribute("height", event.target.value);
 	}
 }
 
