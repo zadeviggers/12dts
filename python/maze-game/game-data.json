@@ -148,7 +148,7 @@
 				{
 					"type": "collectable",
 					"variant": "speed",
-					"bonus": 0.05,
+					"bonus": 0.02,
 					"x": 30,
 					"y": 100,
 					"width": 20,
