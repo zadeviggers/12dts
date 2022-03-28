@@ -18,12 +18,18 @@ with open(os.path.join(sys.path[0], configuration_file)) as f:
 
 
 # Variables
+# Player positioning
 player_x_velocity = 0
 player_y_velocity = 0
 player_x_position = 0
 player_y_position = 0
 old_player_x_position = 0
 old_player_y_position = 0
+
+# Player bonuses
+player_speed_multiplier = 1
+
+# Game logic
 game_is_running = True
 previous_time = time()
 current_level = None
@@ -32,6 +38,7 @@ game_won = False
 game_lost = False
 lose_win_message_rendered = False
 win_lose_font = None
+
 # Used for things that change colour
 loop_ticker = 0.0
 # Track parts of the screen that have changed
@@ -90,10 +97,36 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
             # Draw changing-colour square with border to make it stand out
             colour = hsv_to_rgb(loop_ticker, 0.5, 0.9)
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
+            # Draw border
             pygame.draw.rect(
                 window,  border_colour, (object["x"], object["y"], object["width"], object["height"]))
+            
+            # Draw contents
             pygame.draw.rect(
                 window, colour, (object["x"]+3, object["y"]+3, object["width"] - 6, object["height"] - 6))
+            dirty_rectangles.append(
+                (object["x"], object["y"], object["width"], object["height"]))
+      
+        if object["type"] == "collectable":
+            # Draw changing-colour square with border to make it stand out
+            colour = current_level["wall_colour"]
+            if object["variant"] == "speed":
+                colour = game["speed_powerup_colour"]
+            
+            border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
+            # Draw border
+            pygame.draw.rect(
+                window,  border_colour, (object["x"], object["y"], object["width"], object["height"]))
+            
+            # Draw hole
+            pygame.draw.rect(
+                window, game["background_colour"], (object["x"]+3, object["y"]+3, object["width"] - 6, object["height"] - 6))
+            
+
+            # Draw contents
+            pygame.draw.rect(
+                window, colour, (object["x"] + 8, object["y"] + 8, object["width"] - 16, object["height"] - 16))
+            
             dirty_rectangles.append(
                 (object["x"], object["y"], object["width"], object["height"]))
 
@@ -184,6 +217,7 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
     # Handle collisions
     global current_level_number
     global current_level
+    global player_speed_multiplier
 
     # walls just colide
     if object["type"] == "wall":
@@ -194,6 +228,25 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         current_level_number += 1
         load_level(window, current_level_number)
         return False
+    
+    # Collectabe objects don't collide and add bonuses
+    if object["type"] == "collectable":
+        if object["variant"] == "speed":
+            # Add speed bonus
+            player_speed_multiplier += object["bonus"]
+        # Destory collectible now that it's been used
+
+        # Remove object from list of objects
+        current_level["objects"].remove(object)
+        
+        # Redraw area where box was
+        pygame.draw.rect(window, game["background_colour"], (object["x"], object["y"], object["width"], object["height"]))
+        dirty_rectangles.append((object["x"], object["y"], object["width"], object["height"]))
+        
+        return False
+
+    # Return false by default
+    return False
 
 
 # Start pygame
@@ -266,16 +319,16 @@ while game_is_running:
 
         # Movement left
         if keys[pygame.K_LEFT]:
-            player_x_velocity -= game["player_walk_speed"] * delta_time
+            player_x_velocity -= game["player_walk_speed"] * delta_time * player_speed_multiplier
         # Movement right
         if keys[pygame.K_RIGHT]:
-            player_x_velocity += game["player_walk_speed"] * delta_time
+            player_x_velocity += game["player_walk_speed"] * delta_time * player_speed_multiplier
         # Movement up
         if keys[pygame.K_UP]:
-            player_y_velocity -= game["player_walk_speed"] * delta_time
+            player_y_velocity -= game["player_walk_speed"] * delta_time * player_speed_multiplier
         # Movement down
         if keys[pygame.K_DOWN]:
-            player_y_velocity += game["player_walk_speed"] * delta_time
+            player_y_velocity += game["player_walk_speed"] * delta_time * player_speed_multiplier
 
         # Apply drag
         # If moving right
