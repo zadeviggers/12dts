@@ -1,3 +1,5 @@
+from cmath import isinf
+from glob import glob
 from typing import Union
 import json
 from math import floor
@@ -6,8 +8,9 @@ import sys
 from time import time
 import pygame
 
-# Constant
+# Constants
 configuration_file = "game-data.json"
+gui_height = 12
 
 # Load game settings from config file
 game = None
@@ -37,17 +40,26 @@ current_level_number = 0
 game_won = False
 game_lost = False
 lose_win_message_rendered = False
-win_lose_font = None
+
+# Fonts - these can't be inilaized until pygame is loaded
+title_font = None
+gui_font = None
 
 # Used for things that change colour
 loop_ticker = 0.0
+
 # Track parts of the screen that have changed
 dirty_rectangles = []
 
+# Game timer
+game_running_time = 0
+
+# FPS meter
+clock = None
 
 # Functions
 
-# Credit for this awsome function goes to Tcll on stack overflow.
+# Credit for this awsome function goes to @Tcll on stack overflow.
 #  Source: https://stackoverflow.com/a/26856771
 def hsv_to_rgb(h, s, v):
     if s == 0.0:
@@ -72,6 +84,53 @@ def hsv_to_rgb(h, s, v):
     if i == 5:
         return (v, p, q)
 
+
+def draw_timer(window: pygame.Surface, big: bool = False):
+    global dirty_rectangles
+
+    rounded_time = round(game_running_time)
+    message_to_render = f"Timer: {rounded_time}"
+
+    font = gui_font
+    if big:
+        font = title_font
+
+    text_position = pygame.Rect(window.get_width() - 60, 0, 60, gui_height)
+
+    # Render text
+    text = font.render(message_to_render, True, game["gui_text_colour"])
+
+    # Draw black background for text
+    pygame.draw.rect(window, game["background_colour"], text_position)
+
+    # Paste text onto screen
+    window.blit(text, text_position)
+    
+     # Re-draw screen
+    dirty_rectangles.append(text_position)
+
+def draw_fps(window: pygame.Surface):
+    fps = clock.get_fps()
+    if not isinf(fps):
+        fps = round(fps)
+    message_to_render = f"FPS: {fps}"
+
+    text_position = pygame.Rect(window.get_width() - 140, 0, 80, gui_height)
+
+    # Render text
+    text = gui_font.render(message_to_render, True, game["gui_text_colour"])
+
+    # Draw black background for text
+    pygame.draw.rect(window, game["background_colour"], text_position)
+
+    # Paste text onto screen
+    window.blit(text, text_position)
+    
+     # Re-draw screen
+    dirty_rectangles.append(text_position)
+
+
+    
 
 def draw_player(window: pygame.Surface):
     global dirty_rectangles
@@ -99,13 +158,13 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
             # Draw border
             pygame.draw.rect(
-                window,  border_colour, (object["x"], object["y"], object["width"], object["height"]))
+                window,  border_colour, (object["x"], object["y"] + gui_height, object["width"], object["height"]))
             
             # Draw contents
             pygame.draw.rect(
-                window, colour, (object["x"]+3, object["y"]+3, object["width"] - 6, object["height"] - 6))
+                window, colour, (object["x"] + 3, object["y"] + gui_height + 3, object["width"] - 6, object["height"] - 6))
             dirty_rectangles.append(
-                (object["x"], object["y"], object["width"], object["height"]))
+                (object["x"], object["y"] + gui_height, object["width"], object["height"]))
       
         if object["type"] == "collectable":
             # Draw changing-colour square with border to make it stand out
@@ -116,19 +175,19 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
             # Draw border
             pygame.draw.rect(
-                window,  border_colour, (object["x"], object["y"], object["width"], object["height"]))
+                window,  border_colour, (object["x"], object["y"] + gui_height, object["width"], object["height"]))
             
             # Draw hole
             pygame.draw.rect(
-                window, game["background_colour"], (object["x"]+3, object["y"]+3, object["width"] - 6, object["height"] - 6))
+                window, game["background_colour"], (object["x"] + 3, object["y"] + gui_height + 3, object["width"] - 6, object["height"] - 6))
             
 
             # Draw contents
             pygame.draw.rect(
-                window, colour, (object["x"] + 8, object["y"] + 8, object["width"] - 16, object["height"] - 16))
+                window, colour, (object["x"] + 8, object["y"]  + gui_height + 8, object["width"] - 16, object["height"] - 16))
             
             dirty_rectangles.append(
-                (object["x"], object["y"], object["width"], object["height"]))
+                (object["x"], object["y"]  + gui_height, object["width"], object["height"]))
 
 
 def draw_level(window: pygame.Surface):
@@ -142,7 +201,7 @@ def draw_level(window: pygame.Surface):
     for object in current_level["objects"]:
         colour = current_level["wall_colour"]
         pygame.draw.rect(window, colour,
-                         (object["x"], object["y"], object["width"], object["height"]))
+                         (object["x"], object["y"] + gui_height, object["width"], object["height"]))
 
     dirty_rectangles.append(
         (0, 0, window.get_width(), window.get_height()))
@@ -182,7 +241,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Update window size
         pygame.display.set_mode(
-            (game["width"], game["height"]))
+            (game["width"], game["height"] + gui_height))
 
         # Update window title
         pygame.display.set_caption("You win!" + " - " + game["title"])
@@ -195,7 +254,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Update window size
         pygame.display.set_mode(
-            (current_level["width"], current_level["height"]), flags=flags)
+            (current_level["width"], current_level["height"] + gui_height), flags=flags)
 
         # Update window title
         pygame.display.set_caption(
@@ -240,8 +299,8 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         current_level["objects"].remove(object)
         
         # Redraw area where box was
-        pygame.draw.rect(window, game["background_colour"], (object["x"], object["y"], object["width"], object["height"]))
-        dirty_rectangles.append((object["x"], object["y"], object["width"], object["height"]))
+        pygame.draw.rect(window, game["background_colour"], (object["x"], object["y"] + gui_height, object["width"], object["height"]))
+        dirty_rectangles.append((object["x"], object["y"] + gui_height, object["width"], object["height"]))
         
         return False
 
@@ -253,7 +312,11 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
 pygame.init()
 
 # Load fonts
-win_lose_font = pygame.font.SysFont(None, 24)
+title_font = pygame.font.SysFont(None, 24, True)
+gui_font = pygame.font.SysFont(None, 18)
+
+# Load clock for fps meter
+clock = pygame.time.Clock()
 
 # Get the window
 window = pygame.display.set_mode((game["width"], game["height"]))
@@ -278,6 +341,9 @@ while game_is_running:
 
     # Setup #
 
+    # Tick pygame clock
+    clock.tick()
+
     # Calculate delta time for animation calculations
     current_time = time()
     delta_time = current_time - previous_time
@@ -287,6 +353,7 @@ while game_is_running:
     loop_ticker += 0.1 * delta_time
     if (loop_ticker > 255):
         loop_ticker = 0
+
 
     # If game is won or lost
     if game_lost or game_won:
@@ -302,7 +369,7 @@ while game_is_running:
             # Draw black background
             window.fill(game["background_colour"])
             # Draw text in center of window
-            text = win_lose_font.render(message, True, colour)
+            text = title_font.render(message, True, colour)
             window.blit(text, ((window.get_width()//2)-(text.get_width()//2),
                         (window.get_height()//2)-(text.get_height()//2)))
 
@@ -312,6 +379,13 @@ while game_is_running:
 
     # Gameplay
     else:
+
+        # Timer
+        game_running_time += delta_time
+        draw_timer(window)
+
+        # FPS meter
+        draw_fps(window)
 
         keys = pygame.key.get_pressed()
 
@@ -396,8 +470,8 @@ while game_is_running:
             player_y_position = window.get_height()-game["player_height"]
             player_y_velocity = 0
         # Top
-        if player_y_position < 0:
-            player_y_position = 0
+        if player_y_position < 0 + gui_height:
+            player_y_position = 0 + gui_height
             player_y_velocity = 0
 
         # Collision with level objects
@@ -415,7 +489,7 @@ while game_is_running:
                 if player_y_velocity > 0:
 
                     # And they're inside the object...
-                    if player_y_position + game["player_height"] > object["y"] and player_y_position + game["player_height"] < object["y"] + object["height"]:
+                    if player_y_position + game["player_height"] > object["y"]  + gui_height and player_y_position + game["player_height"] < object["y"]  + gui_height + object["height"]:
 
                         # Check if hitting the object should stop player movement and do any extra logic
                         stops_movment = on_object_hit(window, object)
@@ -429,7 +503,7 @@ while game_is_running:
                 elif player_y_velocity < 0:
 
                     # And they're inside the object...
-                    if player_y_position < object["y"] + object["height"] and player_y_position > object["y"]:
+                    if player_y_position < object["y"] + object["height"] + gui_height and player_y_position > object["y"] + gui_height:
 
                         # Check if hitting the object should stop player movement and do any extra logic
                         stops_movment = on_object_hit(window, object)
@@ -440,7 +514,7 @@ while game_is_running:
                             player_y_velocity = 0
 
             # If the player could be coliding with the object on the Y axis...
-            if player_y_position + game["player_height"] > object["y"] and player_y_position < object["y"] + object["height"]:
+            if player_y_position + game["player_height"] > object["y"] + gui_height and player_y_position < object["y"] + object["height"] + gui_height:
 
                 # If the player is moving right...
                 if player_x_velocity > 0:
@@ -478,6 +552,8 @@ while game_is_running:
         # Draw the player if they've moved
         if player_x_position - old_player_x_position != 0 or player_y_position-old_player_y_position != 0:
             draw_player(window)
+    
+    
 
     # Render all changes
     pygame.display.update(dirty_rectangles)

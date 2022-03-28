@@ -3,6 +3,7 @@
 	"width": 500,
 	"height": 500,
 	"background_colour": [0, 0, 0],
+	"gui_text_colour": [255, 255, 255],
 	"player_colour": [255, 0, 0],
 	"speed_powerup_colour": [50, 50, 255],
 	"drag": 2,
@@ -47,13 +48,6 @@
 					"y": 20,
 					"width": 10,
 					"height": 160
-				},
-				{
-					"type": "wall",
-					"x": 140,
-					"y": 0,
-					"width": 10,
-					"height": 200
 				},
 				{
 					"type": "wall",
