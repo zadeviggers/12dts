@@ -393,12 +393,15 @@ while game_is_running:
 
         # Handle restarts
         if keys[pygame.K_SPACE]:
+            # Reset variables
             game_lost = False
             game_won = False
             lose_win_message_rendered = False
             game_running_time = 0
-            current_level_number = 0
             player_speed_multiplier = 1
+
+            # Load first level again
+            current_level_number = 0
             load_level(window, current_level_number)
 
     # Gameplay
