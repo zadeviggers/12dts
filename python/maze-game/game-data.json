@@ -7,6 +7,7 @@
 	"gui_text_colour": [255, 255, 255],
 	"player_colour": [255, 0, 0],
 	"speed_powerup_colour": [50, 50, 255],
+	"win_text_colour": [212, 175, 55],
 	"drag": 2,
 	"player_height": 10,
 	"player_width": 10,

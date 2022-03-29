@@ -38,8 +38,7 @@ previous_time = time()
 current_level = None
 current_level_number = 0
 game_won = False
-game_lost = False
-lose_win_message_rendered = False
+win_message_rendered = False
 
 # Fonts - these can't be inilaized until pygame is loaded
 title_font = None
@@ -315,7 +314,7 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
 pygame.init()
 
 # Load fonts
-title_font = pygame.font.SysFont(None, 24, True)
+title_font = pygame.font.SysFont(None, 32, True)
 gui_font = pygame.font.SysFont(None, 18)
 
 # Load clock for fps meter
@@ -362,30 +361,39 @@ while game_is_running:
     keys = pygame.key.get_pressed()
 
     # If game is won or lost
-    if game_lost or game_won:
+    if game_won:
  
         # Render win or lose screen
-        if not lose_win_message_rendered:
-            lose_win_message_rendered = True
+        if not win_message_rendered:
+            win_message_rendered = True
 
             message = "You win!"
-            colour = (212, 175, 55)  # Gold
-            if game_lost:
-                message = "You lose"
-                colour = (255, 0, 0)  # Red
+            colour = game["win_text_colour"]  # Gold
             
-            subititle_message = "Press space to play again"
+            subititle_message = "Press space to play again."
+
+            time_message = f"Your time was {round(game_running_time, 2)} seconds."
+
+            subititle_text_offset = 30
+            time_text_offset = 10
 
             # Draw black background
             window.fill(game["background_colour"])
-            # Draw text in center of window
+
+            # Draw main text in center of window
             main_text = title_font.render(message, True, colour)
             window.blit(main_text, ((window.get_width() // 2) - (main_text.get_width() // 2),
                         (window.get_height() // 2) - (main_text.get_height() // 2)))
             
+            # Draw subtitle
             subititle_text = gui_font.render(subititle_message, True, game["gui_text_colour"])
             window.blit(subititle_text, ((window.get_width() // 2) - (subititle_text.get_width() // 2),
-                        (window.get_height() // 2) - (subititle_text.get_height() // 2) + main_text.get_height() + 5))
+                        (window.get_height() // 2) - (subititle_text.get_height() // 2) + main_text.get_height() + subititle_text_offset))
+
+            # Draw time
+            time_text = gui_font.render(time_message, True, game["gui_text_colour"])
+            window.blit(time_text, ((window.get_width() // 2) - (time_text.get_width() // 2),
+                        (window.get_height() // 2) - (time_text.get_height() // 2) + main_text.get_height() + time_text_offset))
 
             # Re-draw screen
             dirty_rectangles.append(
@@ -394,9 +402,8 @@ while game_is_running:
         # Handle restarts
         if keys[pygame.K_SPACE]:
             # Reset variables
-            game_lost = False
             game_won = False
-            lose_win_message_rendered = False
+            win_message_rendered = False
             game_running_time = 0
             player_speed_multiplier = 1
 
