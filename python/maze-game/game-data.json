@@ -1,5 +1,6 @@
 {
 	"title": "Zade's Maze",
+	"fps_cap": 1000,
 	"width": 500,
 	"height": 500,
 	"background_colour": [0, 0, 0],
@@ -9,7 +10,7 @@
 	"drag": 2,
 	"player_height": 10,
 	"player_width": 10,
-	"player_walk_speed": 2.1,
+	"player_walk_speed": 3.2,
 	"player_max_speed": 3.5,
 	"levels": [
 		{

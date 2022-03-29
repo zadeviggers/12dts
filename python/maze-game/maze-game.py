@@ -281,6 +281,9 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
     # walls just colide
     if object["type"] == "wall":
         return True
+    
+    if object["type"] == "ghost-wall":
+        return False
 
     # Level-end objects don't colide and load the next level
     if object["type"] == "level-end":
@@ -342,7 +345,9 @@ while game_is_running:
     # Setup #
 
     # Tick pygame clock
-    clock.tick()
+    # Capping the fps actually makes the game feel way smoother for some reason
+    # without the cap it's 5000-1000 fps 
+    clock.tick(game["fps_cap"])
 
     # Calculate delta time for animation calculations
     current_time = time()
@@ -365,13 +370,19 @@ while game_is_running:
             if game_lost:
                 message = "You lose"
                 colour = (255, 0, 0)  # Red
+            
+            subititle_message = "Press space to play again"
 
             # Draw black background
             window.fill(game["background_colour"])
             # Draw text in center of window
             text = title_font.render(message, True, colour)
-            window.blit(text, ((window.get_width()//2)-(text.get_width()//2),
-                        (window.get_height()//2)-(text.get_height()//2)))
+            window.blit(text, ((window.get_width() // 2) - (text.get_width() // 2),
+                        (window.get_height() // 2) - (text.get_height() // 2)))
+            
+            subititle_text = gui_font.render(subititle_message, True, game["gui_text_colour"])
+            window.blit(subititle_text, ((window.get_width() // 2) - (subititle_text.get_width() // 2),
+                        (window.get_height() // 2) - (subititle_text.get_height() // 2) + 5))
 
             # Re-draw screen
             dirty_rectangles.append(
@@ -436,17 +447,17 @@ while game_is_running:
                 player_y_velocity = 0
 
         # Clamp velocity
-        if abs(player_x_velocity) > game["player_max_speed"]:
+        if abs(player_x_velocity) > game["player_max_speed"] * player_speed_multiplier:
             if player_x_velocity > 0:
-                player_x_velocity = game["player_max_speed"]
+                player_x_velocity = game["player_max_speed"] * player_speed_multiplier
             elif player_x_velocity < 0:
-                player_x_velocity = game["player_max_speed"] * -1
+                player_x_velocity = game["player_max_speed"] * player_speed_multiplier * -1
 
-        if abs(player_y_velocity) > game["player_max_speed"]:
+        if abs(player_y_velocity) > game["player_max_speed"] * player_speed_multiplier:
             if player_y_velocity > 0:
-                player_y_velocity = game["player_max_speed"]
+                player_y_velocity = game["player_max_speed"] * player_speed_multiplier
             elif player_y_velocity < 0:
-                player_y_velocity = game["player_max_speed"] * -1
+                player_y_velocity = game["player_max_speed"] * player_speed_multiplier * -1
 
         # Apply velocity
         player_x_position += player_x_velocity
