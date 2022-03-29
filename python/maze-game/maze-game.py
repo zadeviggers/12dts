@@ -250,12 +250,12 @@ def load_level(window: pygame.Surface, level_number: int):
         current_level = levels[level_number]
         flags = 0
         if current_level["window_resizable"]:
-            flags |= pygame.RESIZABLE
+            flags |= pygame.RESIZABLE # Binary OR asignment operator
 
         # Update window size
         pygame.display.set_mode(
             (current_level["width"], current_level["height"] + gui_height), flags=flags)
-
+        
         # Update window title
         pygame.display.set_caption(
             current_level["name"] + " - " + game["title"])
@@ -358,10 +358,13 @@ while game_is_running:
     loop_ticker += 0.1 * delta_time
     if (loop_ticker > 255):
         loop_ticker = 0
-
+    
+    keys = pygame.key.get_pressed()
 
     # If game is won or lost
     if game_lost or game_won:
+ 
+        # Render win or lose screen
         if not lose_win_message_rendered:
             lose_win_message_rendered = True
 
@@ -376,17 +379,27 @@ while game_is_running:
             # Draw black background
             window.fill(game["background_colour"])
             # Draw text in center of window
-            text = title_font.render(message, True, colour)
-            window.blit(text, ((window.get_width() // 2) - (text.get_width() // 2),
-                        (window.get_height() // 2) - (text.get_height() // 2)))
+            main_text = title_font.render(message, True, colour)
+            window.blit(main_text, ((window.get_width() // 2) - (main_text.get_width() // 2),
+                        (window.get_height() // 2) - (main_text.get_height() // 2)))
             
             subititle_text = gui_font.render(subititle_message, True, game["gui_text_colour"])
             window.blit(subititle_text, ((window.get_width() // 2) - (subititle_text.get_width() // 2),
-                        (window.get_height() // 2) - (subititle_text.get_height() // 2) + 5))
+                        (window.get_height() // 2) - (subititle_text.get_height() // 2) + main_text.get_height() + 5))
 
             # Re-draw screen
             dirty_rectangles.append(
                 (0, 0, window.get_width(), window.get_height()))
+
+        # Handle restarts
+        if keys[pygame.K_SPACE]:
+            game_lost = False
+            game_won = False
+            lose_win_message_rendered = False
+            game_running_time = 0
+            current_level_number = 0
+            player_speed_multiplier = 1
+            load_level(window, current_level_number)
 
     # Gameplay
     else:
@@ -396,9 +409,7 @@ while game_is_running:
         draw_timer(window)
 
         # FPS meter
-        draw_fps(window)
-
-        keys = pygame.key.get_pressed()
+        draw_fps(window)        
 
         # Player movement #
 

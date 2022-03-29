@@ -15,8 +15,8 @@
 	"levels": [
 		{
 			"name": "Level 1",
-			"player_start_position_x": 90,
-			"player_start_position_y": 90,
+			"player_start_position_x": 95,
+			"player_start_position_y": 50,
 			"width": 150,
 			"height": 200,
 			"window_resizable": true,
@@ -69,7 +69,7 @@
 		{
 			"name": "Level 2",
 			"player_start_position_x": 590,
-			"player_start_position_y": 0,
+			"player_start_position_y": 190,
 			"wall_colour": [255, 200, 255],
 
 			"width": 600,
