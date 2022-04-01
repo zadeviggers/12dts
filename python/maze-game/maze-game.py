@@ -259,17 +259,17 @@ def load_level(window: pygame.Surface, level_number: int):
         pygame.display.set_caption(
             current_level["name"] + " - " + game["title"])
 
-        # Draw level
-        draw_level(window)
-
         # Reset player position
+        # Need to do this before drawing the level otherwise a hole might appear in one of the walls
         # "player_start_position": [0, 0],
         if "player_start_position_x" in current_level and "player_start_position_y" in current_level:
             reset_player_position(
                 window, current_level["player_start_position_x"], current_level["player_start_position_y"])
         else:
             reset_player_position(window, None, None)
-
+        
+        # Draw level
+        draw_level(window)
 
 def on_object_hit(window: pygame.Surface, object) -> bool:
     # Handle collisions
@@ -298,7 +298,6 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         # Destory collectible now that it's been used
 
         # Remove object from list of objects
-        print(current_level["objects"],object)
         current_level["objects"].remove(object)
         
         # Redraw area where box was
