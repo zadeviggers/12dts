@@ -11,6 +11,13 @@ import pygame
 # Constants
 configuration_file = "game-data.json"
 gui_height = 12
+keymap = {
+    "restart": [pygame.K_SPACE, pygame.K_r],
+    "up": [pygame.K_UP, pygame.K_w],
+    "down": [pygame.K_DOWN, pygame.K_s],
+    "left": [pygame.K_LEFT, pygame.K_a],
+    "right": [pygame.K_RIGHT, pygame.K_d],
+}
 
 # Load game settings from config file
 game = None
@@ -400,7 +407,8 @@ while game_is_running:
                 (0, 0, window.get_width(), window.get_height()))
 
         # Handle restarts
-        if keys[pygame.K_SPACE]:
+        # Check if any of the restart keys are pressed
+        if any(keys[key] for key in keymap["restart"]):
             # Reset variables
             game_won = False
             win_message_rendered = False
@@ -424,16 +432,23 @@ while game_is_running:
         # Player movement #
 
         # Movement left
-        if keys[pygame.K_LEFT]:
+        # Check if any of the left keys are pressed
+        if any(keys[key] for key in keymap["left"]):
             player_x_velocity -= game["player_walk_speed"] * delta_time * player_speed_multiplier
+        
         # Movement right
-        if keys[pygame.K_RIGHT]:
+        # Check if any of the right keys are pressed
+        if any(keys[key] for key in keymap["right"]):
             player_x_velocity += game["player_walk_speed"] * delta_time * player_speed_multiplier
+        
         # Movement up
-        if keys[pygame.K_UP]:
+        # Check if any of the up keys are pressed
+        if any(keys[key] for key in keymap["up"]):
             player_y_velocity -= game["player_walk_speed"] * delta_time * player_speed_multiplier
+        
         # Movement down
-        if keys[pygame.K_DOWN]:
+        # Check if any of the down keys are pressed
+        if any(keys[key] for key in keymap["down"]):
             player_y_velocity += game["player_walk_speed"] * delta_time * player_speed_multiplier
 
         # Apply drag
