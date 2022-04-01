@@ -9,14 +9,15 @@ from time import time
 import pygame
 
 # Constants
-configuration_file = "game-data.json"
-gui_height = 12
+configuration_file = "game-data.json" # Game data
+gui_height = 12 # Height of GUI bar
 keymap = {
+    # Mapping of keys to actions in game
     "restart": [pygame.K_SPACE, pygame.K_r],
-    "up": [pygame.K_UP, pygame.K_w],
-    "down": [pygame.K_DOWN, pygame.K_s],
-    "left": [pygame.K_LEFT, pygame.K_a],
-    "right": [pygame.K_RIGHT, pygame.K_d],
+    "up": [pygame.K_UP, pygame.K_w, pygame.K_KP_8],
+    "down": [pygame.K_DOWN, pygame.K_s, pygame.K_KP_2],
+    "left": [pygame.K_LEFT, pygame.K_a, pygame.K_KP_4],
+    "right": [pygame.K_RIGHT, pygame.K_d, pygame.K_KP_6],
 }
 
 # Load game settings from config file
@@ -101,7 +102,7 @@ def draw_timer(window: pygame.Surface, big: bool = False):
     if big:
         font = title_font
 
-    text_position = pygame.Rect(window.get_width() - 60, 0, 60, gui_height)
+    text_position = pygame.Rect(window.get_width() - 70, 0, 70, gui_height)
 
     # Render text
     text = font.render(message_to_render, True, game["gui_text_colour"])
@@ -121,7 +122,7 @@ def draw_fps(window: pygame.Surface):
         fps = round(fps)
     message_to_render = f"FPS: {fps}"
 
-    text_position = pygame.Rect(window.get_width() - 140, 0, 80, gui_height)
+    text_position = pygame.Rect(window.get_width() - 130, 0, 50, gui_height)
 
     # Render text
     text = gui_font.render(message_to_render, True, game["gui_text_colour"])
@@ -135,8 +136,9 @@ def draw_fps(window: pygame.Surface):
      # Re-draw screen
     dirty_rectangles.append(text_position)
 
-
+def draw_multiplier():
     
+    pass
 
 def draw_player(window: pygame.Surface):
     global dirty_rectangles
