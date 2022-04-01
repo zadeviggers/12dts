@@ -298,6 +298,7 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         # Destory collectible now that it's been used
 
         # Remove object from list of objects
+        print(current_level["objects"],object)
         current_level["objects"].remove(object)
         
         # Redraw area where box was
@@ -512,7 +513,8 @@ while game_is_running:
         # Also their collision detection didn't tell my what side the collision
         # was on so I would have had to create fake 1-pizel-wide rectandles for each side
         # and test all of them. This just works.
-        for object in current_level["objects"]:
+        # [:] creates a copy of the list so that modifiying it doesn't cause issues.
+        for object in current_level["objects"][:]:
 
             # If the player could be coliding with the object on the X axis...
             if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
