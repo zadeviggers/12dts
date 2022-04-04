@@ -27,10 +27,15 @@ keymap = {
 # Load game settings from config file
 game = None
 levels = []
-with open(os.path.join(sys.path[0], configuration_file)) as f:
-    game = json.load(f)
-    levels = game["levels"]
 
+def load_game_data():
+    global game
+    global levels
+    with open(os.path.join(sys.path[0], configuration_file)) as f:
+        game = json.load(f)
+        levels = game["levels"]
+
+load_game_data()
 
 # Variables
 # Player positioning
@@ -102,11 +107,20 @@ def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
     # Returns True if there's a collision, False if not
 
     # Rect: (x, y, width, height)
-    left_does_collide = rect1[0] + rect1[2] > rect2[0]
-    right_does_collide = rect1[0] < rect2[0] + rect2[2]
 
-    top_does_collide = (rect1[1] + rect1[3]) > rect2[1]
-    bottom_does_collide = rect1[1] < (rect2[1] + rect2[3])
+    rect1_right = rect1[0] + rect1[2] 
+    rect1_bottom = rect1[1] + rect1[3]
+    rect2_right = rect2[0] + rect2[2]
+    rect2_bottom = rect2[1] + rect2[3]
+
+    # Right side of rect 1 is to the right of rect 2's left side
+    left_does_collide = rect1_right > rect2[0]
+    # Left side of rect 1 is to the left of rect 2's right side
+    right_does_collide = rect1[0] < rect2_right
+    # Bottom side of rect 1 is bellow rect 2's top side
+    top_does_collide = rect1_bottom > rect2[1]
+    # Top side of rect 1 is above rect 2's bottom side
+    bottom_does_collide = rect1[1] < rect2_bottom
 
     if left_does_collide and right_does_collide and top_does_collide and bottom_does_collide:
         print(rect1[1], rect2[1] + rect2[3])
@@ -453,6 +467,9 @@ while game_is_running:
             win_message_rendered = False
             game_running_time = 0
             player_speed_multiplier = 1
+
+            # Relaod game data since some of it gets modified
+            load_game_data()
 
             # Load first level again
             current_level_number = 0
