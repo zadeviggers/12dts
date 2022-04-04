@@ -534,69 +534,79 @@ while game_is_running:
         # and test all of them. This just works.
         # [:] creates a copy of the list so that modifiying it doesn't cause issues.
         for object in current_level["objects"][:]:
+            
+            # Extract sollision solving into functions for solving in correct order
 
-            # If the player could be coliding with the object on the X axis...
-            if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
+            def solve_y_collisions():
+                global player_y_position
+                global player_y_velocity
+                # If the player could be coliding with the object on the X axis...
+                if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
 
-                # If the player is moving down...
-                if player_y_velocity > 0:
+                    # If the player is moving down...
+                    if player_y_velocity > 0:
 
-                    # And they're inside the object...
-                    if player_y_position + game["player_height"] > object["y"]  + game["gui_height"] and player_y_position + game["player_height"] < object["y"]  + game["gui_height"] + object["height"]:
+                        # And they're inside the object...
+                        if player_y_position + game["player_height"] > object["y"]  + game["gui_height"] and player_y_position + game["player_height"] < object["y"]  + game["gui_height"] + object["height"]:
 
-                        # Check if hitting the object should stop player movement and do any extra logic
-                        stops_movment = on_object_hit(window, object)
+                            # Check if hitting the object should stop player movement and do any extra logic
+                            stops_movment = on_object_hit(window, object)
 
-                        if stops_movment:
-                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                            player_y_position = old_player_y_position
-                            player_y_velocity = 0
+                            if stops_movment:
+                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                player_y_position = old_player_y_position
+                                player_y_velocity = 0
 
-                # If the player is moving up...
-                elif player_y_velocity < 0:
+                    # If the player is moving up...
+                    elif player_y_velocity < 0:
 
-                    # And they're inside the object...
-                    if player_y_position < object["y"] + object["height"] + game["gui_height"] and player_y_position > object["y"] + game["gui_height"]:
+                        # And they're inside the object...
+                        if player_y_position < object["y"] + object["height"] + game["gui_height"] and player_y_position > object["y"] + game["gui_height"]:
 
-                        # Check if hitting the object should stop player movement and do any extra logic
-                        stops_movment = on_object_hit(window, object)
+                            # Check if hitting the object should stop player movement and do any extra logic
+                            stops_movment = on_object_hit(window, object)
 
-                        if stops_movment:
-                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                            player_y_position = old_player_y_position
-                            player_y_velocity = 0
+                            if stops_movment:
+                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                player_y_position = old_player_y_position
+                                player_y_velocity = 0
+            
+            def solve_x_collisions():
+                global player_x_position
+                global player_x_velocity
+                # If the player could be coliding with the object on the Y axis...
+                if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position < object["y"] + object["height"] + game["gui_height"]:
 
-            # If the player could be coliding with the object on the Y axis...
-            if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position < object["y"] + object["height"] + game["gui_height"]:
+                    # If the player is moving right...
+                    if player_x_velocity > 0:
 
-                # If the player is moving right...
-                if player_x_velocity > 0:
+                        # And they're inside the object...
+                        if player_x_position + game["player_width"] > object["x"] and player_x_position + game["player_width"] < object["x"] + object["width"]:
 
-                    # And they're inside the object...
-                    if player_x_position + game["player_width"] > object["x"] and player_x_position + game["player_width"] < object["x"] + object["width"]:
+                            # Check if hitting the object should stop player movement and do any extra logic
+                            stops_movment = on_object_hit(window, object)
 
-                        # Check if hitting the object should stop player movement and do any extra logic
-                        stops_movment = on_object_hit(window, object)
+                            if stops_movment:
+                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                player_x_position = old_player_x_position
+                                player_x_velocity = 0
 
-                        if stops_movment:
-                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                            player_x_position = old_player_x_position
-                            player_x_velocity = 0
+                    # If the player is moving left...
+                    elif player_x_velocity < 0:
 
-                # If the player is moving left...
-                elif player_x_velocity < 0:
+                        # And they're inside the object...
+                        if player_x_position < object["x"] + object["width"] and player_x_position > object["x"]:
 
-                    # And they're inside the object...
-                    if player_x_position < object["x"] + object["width"] and player_x_position > object["x"]:
+                            # Check if hitting the object should stop player movement and do any extra logic
+                            stops_movment = on_object_hit(window, object)
 
-                        # Check if hitting the object should stop player movement and do any extra logic
-                        stops_movment = on_object_hit(window, object)
+                            if stops_movment:
+                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                player_x_position = old_player_x_position
+                                player_x_velocity = 0
 
-                        if stops_movment:
-                            # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                            player_x_position = old_player_x_position
-                            player_x_velocity = 0
-                            print(player_x_velocity, player_y_velocity)
+            solve_y_collisions()
+            solve_x_collisions()
 
         # Drawing #
 
