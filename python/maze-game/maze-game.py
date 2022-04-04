@@ -123,7 +123,6 @@ def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
     bottom_does_collide = rect1[1] < rect2_bottom
 
     if left_does_collide and right_does_collide and top_does_collide and bottom_does_collide:
-        print(rect1[1], rect2[1] + rect2[3])
         return True
 
     return False
@@ -615,7 +614,7 @@ while game_is_running:
                             reset_player_y_position = old_player_y_position
 
                             # Check if resetting the y position would extract the player from the object
-                            if simple_do_two_rects_collide(
+                            if not simple_do_two_rects_collide(
                                 (player_x_position, reset_player_y_position,
                                  game["player_width"], game["player_height"]),
                                 object_rect
@@ -639,7 +638,7 @@ while game_is_running:
                             reset_player_y_position = old_player_y_position
 
                             # Check if resetting the y position would extract the player from the object
-                            if simple_do_two_rects_collide(
+                            if not simple_do_two_rects_collide(
                                 (player_x_position, reset_player_y_position,
                                  game["player_width"], game["player_height"]),
                                 object_rect
@@ -667,7 +666,7 @@ while game_is_running:
                             reset_player_x_position = old_player_x_position
 
                             # Check if resetting the X position would extract the player from the object
-                            if simple_do_two_rects_collide(
+                            if not simple_do_two_rects_collide(
                                 (reset_player_x_position, player_y_position,
                                  game["player_width"], game["player_height"]),
                                 object_rect
@@ -690,7 +689,7 @@ while game_is_running:
                             reset_player_x_position = old_player_x_position
 
                             # Check if resetting the X position would extract the player from the object
-                            if simple_do_two_rects_collide(
+                            if not simple_do_two_rects_collide(
                                 (reset_player_x_position, player_y_position,
                                  game["player_width"], game["player_height"]),
                                 object_rect
