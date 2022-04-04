@@ -1,5 +1,4 @@
 from cmath import isinf
-from glob import glob
 from typing import Union
 import json
 from math import floor
@@ -307,7 +306,13 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         # Destory collectible now that it's been used
 
         # Remove object from list of objects
-        current_level["objects"].remove(object)
+        # Wrap this in try/catch because there seems to be a like 1 in 100 chance that
+        #  collecting a pickup crashes the game for some reason and not matter how hard
+        #  I  try, I can't figure out why.
+        try:
+            current_level["objects"].remove(object)
+        except Exception as exception:
+            print(f"The weird thing where it ocasionally crashes when you collect a pickup happened: {exception}")
         
         # Redraw area where box was
         pygame.draw.rect(window, game["background_colour"], (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
@@ -527,7 +532,7 @@ while game_is_running:
         # Why aren't I using pygame's Rect classes and built in clossions detection?
         # I tried. I tried so hard. But nothing worked when using pygame Rects.
         # Also their collision detection didn't tell my what side the collision
-        # was on so I would have had to create fake 1-pizel-wide rectandles for each side
+        # was on so I would have had to create fake 1-pixel-wide rectandles for each side
         # and test all of them. This just works.
         # [:] creates a copy of the list so that modifiying it doesn't cause issues.
         for object in current_level["objects"][:]:
@@ -593,6 +598,7 @@ while game_is_running:
                             # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                             player_x_position = old_player_x_position
                             player_x_velocity = 0
+                            print(player_x_velocity, player_y_velocity)
 
         # Drawing #
 
