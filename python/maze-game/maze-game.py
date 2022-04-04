@@ -306,9 +306,7 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         # Destory collectible now that it's been used
 
         # Remove object from list of objects
-        # Wrap this in try/catch because there seems to be a like 1 in 100 chance that
-        #  collecting a pickup crashes the game for some reason and not matter how hard
-        #  I  try, I can't figure out why.
+        # Wrap this in try/catch because when the player moves into a pickup diagonally the collision detection will call this twice
         try:
             current_level["objects"].remove(object)
         except Exception as exception:
