@@ -10,14 +10,14 @@ import pygame
 
 # Constants
 configuration_file = "game-data.json" # Game data
-gui_height = 12 # Height of GUI bar
 keymap = {
     # Mapping of keys to actions in game
-    "restart": [pygame.K_SPACE, pygame.K_r],
+    "start": [pygame.K_SPACE, pygame.K_r, pygame.K_RETURN, pygame.K_KP_ENTER],
     "up": [pygame.K_UP, pygame.K_w, pygame.K_KP_8],
     "down": [pygame.K_DOWN, pygame.K_s, pygame.K_KP_2],
     "left": [pygame.K_LEFT, pygame.K_a, pygame.K_KP_4],
     "right": [pygame.K_RIGHT, pygame.K_d, pygame.K_KP_6],
+    # "menu": [pygame.K_HOME, pygame.K_ESCAPE, pygame.K_m]
 }
 
 # Load game settings from config file
@@ -102,7 +102,7 @@ def draw_timer(window: pygame.Surface, big: bool = False):
     if big:
         font = title_font
 
-    text_position = pygame.Rect(window.get_width() - 70, 0, 70, gui_height)
+    text_position = pygame.Rect(window.get_width() - 70, 0, 70, game["gui_height"])
 
     # Render text
     text = font.render(message_to_render, True, game["gui_text_colour"])
@@ -122,7 +122,7 @@ def draw_fps(window: pygame.Surface):
         fps = round(fps)
     message_to_render = f"FPS: {fps}"
 
-    text_position = pygame.Rect(window.get_width() - 130, 0, 50, gui_height)
+    text_position = pygame.Rect(window.get_width() - 130, 0, 50, game["gui_height"])
 
     # Render text
     text = gui_font.render(message_to_render, True, game["gui_text_colour"])
@@ -166,13 +166,13 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
             # Draw border
             pygame.draw.rect(
-                window,  border_colour, (object["x"], object["y"] + gui_height, object["width"], object["height"]))
+                window,  border_colour, (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
             
             # Draw contents
             pygame.draw.rect(
-                window, colour, (object["x"] + 3, object["y"] + gui_height + 3, object["width"] - 6, object["height"] - 6))
+                window, colour, (object["x"] + 3, object["y"] + game["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
             dirty_rectangles.append(
-                (object["x"], object["y"] + gui_height, object["width"], object["height"]))
+                (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
       
         if object["type"] == "collectable":
             # Draw changing-colour square with border to make it stand out
@@ -183,19 +183,19 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
             # Draw border
             pygame.draw.rect(
-                window,  border_colour, (object["x"], object["y"] + gui_height, object["width"], object["height"]))
+                window,  border_colour, (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
             
             # Draw hole
             pygame.draw.rect(
-                window, game["background_colour"], (object["x"] + 3, object["y"] + gui_height + 3, object["width"] - 6, object["height"] - 6))
+                window, game["background_colour"], (object["x"] + 3, object["y"] + game["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
             
 
             # Draw contents
             pygame.draw.rect(
-                window, colour, (object["x"] + 8, object["y"]  + gui_height + 8, object["width"] - 16, object["height"] - 16))
+                window, colour, (object["x"] + 8, object["y"]  + game["gui_height"] + 8, object["width"] - 16, object["height"] - 16))
             
             dirty_rectangles.append(
-                (object["x"], object["y"]  + gui_height, object["width"], object["height"]))
+                (object["x"], object["y"]  + game["gui_height"], object["width"], object["height"]))
 
 
 def draw_level(window: pygame.Surface):
@@ -209,7 +209,7 @@ def draw_level(window: pygame.Surface):
     for object in current_level["objects"]:
         colour = current_level["wall_colour"]
         pygame.draw.rect(window, colour,
-                         (object["x"], object["y"] + gui_height, object["width"], object["height"]))
+                         (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
 
     dirty_rectangles.append(
         (0, 0, window.get_width(), window.get_height()))
@@ -249,7 +249,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Update window size
         pygame.display.set_mode(
-            (game["width"], game["height"] + gui_height))
+            (game["width"], game["height"] + game["gui_height"]))
 
         # Update window title
         pygame.display.set_caption("You win!" + " - " + game["title"])
@@ -262,7 +262,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Update window size
         pygame.display.set_mode(
-            (current_level["width"], current_level["height"] + gui_height), flags=flags)
+            (current_level["width"], current_level["height"] + game["gui_height"]), flags=flags)
         
         # Update window title
         pygame.display.set_caption(
@@ -310,8 +310,8 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         current_level["objects"].remove(object)
         
         # Redraw area where box was
-        pygame.draw.rect(window, game["background_colour"], (object["x"], object["y"] + gui_height, object["width"], object["height"]))
-        dirty_rectangles.append((object["x"], object["y"] + gui_height, object["width"], object["height"]))
+        pygame.draw.rect(window, game["background_colour"], (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+        dirty_rectangles.append((object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
         
         return False
 
@@ -410,7 +410,7 @@ while game_is_running:
 
         # Handle restarts
         # Check if any of the restart keys are pressed
-        if any(keys[key] for key in keymap["restart"]):
+        if any(keys[key] for key in keymap["start"]):
             # Reset variables
             game_won = False
             win_message_rendered = False
@@ -519,8 +519,8 @@ while game_is_running:
             player_y_position = window.get_height()-game["player_height"]
             player_y_velocity = 0
         # Top
-        if player_y_position < 0 + gui_height:
-            player_y_position = 0 + gui_height
+        if player_y_position < 0 + game["gui_height"]:
+            player_y_position = 0 + game["gui_height"]
             player_y_velocity = 0
 
         # Collision with level objects
@@ -539,7 +539,7 @@ while game_is_running:
                 if player_y_velocity > 0:
 
                     # And they're inside the object...
-                    if player_y_position + game["player_height"] > object["y"]  + gui_height and player_y_position + game["player_height"] < object["y"]  + gui_height + object["height"]:
+                    if player_y_position + game["player_height"] > object["y"]  + game["gui_height"] and player_y_position + game["player_height"] < object["y"]  + game["gui_height"] + object["height"]:
 
                         # Check if hitting the object should stop player movement and do any extra logic
                         stops_movment = on_object_hit(window, object)
@@ -553,7 +553,7 @@ while game_is_running:
                 elif player_y_velocity < 0:
 
                     # And they're inside the object...
-                    if player_y_position < object["y"] + object["height"] + gui_height and player_y_position > object["y"] + gui_height:
+                    if player_y_position < object["y"] + object["height"] + game["gui_height"] and player_y_position > object["y"] + game["gui_height"]:
 
                         # Check if hitting the object should stop player movement and do any extra logic
                         stops_movment = on_object_hit(window, object)
@@ -564,7 +564,7 @@ while game_is_running:
                             player_y_velocity = 0
 
             # If the player could be coliding with the object on the Y axis...
-            if player_y_position + game["player_height"] > object["y"] + gui_height and player_y_position < object["y"] + object["height"] + gui_height:
+            if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position < object["y"] + object["height"] + game["gui_height"]:
 
                 # If the player is moving right...
                 if player_x_velocity > 0:
