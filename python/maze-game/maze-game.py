@@ -619,8 +619,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("Resetting Y would extract player",
-                                      player_x_position, reset_player_y_position, object_rect)
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_y_position = reset_player_y_position
                                 player_y_velocity = 0
@@ -643,8 +641,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("Resetting Y would extract player",
-                                      player_x_position, reset_player_y_position, object_rect)
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_y_position = reset_player_y_position
                                 player_y_velocity = 00
@@ -671,7 +667,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("Resetting x would extract player")
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_x_position = reset_player_x_position
                                 player_x_velocity = 0
@@ -694,7 +689,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("Resetting x would extract player")
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_x_position = reset_player_x_position
                                 player_x_velocity = 0
