@@ -123,9 +123,7 @@ def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
     bottom_does_collide = rect1[1] < rect2_bottom
 
     if left_does_collide and right_does_collide and top_does_collide and bottom_does_collide:
-        print(rect1, rect2, True)
         return True
-    print(rect1, rect2, False)
     return False
 
 
@@ -595,7 +593,7 @@ while game_is_running:
         for object in current_level["objects"][:]:
 
             # Useful for collision detection
-            object_rect = (object["x"], object["y"], object["width"], object["height"])
+            object_rect = (object["x"], object["y"] + game["gui_height"], object["width"], object["height"])
 
             # Y collisions
             # If the player could be coliding with the object on the X axis...
@@ -619,10 +617,10 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("moving down, restting Y would extract", player_y_position, reset_player_y_position)
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_y_position = reset_player_y_position
                                 player_y_velocity = 0
+                                
 
                 # If the player is moving up...
                 elif player_y_velocity < 0:
@@ -642,7 +640,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("moving up, restting Y would extract", player_y_position, reset_player_y_position)
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_y_position = reset_player_y_position
                                 player_y_velocity = 00
@@ -669,7 +666,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("moving right, restting X would extract", player_x_position, reset_player_x_position)
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_x_position = reset_player_x_position
                                 player_x_velocity = 0
@@ -692,7 +688,6 @@ while game_is_running:
                                  game["player_width"], game["player_height"]),
                                 object_rect
                             ):
-                                print("moving left, restting X would extract", player_x_position, reset_player_x_position)
                                 # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
                                 player_x_position = reset_player_x_position
                                 player_x_velocity = 0
