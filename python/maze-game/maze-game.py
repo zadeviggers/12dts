@@ -192,7 +192,6 @@ def draw_player(window: pygame.Surface):
 
     # Re-draw the player in it's new position
     # The redraw function can only use ints, so I floor the actual value and add one to the width to make sure that the whole object is re-drawn
-    print(player_x_position, player_y_position)
     pygame.draw.rect(window, game["player_colour"],
                      (floor(player_x_position), floor(player_y_position), game["player_width"] + 1, game["player_height"] + 1))
     dirty_rectangles.append(
