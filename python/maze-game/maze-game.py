@@ -1,4 +1,5 @@
 from cmath import isinf
+from glob import glob
 from typing import Union
 import json
 from math import floor
@@ -72,6 +73,9 @@ game_running_time = 0
 
 # FPS meter
 clock = None
+
+# Restart system
+restarting = False
 
 # Functions
 
@@ -256,9 +260,49 @@ def draw_level(window: pygame.Surface):
         (0, 0, window.get_width(), window.get_height()))
 
 
+def draw_win_message(window: pygame.Surface):
+    global dirty_rectangles
+
+    message = "You win!"
+    colour = game["win_text_colour"]  # Gold
+
+    subititle_message = "Press space to play again."
+
+    time_message = f"Your time was {round(game_running_time, 2)} seconds."
+
+    subititle_text_offset = 30
+    time_text_offset = 10
+
+    # Draw black background
+    window.fill(game["background_colour"])
+
+    # Draw main text in center of window
+    main_text = title_font.render(message, True, colour)
+    window.blit(main_text, ((window.get_width() // 2) - (main_text.get_width() // 2),
+                (window.get_height() // 2) - (main_text.get_height() // 2)))
+
+    # Draw subtitle
+    subititle_text = gui_font.render(
+        subititle_message, True, game["gui_text_colour"])
+    window.blit(subititle_text, ((window.get_width() // 2) - (subititle_text.get_width() // 2),
+                (window.get_height() // 2) - (subititle_text.get_height() // 2) + main_text.get_height() + subititle_text_offset))
+
+    # Draw time
+    time_text = gui_font.render(
+        time_message, True, game["gui_text_colour"])
+    window.blit(time_text, ((window.get_width() // 2) - (time_text.get_width() // 2),
+                (window.get_height() // 2) - (time_text.get_height() // 2) + main_text.get_height() + time_text_offset))
+
+    # Re-draw screen
+    dirty_rectangles.append(
+        (0, 0, window.get_width(), window.get_height()))
+
 def draw_everything(window: pygame.Surface):
-    draw_player(window)
-    draw_level(window)
+    if game_won:
+        draw_win_message(window)
+    else:
+        draw_level(window)
+        draw_player(window)
 
 
 def reset_player_position(window: pygame.Surface, x_position: Union[int, None], y_position: Union[int, None]):
@@ -320,6 +364,9 @@ def load_level(window: pygame.Surface, level_number: int):
 
         # Draw level
         draw_level(window)
+
+        # Draw the player an extra time here to avoid some weirness that happens with restarts
+        draw_player(window)
 
 
 def on_object_hit(window: pygame.Surface, object) -> bool:
@@ -398,6 +445,10 @@ while game_is_running:
         # When the user re-sizes the window, re-draw everything
         if event.type == pygame.VIDEORESIZE:
             draw_everything(window)
+        
+        # If the window was maximised or minimized, redraw everything becuase everything gets cleared when this happens for some reason
+        if event.type == pygame.ACTIVEEVENT:
+            draw_everything(window)
 
     # Setup #
 
@@ -418,62 +469,34 @@ while game_is_running:
 
     keys = pygame.key.get_pressed()
 
-    # If game is won or lost
-    if game_won:
+    # Handle restarts
+    # Check if any of the restart keys are pressed
+    if any(keys[key] for key in keymap["start"]) and not restarting:
+        restarting = True
+        # Reset variables
+        game_won = False
+        win_message_rendered = False
+        game_running_time = 0
+        player_speed_multiplier = 1
+        player_y_velocity = 0
+        player_x_velocity = 0
 
-        # Render win or lose screen
+        # Relaod game data since some of it gets modified
+        load_game_data()
+
+        # Load first level again
+        current_level_number = 0
+        load_level(window, current_level_number)
+
+        restarting = False
+
+
+    # If game is won
+    if game_won:
+        # Render win screen
         if not win_message_rendered:
             win_message_rendered = True
-
-            message = "You win!"
-            colour = game["win_text_colour"]  # Gold
-
-            subititle_message = "Press space to play again."
-
-            time_message = f"Your time was {round(game_running_time, 2)} seconds."
-
-            subititle_text_offset = 30
-            time_text_offset = 10
-
-            # Draw black background
-            window.fill(game["background_colour"])
-
-            # Draw main text in center of window
-            main_text = title_font.render(message, True, colour)
-            window.blit(main_text, ((window.get_width() // 2) - (main_text.get_width() // 2),
-                        (window.get_height() // 2) - (main_text.get_height() // 2)))
-
-            # Draw subtitle
-            subititle_text = gui_font.render(
-                subititle_message, True, game["gui_text_colour"])
-            window.blit(subititle_text, ((window.get_width() // 2) - (subititle_text.get_width() // 2),
-                        (window.get_height() // 2) - (subititle_text.get_height() // 2) + main_text.get_height() + subititle_text_offset))
-
-            # Draw time
-            time_text = gui_font.render(
-                time_message, True, game["gui_text_colour"])
-            window.blit(time_text, ((window.get_width() // 2) - (time_text.get_width() // 2),
-                        (window.get_height() // 2) - (time_text.get_height() // 2) + main_text.get_height() + time_text_offset))
-
-            # Re-draw screen
-            dirty_rectangles.append(
-                (0, 0, window.get_width(), window.get_height()))
-
-        # Handle restarts
-        # Check if any of the restart keys are pressed
-        if any(keys[key] for key in keymap["start"]):
-            # Reset variables
-            game_won = False
-            win_message_rendered = False
-            game_running_time = 0
-            player_speed_multiplier = 1
-
-            # Relaod game data since some of it gets modified
-            load_game_data()
-
-            # Load first level again
-            current_level_number = 0
-            load_level(window, current_level_number)
+            draw_win_message(window)
 
     # Gameplay
     else:
