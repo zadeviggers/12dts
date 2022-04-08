@@ -81,6 +81,7 @@ restarting = False
 
 
 def hsv_to_rgb(h, s, v):
+    # This function converts a hue-saturation-value format colour to a red-green-blue format colour 
     # Credit for this awsome function goes to @Tcll on stack overflow.
     #  Source: https://stackoverflow.com/a/26856771
 
@@ -89,8 +90,7 @@ def hsv_to_rgb(h, s, v):
         return (v, v, v)
     i = int(h*6.)  # XXX assume int() truncates!
     f = (h*6.)-i
-    p, q, t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))
-                                       ), int(255*(v*(1.-s*(1.-f))))
+    p, q, t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))), int(255*(v*(1.-s*(1.-f))))
     v *= 255
     i %= 6
     if i == 0:
@@ -108,7 +108,8 @@ def hsv_to_rgb(h, s, v):
 
 
 def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
-    # Returns True if there's a collision, False if not
+    # A function to detect if two rectangles are overlapping    
+    # Returns True if two rectangles are colliding
 
     # Rect: (x, y, width, height)
 
@@ -132,6 +133,7 @@ def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
 
 
 def draw_timer(window: pygame.Surface, big: bool = False):
+    # A function to draw the game timer to the screen
     global dirty_rectangles
 
     rounded_time = round(game_running_time)
@@ -158,9 +160,15 @@ def draw_timer(window: pygame.Surface, big: bool = False):
 
 
 def draw_fps(window: pygame.Surface):
+    # A function to draw the game FPS (frames per second) to the screen
+
+
     fps = clock.get_fps()
+
+    # FPS is infinate on the very first frame which means that it can't be rounded
     if not isinf(fps):
         fps = round(fps)
+
     message_to_render = f"FPS: {fps}"
 
     text_position = pygame.Rect(
@@ -179,12 +187,8 @@ def draw_fps(window: pygame.Surface):
     dirty_rectangles.append(text_position)
 
 
-def draw_multiplier():
-
-    pass
-
-
 def draw_player(window: pygame.Surface):
+    # A function to draw the player to the screen
     global dirty_rectangles
 
     # Clear out where the player was
@@ -203,6 +207,7 @@ def draw_player(window: pygame.Surface):
 
 
 def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
+    # A function to draw animted level objects to the screen
     # Called every tick
     global dirty_rectangles
     for object in current_level["objects"]:
@@ -244,6 +249,7 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
 
 
 def draw_level(window: pygame.Surface):
+    # A function to raw the level (walls, powerups, etc)
     # Called at level start
     global dirty_rectangles
 
@@ -261,6 +267,7 @@ def draw_level(window: pygame.Surface):
 
 
 def draw_win_message(window: pygame.Surface):
+    # A function that draws the 'You win' message to the screen when the player has won
     global dirty_rectangles
 
     message = "You win!"
@@ -298,6 +305,7 @@ def draw_win_message(window: pygame.Surface):
         (0, 0, window.get_width(), window.get_height()))
 
 def draw_everything(window: pygame.Surface):
+    # A function to draw the relevant things to the screen based on wheather the game has been won or not
     if game_won:
         draw_win_message(window)
     else:
@@ -306,6 +314,7 @@ def draw_everything(window: pygame.Surface):
 
 
 def reset_player_position(window: pygame.Surface, x_position: Union[int, None], y_position: Union[int, None]):
+    # A function to reset the player's position, either to the level-defined starting position or to the bottom center
     global game
     global player_x_position
     global player_y_position
@@ -325,6 +334,7 @@ def reset_player_position(window: pygame.Surface, x_position: Union[int, None], 
 
 
 def load_level(window: pygame.Surface, level_number: int):
+    # Loads in a level from the loaded list of levels
     global current_level
     global game_won
     global dirty_rectangles
@@ -370,7 +380,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
 
 def on_object_hit(window: pygame.Surface, object) -> bool:
-    # Handle collisions
+    # A function foir handling player collisions with level objects
     global current_level_number
     global current_level
     global player_speed_multiplier
@@ -415,17 +425,17 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
     return False
 
 
-# Start pygame
+# Start pygame so that it's functions can be used
 pygame.init()
 
-# Load fonts
+# Load fonts which are used for drawing text to the screen
 title_font = pygame.font.SysFont(None, 32, True)
 gui_font = pygame.font.SysFont(None, 18)
 
 # Load clock for fps meter
 clock = pygame.time.Clock()
 
-# Get the window
+# Get the window object, which is used to draw things onto the screen
 window = pygame.display.set_mode((game["width"], game["height"]))
 
 
