@@ -80,6 +80,15 @@
 
 			"objects": [
 				{
+					"type": "collectable",
+					"variant": "speed",
+					"bonus": 1.36,
+					"x": 480,
+					"y": 180,
+					"width": 20,
+					"height": 20
+				},
+				{
 					"type": "wall",
 					"x": 20,
 					"y": 0,
@@ -139,15 +148,6 @@
 					"type": "level-end",
 					"x": 0,
 					"y": 0,
-					"width": 20,
-					"height": 20
-				},
-				{
-					"type": "collectable",
-					"variant": "speed",
-					"bonus": 0.02,
-					"x": 30,
-					"y": 100,
 					"width": 20,
 					"height": 20
 				}
