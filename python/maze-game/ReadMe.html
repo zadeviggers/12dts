@@ -34,6 +34,13 @@
 			dl > dd {
 				margin-left: var(--spacing);
 			}
+			figure {
+				padding-left: var(--spacing);
+				border-left: 1px solid black;
+			}
+			p {
+				max-width: min(100vw, calc(var(--spacing) * 60));
+			}
 		</style>
 	</head>
 	<body>
@@ -59,7 +66,57 @@
 		</section>
 		<section>
 			<h2>Gameplay</h2>
-			<h3>Powerups</h3>
+			<section>
+				<h3>Completing levels</h3>
+				<p>
+					To complete a level, find your way through the maze to the
+					level-end marker (pictured below).
+				</p>
+				<figure>
+					<img
+						src="level-end-marker.png"
+						alt="Image of the level end marker which is a square that changes colour with a lighter border of the same colour as the rest of the suare."
+					/>
+					<figcaption>A picture of a level end marker.</figcaption>
+				</figure>
+				<p>Win the game by completing all the levels.</p>
+			</section>
+			<section>
+				<h3>Powerups</h3>
+				<p>
+					There are powerups which can enchance certain attributes of
+					the player. For example, the speed powerup (pictured below)
+					applies a small multiplier to plaer acceleration.
+				</p>
+				<figure>
+					<img
+						src="speed-powerup.png"
+						alt="A picture of a speed powerup, which is a small blue square with a border that changes colour."
+					/>
+					<figcaption>A speed powerup.</figcaption>
+				</figure>
+			</section>
+			<section>
+				<h3>Ghost walls</h3>
+				<p>
+					There are some walls that the player is able to walk through
+					(if the player manages to discover them), which can be used
+					as shorcuts to get lower times.
+				</p>
+				<p>
+					Ghost walls disapear after the player has walked through
+					them.
+				</p>
+				<figure>
+					<img
+						src="ghost-wall.png"
+						alt="A picture of a player walking through a wall."
+					/>
+					<figcaption>
+						The player going through a ghost wall.
+					</figcaption>
+				</figure>
+			</section>
 		</section>
 	</body>
 </html>
