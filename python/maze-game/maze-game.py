@@ -39,25 +39,30 @@ load_game_data()
 
 # Variables
 # Player positioning
-player_x_velocity = 0
-player_y_velocity = 0
 player_x_position = 0
 player_y_position = 0
 old_player_x_position = 0
 old_player_y_position = 0
+# Player speed
+player_x_velocity = 0
+player_y_velocity = 0
 
 # Player bonuses
 player_speed_multiplier = 1
 
 # Game logic
 game_is_running = True
+# This is used to calculate the time since the last game tick
 previous_time = time()
+# This holds all the data for the current level
 current_level = None
+# The index of the current level in the game's list of levels
 current_level_number = 0
 game_won = False
 win_message_rendered = False
 
 # Fonts - these can't be inilaized until pygame is loaded
+# Fonts are used for drawing text at a specific size to the screen
 title_font = None
 gui_font = None
 
@@ -74,7 +79,7 @@ game_running_time = 0
 clock = None
 
 # Restart system
-restarting = False
+ticks_since_restart = 0
 
 # Functions
 
@@ -192,14 +197,14 @@ def draw_player(window: pygame.Surface):
 
     # Clear out where the player was
     # The redraw function can only use ints, so I floor the actual value and add one to the width to make sure that the whole object is re-drawn
-    old_player_drawing_rect = (floor(old_player_x_position), floor(old_player_y_position), game["player_width"] + 1, game["player_height"] + 1)
+    old_player_drawing_rect = (floor(old_player_x_position), floor(old_player_y_position), game["player_width"] , game["player_height"] )
 
     pygame.draw.rect(window, game["background_colour"], old_player_drawing_rect)
     dirty_rectangles.append(old_player_drawing_rect)
 
     # Re-draw the player in it's new position
     # The redraw function can only use ints, so I floor the actual value and add one to the width to make sure that the whole object is re-drawn
-    player_drawing_rect = (floor(player_x_position), floor(player_y_position), game["player_width"] + 1, game["player_height"] + 1)
+    player_drawing_rect = (floor(player_x_position), floor(player_y_position), game["player_width"] , game["player_height"] )
     
     pygame.draw.rect(window, game["player_colour"], player_drawing_rect)
     dirty_rectangles.append(player_drawing_rect)
@@ -329,8 +334,6 @@ def reset_player_position(window: pygame.Surface, x_position: Union[int, None], 
     else:
         player_y_position = window.get_height() - game["player_height"]
 
-    draw_player(window)
-
 
 def load_level(window: pygame.Surface, level_number: int):
     # Loads in a level from the loaded list of levels
@@ -370,12 +373,15 @@ def load_level(window: pygame.Surface, level_number: int):
                 window, current_level["player_start_position_x"], current_level["player_start_position_y"])
         else:
             reset_player_position(window, None, None)
+        
 
         # Draw level
         draw_level(window)
 
-        # Draw the player an extra time here to avoid some weirness that happens with restarts
-        draw_player(window)
+        # The player doesn't get re-drawn here becuase it gets drawn
+        #  by the game loop anyway so it would be pointless,
+        #  and doing so also causes some weird rendering issues in
+        #  some edge cases.
 
 
 def on_object_hit(window: pygame.Surface, object) -> bool:
@@ -479,271 +485,279 @@ while game_is_running:
     keys = pygame.key.get_pressed()
 
     # Handle restarts
+    # Increment ticks since resatart counter
+    ticks_since_restart += 1
+
     # Check if any of the restart keys are pressed
-    if any(keys[key] for key in keymap["start"]) and not restarting:
-        restarting = True
-        # Reset variables
+    # And it's been a few ticks since the game was last restarted
+    if any(keys[key] for key in keymap["start"]) and ticks_since_restart > 500:
+        # Restart game
+
+        ticks_since_restart = 0
+
+        # Reset gameplay variables
         game_won = False
         win_message_rendered = False
         game_running_time = 0
         player_speed_multiplier = 1
         player_y_velocity = 0
         player_x_velocity = 0
+        
 
-        # Relaod game data since some of it gets modified
+        # Reload game data since some of it gets modified
         load_game_data()
 
         # Load first level again
         current_level_number = 0
         load_level(window, current_level_number)
-
-        restarting = False
-
-
-    # If game is won
-    if game_won:
-        # Render win screen
-        if not win_message_rendered:
-            win_message_rendered = True
-            draw_win_message(window)
-
-    # Gameplay
+        draw_player(window)
+    
     else:
 
-        # Timer
-        game_running_time += delta_time
-        draw_timer(window)
+        # If game is won
+        if game_won:
+            # Render win screen
+            if not win_message_rendered:
+                win_message_rendered = True
+                draw_win_message(window)
 
-        # FPS meter
-        draw_fps(window)
+        # Gameplay
+        else:
 
-        # Player movement #
+            # Timer
+            game_running_time += delta_time
+            draw_timer(window)
 
-        # Movement left
-        # Check if any of the left keys are pressed
-        if any(keys[key] for key in keymap["left"]):
-            player_x_velocity -= game["player_walk_speed"] * \
-                delta_time * player_speed_multiplier
+            # FPS meter
+            draw_fps(window)
 
-        # Movement right
-        # Check if any of the right keys are pressed
-        if any(keys[key] for key in keymap["right"]):
-            player_x_velocity += game["player_walk_speed"] * \
-                delta_time * player_speed_multiplier
+            # Player movement #
 
-        # Movement up
-        # Check if any of the up keys are pressed
-        if any(keys[key] for key in keymap["up"]):
-            player_y_velocity -= game["player_walk_speed"] * \
-                delta_time * player_speed_multiplier
+            # Movement left
+            # Check if any of the left keys are pressed
+            if any(keys[key] for key in keymap["left"]):
+                player_x_velocity -= game["player_walk_speed"] * \
+                    delta_time * player_speed_multiplier
 
-        # Movement down
-        # Check if any of the down keys are pressed
-        if any(keys[key] for key in keymap["down"]):
-            player_y_velocity += game["player_walk_speed"] * \
-                delta_time * player_speed_multiplier
+            # Movement right
+            # Check if any of the right keys are pressed
+            if any(keys[key] for key in keymap["right"]):
+                player_x_velocity += game["player_walk_speed"] * \
+                    delta_time * player_speed_multiplier
 
-        # Apply drag
-        # If moving right
-        if player_x_velocity > 0:
-            player_x_velocity -= game["drag"] * delta_time
+            # Movement up
+            # Check if any of the up keys are pressed
+            if any(keys[key] for key in keymap["up"]):
+                player_y_velocity -= game["player_walk_speed"] * \
+                    delta_time * player_speed_multiplier
 
-            # If the player was slowed down too much, cancel all their horizontal velocity
-            if player_x_velocity < 0:
-                player_x_velocity = 0
-        # If moving left
-        elif player_x_velocity < 0:
-            player_x_velocity += game["drag"] * delta_time
+            # Movement down
+            # Check if any of the down keys are pressed
+            if any(keys[key] for key in keymap["down"]):
+                player_y_velocity += game["player_walk_speed"] * \
+                    delta_time * player_speed_multiplier
 
-            # If the player was slowed down too much, cancel all their horizontal velocity
+            # Apply drag
+            # If moving right
             if player_x_velocity > 0:
-                player_x_velocity = 0
+                player_x_velocity -= game["drag"] * delta_time
 
-        # If moving up
-        if player_y_velocity > 0:
-            player_y_velocity -= game["drag"] * delta_time
-
-            # If the player was slowed down too much, cancel all their vertical velocity
-            if player_y_velocity < 0:
-                player_y_velocity = 0
-        # If moving down
-        elif player_y_velocity < 0:
-            player_y_velocity += game["drag"] * delta_time
-
-            # If the player was slowed down too much, cancel all their vertical velocity
-            if player_y_velocity > 0:
-                player_y_velocity = 0
-
-        # Clamp velocity
-        if abs(player_x_velocity) > game["player_max_speed"] * player_speed_multiplier:
-            if player_x_velocity > 0:
-                player_x_velocity = game["player_max_speed"] * \
-                    player_speed_multiplier
+                # If the player was slowed down too much, cancel all their horizontal velocity
+                if player_x_velocity < 0:
+                    player_x_velocity = 0
+            # If moving left
             elif player_x_velocity < 0:
-                player_x_velocity = game["player_max_speed"] * \
-                    player_speed_multiplier * -1
+                player_x_velocity += game["drag"] * delta_time
 
-        if abs(player_y_velocity) > game["player_max_speed"] * player_speed_multiplier:
-            if player_y_velocity > 0:
-                player_y_velocity = game["player_max_speed"] * \
-                    player_speed_multiplier
-            elif player_y_velocity < 0:
-                player_y_velocity = game["player_max_speed"] * \
-                    player_speed_multiplier * -1
-
-        # Apply velocity
-        player_x_position += player_x_velocity
-        player_y_position += player_y_velocity
-
-        # Colision detection #
-
-        # With screen edges
-
-        # Stop player walking off screen
-        # Left side
-        if player_x_position < 0:
-            player_x_position = 0
-            player_x_velocity = 0
-        # Right side
-        if player_x_position > window.get_width() - game["player_width"]:
-            player_x_position = window.get_width() - game["player_width"]
-            player_x_velocity = 0
-        # Bottom
-        if player_y_position >= window.get_height()-game["player_height"]:
-            player_y_position = window.get_height()-game["player_height"]
-            player_y_velocity = 0
-        # Top
-        if player_y_position < 0 + game["gui_height"]:
-            player_y_position = 0 + game["gui_height"]
-            player_y_velocity = 0
-
-        # Collision with level objects
-        # Why aren't I using pygame's Rect classes and built in clossions detection?
-        # I tried. I tried so hard. But nothing worked when using pygame Rects.
-        # Also their collision detection didn't tell my what side the collision
-        # was on so I would have had to create fake 1-pixel-wide rectandles for each side
-        # and test all of them. This just works.
-        # [:] creates a copy of the list so that modifiying it doesn't cause issues.
-        for object in current_level["objects"][:]:
-
-            # Useful for collision detection
-            object_rect = (object["x"], object["y"] + game["gui_height"], object["width"], object["height"])
-
-            # Y collisions
-            # If the player could be coliding with the object on the X axis...
-            if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
-
-                # If the player is moving down...
-                if player_y_velocity > 0:
-
-                    # And they're inside the object...
-                    if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position + game["player_height"] < object["y"] + game["gui_height"] + object["height"]:
-
-                        # Check if hitting the object should stop player movement, and do any extra logic
-                        stops_movment = on_object_hit(window, object)
-                        if stops_movment:
-
-                            reset_player_y_position = old_player_y_position
-
-                            # Check if resetting the y position would extract the player from the object
-                            if not simple_do_two_rects_collide(
-                                (player_x_position, reset_player_y_position,
-                                 game["player_width"], game["player_height"]),
-                                object_rect
-                            ):
-                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                                player_y_position = reset_player_y_position
-                                player_y_velocity = 0
-                                
-
-                # If the player is moving up...
-                elif player_y_velocity < 0:
-
-                    # And they're inside the object...
-                    if player_y_position < object["y"] + object["height"] + game["gui_height"] and player_y_position > object["y"] + game["gui_height"]:
-
-                        # Check if hitting the object should stop player movement, and do any extra logic
-                        stops_movment = on_object_hit(window, object)
-                        if stops_movment:
-
-                            reset_player_y_position = old_player_y_position
-
-                            # Check if resetting the y position would extract the player from the object
-                            if not simple_do_two_rects_collide(
-                                (player_x_position, reset_player_y_position,
-                                 game["player_width"], game["player_height"]),
-                                object_rect
-                            ):
-                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                                player_y_position = reset_player_y_position
-                                player_y_velocity = 00
-
-            # X collisions
-            # If the player could be coliding with the object on the Y axis...
-            if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position < object["y"] + object["height"] + game["gui_height"]:
-
-                # If the player is moving right...
+                # If the player was slowed down too much, cancel all their horizontal velocity
                 if player_x_velocity > 0:
+                    player_x_velocity = 0
 
-                    # And they're inside the object...
-                    if player_x_position + game["player_width"] > object["x"] and player_x_position + game["player_width"] < object["x"] + object["width"]:
+            # If moving up
+            if player_y_velocity > 0:
+                player_y_velocity -= game["drag"] * delta_time
 
-                        # Check if hitting the object should stop player movement, and do any extra logic
-                        stops_movment = on_object_hit(window, object)
-                        if stops_movment:
+                # If the player was slowed down too much, cancel all their vertical velocity
+                if player_y_velocity < 0:
+                    player_y_velocity = 0
+            # If moving down
+            elif player_y_velocity < 0:
+                player_y_velocity += game["drag"] * delta_time
 
-                            reset_player_x_position = old_player_x_position
+                # If the player was slowed down too much, cancel all their vertical velocity
+                if player_y_velocity > 0:
+                    player_y_velocity = 0
 
-                            # Check if resetting the X position would extract the player from the object
-                            if not simple_do_two_rects_collide(
-                                (reset_player_x_position, player_y_position,
-                                 game["player_width"], game["player_height"]),
-                                object_rect
-                            ):
-                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                                player_x_position = reset_player_x_position
-                                player_x_velocity = 0
-
-                # If the player is moving left...
+            # Clamp velocity
+            if abs(player_x_velocity) > game["player_max_speed"] * player_speed_multiplier:
+                if player_x_velocity > 0:
+                    player_x_velocity = game["player_max_speed"] * \
+                        player_speed_multiplier
                 elif player_x_velocity < 0:
+                    player_x_velocity = game["player_max_speed"] * \
+                        player_speed_multiplier * -1
 
-                    # And they're inside the object...
-                    if player_x_position < object["x"] + object["width"] and player_x_position > object["x"]:
+            if abs(player_y_velocity) > game["player_max_speed"] * player_speed_multiplier:
+                if player_y_velocity > 0:
+                    player_y_velocity = game["player_max_speed"] * \
+                        player_speed_multiplier
+                elif player_y_velocity < 0:
+                    player_y_velocity = game["player_max_speed"] * \
+                        player_speed_multiplier * -1
 
-                        # Check if hitting the object should stop player movement, and do any extra logic
-                        stops_movment = on_object_hit(window, object)
-                        if stops_movment:
+            # Apply velocity
+            player_x_position += player_x_velocity
+            player_y_position += player_y_velocity
 
-                            reset_player_x_position = old_player_x_position
+            # Colision detection #
 
-                            # Check if resetting the X position would extract the player from the object
-                            if not simple_do_two_rects_collide(
-                                (reset_player_x_position, player_y_position,
-                                 game["player_width"], game["player_height"]),
-                                object_rect
-                            ):
-                                # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
-                                player_x_position = reset_player_x_position
-                                player_x_velocity = 0
+            # With screen edges
 
-        # Drawing #
+            # Stop player walking off screen
+            # Left side
+            if player_x_position < 0:
+                player_x_position = 0
+                player_x_velocity = 0
+            # Right side
+            if player_x_position > window.get_width() - game["player_width"]:
+                player_x_position = window.get_width() - game["player_width"]
+                player_x_velocity = 0
+            # Bottom
+            if player_y_position >= window.get_height()-game["player_height"]:
+                player_y_position = window.get_height()-game["player_height"]
+                player_y_velocity = 0
+            # Top
+            if player_y_position < 0 + game["gui_height"]:
+                player_y_position = 0 + game["gui_height"]
+                player_y_velocity = 0
 
-        # Draw animated level objects
-        draw_level_effect_objects(window, loop_ticker)
+            # Collision with level objects
+            # Why aren't I using pygame's Rect classes and built in clossions detection?
+            # I tried. I tried so hard. But nothing worked when using pygame Rects.
+            # Also their collision detection didn't tell my what side the collision
+            # was on so I would have had to create fake 1-pixel-wide rectandles for each side
+            # and test all of them. This just works.
+            # [:] creates a copy of the list so that modifiying it doesn't cause issues.
+            for object in current_level["objects"][:]:
 
-        # Draw the player if they've moved
-        if player_x_position - old_player_x_position != 0 or player_y_position-old_player_y_position != 0:
-            draw_player(window)
+                # Useful for collision detection
+                object_rect = (object["x"], object["y"] + game["gui_height"], object["width"], object["height"])
+
+                # Y collisions
+                # If the player could be coliding with the object on the X axis...
+                if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
+
+                    # If the player is moving down...
+                    if player_y_velocity > 0:
+
+                        # And they're inside the object...
+                        if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position + game["player_height"] < object["y"] + game["gui_height"] + object["height"]:
+
+                            # Check if hitting the object should stop player movement, and do any extra logic
+                            stops_movment = on_object_hit(window, object)
+                            if stops_movment:
+
+                                reset_player_y_position = old_player_y_position
+
+                                # Check if resetting the y position would extract the player from the object
+                                if not simple_do_two_rects_collide(
+                                    (player_x_position, reset_player_y_position,
+                                    game["player_width"], game["player_height"]),
+                                    object_rect
+                                ):
+                                    # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                    player_y_position = reset_player_y_position
+                                    player_y_velocity = 0
+                                    
+
+                    # If the player is moving up...
+                    elif player_y_velocity < 0:
+
+                        # And they're inside the object...
+                        if player_y_position < object["y"] + object["height"] + game["gui_height"] and player_y_position > object["y"] + game["gui_height"]:
+
+                            # Check if hitting the object should stop player movement, and do any extra logic
+                            stops_movment = on_object_hit(window, object)
+                            if stops_movment:
+
+                                reset_player_y_position = old_player_y_position
+
+                                # Check if resetting the y position would extract the player from the object
+                                if not simple_do_two_rects_collide(
+                                    (player_x_position, reset_player_y_position,
+                                    game["player_width"], game["player_height"]),
+                                    object_rect
+                                ):
+                                    # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                    player_y_position = reset_player_y_position
+                                    player_y_velocity = 00
+
+                # X collisions
+                # If the player could be coliding with the object on the Y axis...
+                if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position < object["y"] + object["height"] + game["gui_height"]:
+
+                    # If the player is moving right...
+                    if player_x_velocity > 0:
+
+                        # And they're inside the object...
+                        if player_x_position + game["player_width"] > object["x"] and player_x_position + game["player_width"] < object["x"] + object["width"]:
+
+                            # Check if hitting the object should stop player movement, and do any extra logic
+                            stops_movment = on_object_hit(window, object)
+                            if stops_movment:
+
+                                reset_player_x_position = old_player_x_position
+
+                                # Check if resetting the X position would extract the player from the object
+                                if not simple_do_two_rects_collide(
+                                    (reset_player_x_position, player_y_position,
+                                    game["player_width"], game["player_height"]),
+                                    object_rect
+                                ):
+                                    # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                    player_x_position = reset_player_x_position
+                                    player_x_velocity = 0
+
+                    # If the player is moving left...
+                    elif player_x_velocity < 0:
+
+                        # And they're inside the object...
+                        if player_x_position < object["x"] + object["width"] and player_x_position > object["x"]:
+
+                            # Check if hitting the object should stop player movement, and do any extra logic
+                            stops_movment = on_object_hit(window, object)
+                            if stops_movment:
+
+                                reset_player_x_position = old_player_x_position
+
+                                # Check if resetting the X position would extract the player from the object
+                                if not simple_do_two_rects_collide(
+                                    (reset_player_x_position, player_y_position,
+                                    game["player_width"], game["player_height"]),
+                                    object_rect
+                                ):
+                                    # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
+                                    player_x_position = reset_player_x_position
+                                    player_x_velocity = 0
+
+            # Drawing #
+
+            # Draw animated level objects
+            draw_level_effect_objects(window, loop_ticker)
+
+            # Draw the player if they've moved
+            if player_x_position - old_player_x_position != 0 or player_y_position-old_player_y_position != 0:
+                draw_player(window)
+
+        # Update old player positions
+        old_player_x_position = player_x_position
+        old_player_y_position = player_y_position
 
     # Render all changes
     pygame.display.update(dirty_rectangles)
 
     # Empty list of dirty rectangles
     dirty_rectangles = []
-
-    # Update old player positions
-    old_player_x_position = player_x_position
-    old_player_y_position = player_y_position
 
 
 # Stop game
