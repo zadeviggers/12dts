@@ -1,5 +1,4 @@
 from cmath import isinf
-from dis import Instruction
 from typing import Union
 import json
 from math import floor
