@@ -1,10 +1,12 @@
 from cmath import isinf
+from dis import Instruction
 from typing import Union
 import json
 from math import floor
 import os
 import sys
 from time import time
+import webbrowser
 import pygame
 
 # Type aliases
@@ -13,6 +15,9 @@ RectType = tuple[FloatOrInt, FloatOrInt, FloatOrInt, FloatOrInt]
 
 
 # Constants
+instructions_file =  "ReadMe.html" # Name of instructions HTML file
+instructions_path = os.path.realpath(os.path.join(sys.path[0], instructions_file)) # Full path (e.g. C:\users\your-account\..\maze-game\ReadMe.html)
+instructions_url = f"file://{instructions_path}" # Web browser URL to instructions file
 configuration_file = "game-data.json"  # Game data
 keymap = {
     # Mapping of keys to actions in game
@@ -21,7 +26,6 @@ keymap = {
     "down": [pygame.K_DOWN, pygame.K_s, pygame.K_KP_2],
     "left": [pygame.K_LEFT, pygame.K_a, pygame.K_KP_4],
     "right": [pygame.K_RIGHT, pygame.K_d, pygame.K_KP_6],
-    # "menu": [pygame.K_HOME, pygame.K_ESCAPE, pygame.K_m]
 }
 
 # Load game settings from config file
@@ -429,6 +433,8 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
     # Return false by default
     return False
 
+# Open game instrutions on game start
+webbrowser.open(instructions_url)
 
 # Start pygame so that it's functions can be used
 pygame.init()
