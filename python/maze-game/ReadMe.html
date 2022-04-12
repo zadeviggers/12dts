@@ -15,6 +15,7 @@
 			}
 			:root {
 				--spacing: 8px;
+				--max-content-width: min(100vw, calc(var(--spacing) * 60));
 			}
 			body {
 				padding: calc(var(--spacing) * 4);
@@ -35,11 +36,18 @@
 				margin-left: var(--spacing);
 			}
 			figure {
-				padding-left: var(--spacing);
-				border-left: 1px solid black;
+				padding: var(--spacing);
+				padding-left: calc(2 * var(--spacing));
+				border-left: 2px solid black;
 			}
 			p {
-				max-width: min(100vw, calc(var(--spacing) * 60));
+				max-width: var(--max-content-width);
+			}
+			blockquote {
+				max-width: var(--max-content-width);
+				border-left: 2px solid gold;
+				padding: var(--spacing);
+				padding-left: calc(2 * var(--spacing));
 			}
 		</style>
 	</head>
@@ -80,6 +88,12 @@
 					<figcaption>A picture of a level end marker.</figcaption>
 				</figure>
 				<p>Win the game by completing all the levels.</p>
+				<blockquote>
+					<strong>💡 Pro tip:</strong> when you touch a level end
+					marker, whatever momentum you had when you touched it
+					carries through to the next level, so if you want to get
+					good times, make sure to get good run-ups to the markers.
+				</blockquote>
 			</section>
 			<section>
 				<h3>Powerups</h3>
