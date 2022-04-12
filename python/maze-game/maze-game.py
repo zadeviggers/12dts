@@ -1,4 +1,5 @@
 # Import modules that are used by the game
+# A module is a collection of functions and variables
 from cmath import isinf
 from typing import Union
 import json
@@ -19,9 +20,8 @@ RectType = tuple[FloatOrInt, FloatOrInt, FloatOrInt, FloatOrInt] # This is atupl
 INSTRUCTIONS_FILE =  "ReadMe.html" # Name of instructions HTML file
 INSTRUCTIONS_PATH = os.path.realpath(os.path.join(sys.path[0], INSTRUCTIONS_FILE)) # Full path (e.g. C:\users\your-account\..\maze-game\ReadMe.html)
 INSTRUCTIONS_URL = f"file://{INSTRUCTIONS_PATH}" # Web browser URL to instructions file
-CONFIGURATION_FILE = "game-data.json"  # Game data
+# Mapping of keys to actions in game
 KEYMAP = {
-    # Mapping of keys to actions in game
     "start": [pygame.K_SPACE, pygame.K_r, pygame.K_RETURN, pygame.K_KP_ENTER],
     "up": [pygame.K_UP, pygame.K_w, pygame.K_KP_8],
     "down": [pygame.K_DOWN, pygame.K_s, pygame.K_KP_2],
@@ -29,8 +29,19 @@ KEYMAP = {
     "right": [pygame.K_RIGHT, pygame.K_d, pygame.K_KP_6],
 }
 
-# Load game settings from config file
-with open(os.path.join(sys.path[0], CONFIGURATION_FILE)) as f:
+# Name of game data file.
+# Most of the game's settings are stored in this file.
+CONFIGURATION_FILE = "game-data.json"
+CONFIGURATION_FILE_PATH = os.path.join(sys.path[0], CONFIGURATION_FILE)
+
+# Load game settings from the config file
+# "with" is a context manager - that means that once the code inside of it 
+#   finishes executing, it will automaticaly call the function's clean up method
+#   In this case, that means it will close the reference to the file
+# open() opens a file at the provided location.
+with open(CONFIGURATION_FILE_PATH) as f:
+    # json.load() loads the contents of the file, parses them as json and converts
+    # them to the correstponding python data structures. 
     GAME = json.load(f)
 
 # Variables
@@ -46,7 +57,8 @@ player_y_velocity = 0
 # Player bonuses
 player_speed_multiplier = 1
 
-# Game logic
+# This is used for knowing wheather the game loop is still running
+# setting it to Flase closes the game.
 game_is_running = True
 # This is used to calculate the time since the last game tick
 previous_time = time()
@@ -85,17 +97,30 @@ ticks_since_restart = 0
 def hsv_to_rgb(h, s, v):
     # This is a function - it's a reusable peice of code that gets run when it is 'called' like so: hsv_to_rgb() 
     # This function converts a hue-saturation-value format colour to a red-green-blue format colour 
+    
     # Credit for this awsome function goes to @Tcll on stack overflow.
     #  Source: https://stackoverflow.com/a/26856771
 
+    # This is an if statement - the code inside it only runs if the condition
+    # (the part to the left of the if keyword) evaluates to a 'truthy' value (True, a string, a number, etc).
     if s == 0.0:
-        v *= 255
+        v = v * 255
+
+        # "return" stops execution of the function and passes whatever is after it to
+        # the place where the function was callled from
         return (v, v, v)
-    i = int(h*6.)  # XXX assume int() truncates!
+
+    # int() converts any number (or sting) to an integer
+    i = int(h*6.) # The dot (.) means that it's a float not a normal int
+   
     f = (h*6.)-i
+   
     p, q, t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))), int(255*(v*(1.-s*(1.-f))))
-    v *= 255
-    i %= 6
+    
+    v = v * 255
+    
+    i = i % 6
+
     if i == 0:
         return (v, t, p)
     if i == 1:
@@ -123,10 +148,13 @@ def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
 
     # Right side of rect 1 is to the right of rect 2's left side
     left_does_collide = rect1_right > rect2[0]
+
     # Left side of rect 1 is to the left of rect 2's right side
     right_does_collide = rect1[0] < rect2_right
+
     # Bottom side of rect 1 is bellow rect 2's top side
     top_does_collide = rect1_bottom > rect2[1]
+
     # Top side of rect 1 is above rect 2's bottom side
     bottom_does_collide = rect1[1] < rect2_bottom
 
@@ -356,7 +384,7 @@ def load_level(window: pygame.Surface, level_number: int):
         # the bit flags that make the window resizable onto the flags.
         flags = 0
         if current_level["window_resizable"]:
-            flags |= pygame.RESIZABLE  # Binary OR asignment operator
+            flags = flags | pygame.RESIZABLE  # "|" is the binary OR operator
 
         # Update window size
         pygame.display.set_mode(
