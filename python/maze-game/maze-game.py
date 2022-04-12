@@ -79,16 +79,23 @@ gui_font = None
 # Used for things that change colour
 loop_ticker = 0.0
 
-# Track parts of the screen that have changed
+# This list is used to track parts of the screen that have changed,
+# and is passed to the pygame.display.update() call so that the rendering
+# engine knows what parts of the screen to re-draw, allowing for much higher
+# FPS due to not re-drawing the entire screen every frame.
 dirty_rectangles = []
 
-# Game timer
+
+# Game timer. This tracks the number to seconds that the current run has been
+# going for.
 game_running_time = 0
 
-# FPS meter
+# FPS meter - this will be a pygame clock which has a function to get the
+# current FPS
 clock = None
 
-# Restart system
+# Restart system - this is used to rate-limit restart calls to prevent issues
+# that are caused by resetting to often.
 ticks_since_restart = 0
 
 # Functions
@@ -115,10 +122,14 @@ def hsv_to_rgb(h, s, v):
    
     f = (h*6.)-i
    
-    p, q, t = int(255*(v*(1.-s))), int(255*(v*(1.-s*f))), int(255*(v*(1.-s*(1.-f))))
+    p = int(255*(v*(1.-s)))
+    q = int(255*(v*(1.-s*f)))
+    t = int(255*(v*(1.-s*(1.-f))))
     
     v = v * 255
     
+    # % is the modulo operator - it does remainder division and returns the
+    # remainder, not the other number.
     i = i % 6
 
     if i == 0:
@@ -134,7 +145,13 @@ def hsv_to_rgb(h, s, v):
     if i == 5:
         return (v, p, q)
 
-
+# The ": RectType", and "-> bool" are 'type hints'. They make python do type
+# checking on the function (that means that if it needs a number and is passed
+# a string, an error will be thrown) and also mean that in modern editors,
+# you can hover over a call to this function to see what type of variable it
+# needs passed to it as argeuments and what type of variable it returns.
+# In this case, it this function needs two rectangle tuples passed to it as 
+# arguments, and returns a boolean (bool).
 def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
     # A function to detect if two rectangles are overlapping    
     # Returns True if two rectangles are colliding
@@ -165,6 +182,11 @@ def simple_do_two_rects_collide(rect1: RectType, rect2: RectType) -> bool:
 
 def draw_timer(window: pygame.Surface, big: bool = False):
     # A function to draw the game timer to the screen
+    # The "global" keyword tells python that the global variable
+    # called 'dirty_rectangles' is going to be updated inside of
+    # this function. Note that you only need to do this if you're
+    # updating a global variable, and not if you're only reading
+    # it's value.
     global dirty_rectangles
 
     rounded_time = round(game_running_time)
@@ -193,7 +215,7 @@ def draw_timer(window: pygame.Surface, big: bool = False):
 def draw_fps(window: pygame.Surface):
     # A function to draw the game FPS (frames per second) to the screen
 
-
+    # This gets the current game FPS from the pygame clock
     fps = clock.get_fps()
 
     # FPS is infinate on the very first frame which means that it can't be rounded
@@ -214,7 +236,7 @@ def draw_fps(window: pygame.Surface):
     # Paste text onto screen
     window.blit(text, text_position)
 
-    # Re-draw screen
+    # Tell pygame to re-draw the part of the screen that changed
     dirty_rectangles.append(text_position)
 
 
@@ -257,17 +279,19 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
                 (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
         if object["type"] == "collectable":
-            # Draw changing-colour square with border to make it stand out
+            # Draw coloured square with a changing-colour
+            # border to make it stand out.
             colour = current_level["wall_colour"]
+
             if object["variant"] == "speed":
                 colour = GAME["speed_powerup_colour"]
 
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
-            # Draw border
+            # Draw the animated border
             pygame.draw.rect(
                 window,  border_colour, (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
-            # Draw hole
+            # Draw a gap between the border and the coloured square.
             pygame.draw.rect(
                 window, GAME["background_colour"], (object["x"] + 3, object["y"] + GAME["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
 
@@ -515,13 +539,15 @@ while game_is_running:
 
     # Handle restarts
     # Increment ticks since resatart counter
-    ticks_since_restart += 1
+    if ticks_since_restart < 500:
+        ticks_since_restart += 1
 
     # Check if any of the restart keys are pressed
     # And it's been a few ticks since the game was last restarted
-    if any(keys[key] for key in KEYMAP["start"]) and ticks_since_restart > 500:
+    if any(keys[key] for key in KEYMAP["start"]) and ticks_since_restart >= 500:
         # Restart game
 
+        # Reset restart cooldown time
         ticks_since_restart = 0
 
         # Reset gameplay variables
@@ -531,18 +557,14 @@ while game_is_running:
         player_speed_multiplier = 1
         player_y_velocity = 0
         player_x_velocity = 0
-        
-
-        # Reload game data since some of it gets modified
-        # load_game_data()
 
         # Load first level again
         current_level_number = 0
         load_level(window, current_level_number)
         draw_player(window)
     
+    # Otherwise, the game is running
     else:
-
         # If game is won
         if game_won:
             # Render win screen
@@ -782,10 +804,10 @@ while game_is_running:
         old_player_x_position = player_x_position
         old_player_y_position = player_y_position
 
-    # Render all changes
+    # Render all the changes to the screen
     pygame.display.update(dirty_rectangles)
 
-    # Empty list of dirty rectangles
+    # Empty the list of dirty rectangles for the next iteration of the loop
     dirty_rectangles = []
 
 
