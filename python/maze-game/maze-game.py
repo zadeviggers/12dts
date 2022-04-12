@@ -1,3 +1,4 @@
+# Import modules that are used by the game
 from cmath import isinf
 from typing import Union
 import json
@@ -8,17 +9,18 @@ from time import time
 import webbrowser
 import pygame
 
-# Type aliases
-FloatOrInt = Union[int, float]
-RectType = tuple[FloatOrInt, FloatOrInt, FloatOrInt, FloatOrInt]
+# Type aliases - these are used for setting the type of function arguments
+# and the return type of functions, which means I can hover on things in the editor to see the type of them.
+FloatOrInt = Union[int, float] # This is a union type that accepts a float or an int
+RectType = tuple[FloatOrInt, FloatOrInt, FloatOrInt, FloatOrInt] # This is atuple type that requires exactly four numbers (using the FloarOrInt type alias above)
 
 
-# Constants
-instructions_file =  "ReadMe.html" # Name of instructions HTML file
-instructions_path = os.path.realpath(os.path.join(sys.path[0], instructions_file)) # Full path (e.g. C:\users\your-account\..\maze-game\ReadMe.html)
-instructions_url = f"file://{instructions_path}" # Web browser URL to instructions file
-configuration_file = "game-data.json"  # Game data
-keymap = {
+# Constants- these are variables that don't ever change
+INSTRUCTIONS_FILE =  "ReadMe.html" # Name of instructions HTML file
+INSTRUCTIONS_PATH = os.path.realpath(os.path.join(sys.path[0], INSTRUCTIONS_FILE)) # Full path (e.g. C:\users\your-account\..\maze-game\ReadMe.html)
+INSTRUCTIONS_URL = f"file://{INSTRUCTIONS_PATH}" # Web browser URL to instructions file
+CONFIGURATION_FILE = "game-data.json"  # Game data
+KEYMAP = {
     # Mapping of keys to actions in game
     "start": [pygame.K_SPACE, pygame.K_r, pygame.K_RETURN, pygame.K_KP_ENTER],
     "up": [pygame.K_UP, pygame.K_w, pygame.K_KP_8],
@@ -28,17 +30,8 @@ keymap = {
 }
 
 # Load game settings from config file
-game = None
-levels = []
-
-def load_game_data():
-    global game
-    global levels
-    with open(os.path.join(sys.path[0], configuration_file)) as f:
-        game = json.load(f)
-        levels = game["levels"]
-
-load_game_data()
+with open(os.path.join(sys.path[0], CONFIGURATION_FILE)) as f:
+    GAME = json.load(f)
 
 # Variables
 # Player positioning
@@ -59,6 +52,8 @@ game_is_running = True
 previous_time = time()
 # This holds all the data for the current level
 current_level = None
+# Stores a copy of the current level's list of objects so that it can be safely modified
+current_level_objects = None
 # The index of the current level in the game's list of levels
 current_level_number = 0
 game_won = False
@@ -88,6 +83,7 @@ ticks_since_restart = 0
 
 
 def hsv_to_rgb(h, s, v):
+    # This is a function - it's a reusable peice of code that gets run when it is 'called' like so: hsv_to_rgb() 
     # This function converts a hue-saturation-value format colour to a red-green-blue format colour 
     # Credit for this awsome function goes to @Tcll on stack overflow.
     #  Source: https://stackoverflow.com/a/26856771
@@ -151,13 +147,13 @@ def draw_timer(window: pygame.Surface, big: bool = False):
         font = title_font
 
     text_position = pygame.Rect(
-        window.get_width() - 70, 0, 70, game["gui_height"])
+        window.get_width() - 70, 0, 70, GAME["gui_height"])
 
     # Render text
-    text = font.render(message_to_render, True, game["gui_text_colour"])
+    text = font.render(message_to_render, True, GAME["gui_text_colour"])
 
     # Draw black background for text
-    pygame.draw.rect(window, game["background_colour"], text_position)
+    pygame.draw.rect(window, GAME["background_colour"], text_position)
 
     # Paste text onto screen
     window.blit(text, text_position)
@@ -179,13 +175,13 @@ def draw_fps(window: pygame.Surface):
     message_to_render = f"FPS: {fps}"
 
     text_position = pygame.Rect(
-        window.get_width() - 130, 0, 50, game["gui_height"])
+        window.get_width() - 130, 0, 50, GAME["gui_height"])
 
     # Render text
-    text = gui_font.render(message_to_render, True, game["gui_text_colour"])
+    text = gui_font.render(message_to_render, True, GAME["gui_text_colour"])
 
     # Draw black background for text
-    pygame.draw.rect(window, game["background_colour"], text_position)
+    pygame.draw.rect(window, GAME["background_colour"], text_position)
 
     # Paste text onto screen
     window.blit(text, text_position)
@@ -200,16 +196,16 @@ def draw_player(window: pygame.Surface):
 
     # Clear out where the player was
     # The redraw function can only use ints, so I floor the actual value and add one to the width to make sure that the whole object is re-drawn
-    old_player_drawing_rect = (floor(old_player_x_position), floor(old_player_y_position), game["player_width"] , game["player_height"] )
+    old_player_drawing_rect = (floor(old_player_x_position), floor(old_player_y_position), GAME["player_width"] , GAME["player_height"] )
 
-    pygame.draw.rect(window, game["background_colour"], old_player_drawing_rect)
+    pygame.draw.rect(window, GAME["background_colour"], old_player_drawing_rect)
     dirty_rectangles.append(old_player_drawing_rect)
 
     # Re-draw the player in it's new position
     # The redraw function can only use ints, so I floor the actual value and add one to the width to make sure that the whole object is re-drawn
-    player_drawing_rect = (floor(player_x_position), floor(player_y_position), game["player_width"] , game["player_height"] )
+    player_drawing_rect = (floor(player_x_position), floor(player_y_position), GAME["player_width"] , GAME["player_height"] )
     
-    pygame.draw.rect(window, game["player_colour"], player_drawing_rect)
+    pygame.draw.rect(window, GAME["player_colour"], player_drawing_rect)
     dirty_rectangles.append(player_drawing_rect)
 
 
@@ -217,42 +213,42 @@ def draw_level_effect_objects(window: pygame.Surface, loop_ticker: int):
     # A function to draw animted level objects to the screen
     # Called every tick
     global dirty_rectangles
-    for object in current_level["objects"]:
+    for object in current_level_objects:
         if object["type"] == "level-end":
             # Draw changing-colour square with border to make it stand out
             colour = hsv_to_rgb(loop_ticker, 0.5, 0.9)
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
             # Draw border
             pygame.draw.rect(
-                window,  border_colour, (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+                window,  border_colour, (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
             # Draw contents
             pygame.draw.rect(
-                window, colour, (object["x"] + 3, object["y"] + game["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
+                window, colour, (object["x"] + 3, object["y"] + GAME["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
             dirty_rectangles.append(
-                (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+                (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
         if object["type"] == "collectable":
             # Draw changing-colour square with border to make it stand out
             colour = current_level["wall_colour"]
             if object["variant"] == "speed":
-                colour = game["speed_powerup_colour"]
+                colour = GAME["speed_powerup_colour"]
 
             border_colour = hsv_to_rgb(loop_ticker, 0.2, 1)
             # Draw border
             pygame.draw.rect(
-                window,  border_colour, (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+                window,  border_colour, (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
             # Draw hole
             pygame.draw.rect(
-                window, game["background_colour"], (object["x"] + 3, object["y"] + game["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
+                window, GAME["background_colour"], (object["x"] + 3, object["y"] + GAME["gui_height"] + 3, object["width"] - 6, object["height"] - 6))
 
             # Draw contents
             pygame.draw.rect(
-                window, colour, (object["x"] + 8, object["y"] + game["gui_height"] + 8, object["width"] - 16, object["height"] - 16))
+                window, colour, (object["x"] + 8, object["y"] + GAME["gui_height"] + 8, object["width"] - 16, object["height"] - 16))
 
             dirty_rectangles.append(
-                (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+                (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
 
 def draw_level(window: pygame.Surface):
@@ -261,13 +257,13 @@ def draw_level(window: pygame.Surface):
     global dirty_rectangles
 
     # Add a black background
-    window.fill(game["background_colour"])
+    window.fill(GAME["background_colour"])
 
     # Draw objects
-    for object in current_level["objects"]:
+    for object in current_level_objects:
         colour = current_level["wall_colour"]
         pygame.draw.rect(window, colour,
-                         (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+                         (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
     dirty_rectangles.append(
         (0, 0, window.get_width(), window.get_height()))
@@ -278,7 +274,6 @@ def draw_win_message(window: pygame.Surface):
     global dirty_rectangles
 
     message = "You win!"
-    colour = game["win_text_colour"]  # Gold
 
     subititle_message = "Press space to play again."
 
@@ -288,22 +283,24 @@ def draw_win_message(window: pygame.Surface):
     time_text_offset = 10
 
     # Draw black background
-    window.fill(game["background_colour"])
+    window.fill(GAME["background_colour"])
 
     # Draw main text in center of window
-    main_text = title_font.render(message, True, colour)
+    main_text = title_font.render(message, True, GAME["win_text_colour"])
     window.blit(main_text, ((window.get_width() // 2) - (main_text.get_width() // 2),
                 (window.get_height() // 2) - (main_text.get_height() // 2)))
 
+    SMALLER_TEXT_COLOUR = GAME["gui_text_colour"]
+    
     # Draw subtitle
     subititle_text = gui_font.render(
-        subititle_message, True, game["gui_text_colour"])
+        subititle_message, True, SMALLER_TEXT_COLOUR)
     window.blit(subititle_text, ((window.get_width() // 2) - (subititle_text.get_width() // 2),
                 (window.get_height() // 2) - (subititle_text.get_height() // 2) + main_text.get_height() + subititle_text_offset))
 
     # Draw time
     time_text = gui_font.render(
-        time_message, True, game["gui_text_colour"])
+        time_message, True, SMALLER_TEXT_COLOUR)
     window.blit(time_text, ((window.get_width() // 2) - (time_text.get_width() // 2),
                 (window.get_height() // 2) - (time_text.get_height() // 2) + main_text.get_height() + time_text_offset))
 
@@ -322,51 +319,49 @@ def draw_everything(window: pygame.Surface):
 
 def reset_player_position(window: pygame.Surface, x_position: Union[int, None], y_position: Union[int, None]):
     # A function to reset the player's position, either to the level-defined starting position or to the bottom center
-    global game
-    global player_x_position
-    global player_y_position
+    global game, player_x_position, player_y_position
 
     # Put the player in the bottom center by defualt
     if x_position is not None:
         player_x_position = x_position
     else:
-        player_x_position = (window.get_width()//2)-(game["player_width"]//2)
+        player_x_position = (window.get_width()//2)-(GAME["player_width"]//2)
 
     if y_position is not None:
         player_y_position = y_position
     else:
-        player_y_position = window.get_height() - game["player_height"]
+        player_y_position = window.get_height() - GAME["player_height"]
 
 
 def load_level(window: pygame.Surface, level_number: int):
     # Loads in a level from the loaded list of levels
-    global current_level
-    global game_won
-    global dirty_rectangles
+    global current_level, current_level_objects, game_won, dirty_rectangles
 
-    if level_number > len(levels)-1:
+    if level_number > len(GAME["levels"])-1:
         game_won = True
 
         # Update window size
         pygame.display.set_mode(
-            (game["width"], game["height"] + game["gui_height"]))
+            (GAME["width"], GAME["height"] + GAME["gui_height"]))
 
         # Update window title
-        pygame.display.set_caption("You win!" + " - " + game["title"])
+        pygame.display.set_caption("You win!" + " - " + GAME["title"])
     else:
         # Update current level variable
-        current_level = levels[level_number]
+        current_level = GAME["levels"][level_number]
+        # .copy() creates a copy of a the list of objects, so that it can be safefly modified
+        current_level_objects = current_level["objects"].copy()
         flags = 0
         if current_level["window_resizable"]:
             flags |= pygame.RESIZABLE  # Binary OR asignment operator
 
         # Update window size
         pygame.display.set_mode(
-            (current_level["width"], current_level["height"] + game["gui_height"]), flags=flags)
+            (current_level["width"], current_level["height"] + GAME["gui_height"]), flags=flags)
 
         # Update window title
         pygame.display.set_caption(
-            current_level["name"] + " - " + game["title"])
+            current_level["name"] + " - " + GAME["title"])
 
         # Reset player position
         # Need to do this before drawing the level otherwise a hole might appear in one of the walls
@@ -389,9 +384,7 @@ def load_level(window: pygame.Surface, level_number: int):
 
 def on_object_hit(window: pygame.Surface, object) -> bool:
     # A function foir handling player collisions with level objects
-    global current_level_number
-    global current_level
-    global player_speed_multiplier
+    global current_level_number, current_level, player_speed_multiplier
 
     # walls just colide
     if object["type"] == "wall":
@@ -416,16 +409,16 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
         # Remove object from list of objects
         # Wrap this in try/catch because when the player moves into a pickup diagonally the collision detection will call this twice
         try:
-            current_level["objects"].remove(object)
+            current_level_objects.remove(object)
         except Exception as exception:
             print(
                 f"The weird thing where it ocasionally crashes when you collect a pickup happened: {exception}")
 
         # Redraw area where box was
-        pygame.draw.rect(window, game["background_colour"], (
-            object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+        pygame.draw.rect(window, GAME["background_colour"], (
+            object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
         dirty_rectangles.append(
-            (object["x"], object["y"] + game["gui_height"], object["width"], object["height"]))
+            (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"]))
 
         return False
 
@@ -433,7 +426,7 @@ def on_object_hit(window: pygame.Surface, object) -> bool:
     return False
 
 # Open game instrutions on game start
-webbrowser.open(instructions_url)
+webbrowser.open(INSTRUCTIONS_URL)
 
 # Start pygame so that it's functions can be used
 pygame.init()
@@ -446,7 +439,7 @@ gui_font = pygame.font.SysFont(None, 18)
 clock = pygame.time.Clock()
 
 # Get the window object, which is used to draw things onto the screen
-window = pygame.display.set_mode((game["width"], game["height"]))
+window = pygame.display.set_mode((GAME["width"], GAME["height"]))
 
 
 # Load the level
@@ -475,7 +468,7 @@ while game_is_running:
     # Tick pygame clock
     # Capping the fps actually makes the game feel way smoother for some reason
     # without the cap it's 5000-1000 fps
-    clock.tick(game["fps_cap"])
+    clock.tick(GAME["fps_cap"])
 
     # Calculate delta time for animation calculations
     current_time = time()
@@ -495,7 +488,7 @@ while game_is_running:
 
     # Check if any of the restart keys are pressed
     # And it's been a few ticks since the game was last restarted
-    if any(keys[key] for key in keymap["start"]) and ticks_since_restart > 500:
+    if any(keys[key] for key in KEYMAP["start"]) and ticks_since_restart > 500:
         # Restart game
 
         ticks_since_restart = 0
@@ -510,7 +503,7 @@ while game_is_running:
         
 
         # Reload game data since some of it gets modified
-        load_game_data()
+        # load_game_data()
 
         # Load first level again
         current_level_number = 0
@@ -540,39 +533,39 @@ while game_is_running:
 
             # Movement left
             # Check if any of the left keys are pressed
-            if any(keys[key] for key in keymap["left"]):
-                player_x_velocity -= game["player_walk_speed"] * \
+            if any(keys[key] for key in KEYMAP["left"]):
+                player_x_velocity -= GAME["player_walk_speed"] * \
                     delta_time * player_speed_multiplier
 
             # Movement right
             # Check if any of the right keys are pressed
-            if any(keys[key] for key in keymap["right"]):
-                player_x_velocity += game["player_walk_speed"] * \
+            if any(keys[key] for key in KEYMAP["right"]):
+                player_x_velocity += GAME["player_walk_speed"] * \
                     delta_time * player_speed_multiplier
 
             # Movement up
             # Check if any of the up keys are pressed
-            if any(keys[key] for key in keymap["up"]):
-                player_y_velocity -= game["player_walk_speed"] * \
+            if any(keys[key] for key in KEYMAP["up"]):
+                player_y_velocity -= GAME["player_walk_speed"] * \
                     delta_time * player_speed_multiplier
 
             # Movement down
             # Check if any of the down keys are pressed
-            if any(keys[key] for key in keymap["down"]):
-                player_y_velocity += game["player_walk_speed"] * \
+            if any(keys[key] for key in KEYMAP["down"]):
+                player_y_velocity += GAME["player_walk_speed"] * \
                     delta_time * player_speed_multiplier
 
             # Apply drag
             # If moving right
             if player_x_velocity > 0:
-                player_x_velocity -= game["drag"] * delta_time
+                player_x_velocity -= GAME["drag"] * delta_time
 
                 # If the player was slowed down too much, cancel all their horizontal velocity
                 if player_x_velocity < 0:
                     player_x_velocity = 0
             # If moving left
             elif player_x_velocity < 0:
-                player_x_velocity += game["drag"] * delta_time
+                player_x_velocity += GAME["drag"] * delta_time
 
                 # If the player was slowed down too much, cancel all their horizontal velocity
                 if player_x_velocity > 0:
@@ -580,34 +573,34 @@ while game_is_running:
 
             # If moving up
             if player_y_velocity > 0:
-                player_y_velocity -= game["drag"] * delta_time
+                player_y_velocity -= GAME["drag"] * delta_time
 
                 # If the player was slowed down too much, cancel all their vertical velocity
                 if player_y_velocity < 0:
                     player_y_velocity = 0
             # If moving down
             elif player_y_velocity < 0:
-                player_y_velocity += game["drag"] * delta_time
+                player_y_velocity += GAME["drag"] * delta_time
 
                 # If the player was slowed down too much, cancel all their vertical velocity
                 if player_y_velocity > 0:
                     player_y_velocity = 0
 
             # Clamp velocity
-            if abs(player_x_velocity) > game["player_max_speed"] * player_speed_multiplier:
+            if abs(player_x_velocity) > GAME["player_max_speed"] * player_speed_multiplier:
                 if player_x_velocity > 0:
-                    player_x_velocity = game["player_max_speed"] * \
+                    player_x_velocity = GAME["player_max_speed"] * \
                         player_speed_multiplier
                 elif player_x_velocity < 0:
-                    player_x_velocity = game["player_max_speed"] * \
+                    player_x_velocity = GAME["player_max_speed"] * \
                         player_speed_multiplier * -1
 
-            if abs(player_y_velocity) > game["player_max_speed"] * player_speed_multiplier:
+            if abs(player_y_velocity) > GAME["player_max_speed"] * player_speed_multiplier:
                 if player_y_velocity > 0:
-                    player_y_velocity = game["player_max_speed"] * \
+                    player_y_velocity = GAME["player_max_speed"] * \
                         player_speed_multiplier
                 elif player_y_velocity < 0:
-                    player_y_velocity = game["player_max_speed"] * \
+                    player_y_velocity = GAME["player_max_speed"] * \
                         player_speed_multiplier * -1
 
             # Apply velocity
@@ -624,16 +617,16 @@ while game_is_running:
                 player_x_position = 0
                 player_x_velocity = 0
             # Right side
-            if player_x_position > window.get_width() - game["player_width"]:
-                player_x_position = window.get_width() - game["player_width"]
+            if player_x_position > window.get_width() - GAME["player_width"]:
+                player_x_position = window.get_width() - GAME["player_width"]
                 player_x_velocity = 0
             # Bottom
-            if player_y_position >= window.get_height()-game["player_height"]:
-                player_y_position = window.get_height()-game["player_height"]
+            if player_y_position >= window.get_height()-GAME["player_height"]:
+                player_y_position = window.get_height()-GAME["player_height"]
                 player_y_velocity = 0
             # Top
-            if player_y_position < 0 + game["gui_height"]:
-                player_y_position = 0 + game["gui_height"]
+            if player_y_position < 0 + GAME["gui_height"]:
+                player_y_position = 0 + GAME["gui_height"]
                 player_y_velocity = 0
 
             # Collision with level objects
@@ -643,20 +636,20 @@ while game_is_running:
             # was on so I would have had to create fake 1-pixel-wide rectandles for each side
             # and test all of them. This just works.
             # [:] creates a copy of the list so that modifiying it doesn't cause issues.
-            for object in current_level["objects"][:]:
+            for object in current_level_objects[:]:
 
                 # Useful for collision detection
-                object_rect = (object["x"], object["y"] + game["gui_height"], object["width"], object["height"])
+                object_rect = (object["x"], object["y"] + GAME["gui_height"], object["width"], object["height"])
 
                 # Y collisions
                 # If the player could be coliding with the object on the X axis...
-                if player_x_position + game["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
+                if player_x_position + GAME["player_width"] > object["x"] and player_x_position < object["x"] + object["width"]:
 
                     # If the player is moving down...
                     if player_y_velocity > 0:
 
                         # And they're inside the object...
-                        if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position + game["player_height"] < object["y"] + game["gui_height"] + object["height"]:
+                        if player_y_position + GAME["player_height"] > object["y"] + GAME["gui_height"] and player_y_position + GAME["player_height"] < object["y"] + GAME["gui_height"] + object["height"]:
 
                             # Check if hitting the object should stop player movement, and do any extra logic
                             stops_movment = on_object_hit(window, object)
@@ -667,7 +660,7 @@ while game_is_running:
                                 # Check if resetting the y position would extract the player from the object
                                 if not simple_do_two_rects_collide(
                                     (player_x_position, reset_player_y_position,
-                                    game["player_width"], game["player_height"]),
+                                    GAME["player_width"], GAME["player_height"]),
                                     object_rect
                                 ):
                                     # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
@@ -679,7 +672,7 @@ while game_is_running:
                     elif player_y_velocity < 0:
 
                         # And they're inside the object...
-                        if player_y_position < object["y"] + object["height"] + game["gui_height"] and player_y_position > object["y"] + game["gui_height"]:
+                        if player_y_position < object["y"] + object["height"] + GAME["gui_height"] and player_y_position > object["y"] + GAME["gui_height"]:
 
                             # Check if hitting the object should stop player movement, and do any extra logic
                             stops_movment = on_object_hit(window, object)
@@ -690,7 +683,7 @@ while game_is_running:
                                 # Check if resetting the y position would extract the player from the object
                                 if not simple_do_two_rects_collide(
                                     (player_x_position, reset_player_y_position,
-                                    game["player_width"], game["player_height"]),
+                                    GAME["player_width"], GAME["player_height"]),
                                     object_rect
                                 ):
                                     # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
@@ -699,13 +692,13 @@ while game_is_running:
 
                 # X collisions
                 # If the player could be coliding with the object on the Y axis...
-                if player_y_position + game["player_height"] > object["y"] + game["gui_height"] and player_y_position < object["y"] + object["height"] + game["gui_height"]:
+                if player_y_position + GAME["player_height"] > object["y"] + GAME["gui_height"] and player_y_position < object["y"] + object["height"] + GAME["gui_height"]:
 
                     # If the player is moving right...
                     if player_x_velocity > 0:
 
                         # And they're inside the object...
-                        if player_x_position + game["player_width"] > object["x"] and player_x_position + game["player_width"] < object["x"] + object["width"]:
+                        if player_x_position + GAME["player_width"] > object["x"] and player_x_position + GAME["player_width"] < object["x"] + object["width"]:
 
                             # Check if hitting the object should stop player movement, and do any extra logic
                             stops_movment = on_object_hit(window, object)
@@ -716,7 +709,7 @@ while game_is_running:
                                 # Check if resetting the X position would extract the player from the object
                                 if not simple_do_two_rects_collide(
                                     (reset_player_x_position, player_y_position,
-                                    game["player_width"], game["player_height"]),
+                                    GAME["player_width"], GAME["player_height"]),
                                     object_rect
                                 ):
                                     # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
@@ -738,7 +731,7 @@ while game_is_running:
                                 # Check if resetting the X position would extract the player from the object
                                 if not simple_do_two_rects_collide(
                                     (reset_player_x_position, player_y_position,
-                                    game["player_width"], game["player_height"]),
+                                    GAME["player_width"], GAME["player_height"]),
                                     object_rect
                                 ):
                                     # Reset their position to their position on the previous tick (when they wern't collising) & cancel their velocity
