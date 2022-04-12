@@ -351,6 +351,9 @@ def load_level(window: pygame.Surface, level_number: int):
         current_level = GAME["levels"][level_number]
         # .copy() creates a copy of a the list of objects, so that it can be safefly modified
         current_level_objects = current_level["objects"].copy()
+        
+        # If the level has been marked as resizable, make the window resizeable by ORing
+        # the bit flags that make the window resizable onto the flags.
         flags = 0
         if current_level["window_resizable"]:
             flags |= pygame.RESIZABLE  # Binary OR asignment operator
