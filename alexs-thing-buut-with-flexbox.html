@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				box-sizing: border-box;
+				font-family: sans-serif;
+			}
+			html,
+			body {
+				width: 100vw;
+				min-height: 100vh;
+			}
+			body {
+				display: flex;
+				flex-direction: column;
+			}
+			nav {
+				position: sticky;
+				width: 100%;
+				background-color: darkblue;
+			}
+			main {
+				flex: 1;
+				display: flex;
+			}
+			header {
+				background-color: palegreen;
+			}
+			aside {
+				width: 300px;
+				background-color: orange;
+			}
+			footer {
+				width: 100%;
+				background-color: rebeccapurple;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>Nav</nav>
+		<header><h1>Header</h1></header>
+		<main>
+			<article>
+				<p>
+					Lorem ipsum dolor sit amet consectetur adipisicing elit.
+					Eligendi rerum deserunt voluptas porro enim officiis quae
+					tenetur quisquam similique beatae ipsam qui ducimus,
+					laudantium cumque molestiae labore doloremque possimus
+					nostrum?
+				</p>
+			</article>
+			<aside>Sidebar</aside>
+		</main>
+		<footer>Fotter</footer>
+	</body>
+</html>
