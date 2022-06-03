@@ -1,0 +1,78 @@
+/* Side resets*/
+* {
+	box-sizing: border-box;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font-family: sans-serif;
+	font-weight: normal;
+	font-size: 16;
+}
+
+:root {
+	/* Spacing and roundness (border-radius) */
+	--spacing: 8px;
+	--rounded: 6px;
+
+	/* Colours */
+	/* Neuteral slate grey. */
+	--neuteral-100: #F9FAFA;
+	--neuteral-200: #F1F3F8;
+	--neuteral-300: #C6CAD4;
+	--neuteral-400: #A6ABB6;
+	--neuteral-500: #7D8493;
+	--neuteral-600: #5D626D;
+	--neuteral-700: #3F444F;
+	--neuteral-800: #343841;
+	--neuteral-900: #282B31;
+	/* Primary lavender  */
+	--primary-100: #F0F0FD;
+	--primary-200: #DBDBFF;
+	--primary-300: #BDBCF7;
+	--primary-400: #9D9CEF;
+	--primary-500: #6967E5;
+	--primary-600: #4845E6;
+	--primary-700: #1A18BB;
+	--primary-800: #1816AA;
+	--primary-900: #090779;
+	/* Attention-grabbing fuchsia  */
+	--attention-100: #FCEDF2;
+	--attention-200: #FBC9DB;
+	--attention-300: #FBA4C3;
+	--attention-400: #F3709F;
+	--attention-500: #FF2272;
+	--attention-600: #E50053;
+	--attention-700: #BC0245;
+	--attention-800: #900034;
+	--attention-900: #720C31;
+	/* Destruvtive orangey-red */
+	--destructive-100: #FEE8E7;
+	--destructive-200: #FBB8B4;
+	--destructive-300: #F98C85;
+	--destructive-400: #F55C52;
+	--destructive-500: #F82E21;
+	--destructive-600: #DA180C;
+	--destructive-700: #A2170E;
+	--destructive-800: #820800;
+	--destructive-900: #640A05;
+	/* Warning brownish-orange */
+	--warning-100: #FEF0E1;
+	--warning-200: #FAD2A3;
+	--warning-300: #F8B76B;
+	--warning-400: #F49E3A;
+	--warning-500: #F78B0C;
+	--warning-600: #E7820C;
+	--warning-700: #CF750C;
+	--warning-800: #AC5E02;
+	--warning-900: #794300;
+	/* Positive lime */
+	--positive-100: #F5FDEE;
+	--positive-200: #D7F4BF;
+	--positive-300: #BCF58A;
+	--positive-400: #9FF45C;
+	--positive-500: #7CDC30;
+	--positive-600: #61C313;
+	--positive-700: #57A917;
+	--positive-800: #3C770C;
+	--positive-900: #234E01;
+}
