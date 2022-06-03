@@ -13,7 +13,7 @@
 	/* Roundness (border-radius) */
 	--rounded: 6px;
 
-	/* Sizing scale */
+	/* Layout sizing scale */
 	--size-xs: 4px;
 	--size-sm: 8px;
 	--size-md: 12px;
@@ -30,6 +30,19 @@
 	--size-10xl: 512px;
 	--size-11xl: 640px;
 	--size-12xl: 768px;
+
+	/* Text sizing scale */
+	--text-xs: 12px;
+	--text-sm: 14px;
+	--text-md: 16px;
+	--text-lg: 18px;
+	--text-xl: 20px;
+	--text-2xl: 24px;
+	--text-3xl: 30px;
+	--text-4xl: 36px;
+	--text-5xl: 48px;
+	--text-6xl: 60px;
+	--text-7xl: 72px;
 
 	/* Colours */
 	/* Neuteral slate grey. */
