@@ -10,9 +10,26 @@
 }
 
 :root {
-	/* Spacing and roundness (border-radius) */
-	--spacing: 8px;
+	/* Roundness (border-radius) */
 	--rounded: 6px;
+
+	/* Sizing scale */
+	--size-xs: 4px;
+	--size-sm: 8px;
+	--size-md: 12px;
+	--size-lg: 16px;
+	--size-xl: 24px;
+	--size-2xl: 32px;
+	--size-3xl: 48px;
+	--size-4xl: 64px;
+	--size-5xl: 96px;
+	--size-6xl: 128px;
+	--size-7xl: 192px;
+	--size-8xl: 256px;
+	--size-9xl: 384px;
+	--size-10xl: 512px;
+	--size-11xl: 640px;
+	--size-12xl: 768px;
 
 	/* Colours */
 	/* Neuteral slate grey. */
