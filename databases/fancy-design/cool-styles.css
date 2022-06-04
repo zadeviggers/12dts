@@ -194,7 +194,7 @@ nav>a:hover {
 }
 
 nav>a:focus-visible {
-	border-color: var(--neuteral-400);
+	border-color: var(--attention-500);
 }
 
 nav>a:focus {
@@ -227,6 +227,10 @@ nav>a:active {
 
 	nav>a {
 		color: var(--neuteral-200)
+	}
+
+	nav>a:hover {
+		border-color: var(--neuteral-600);
 	}
 
 	nav>a:active {
