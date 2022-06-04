@@ -361,7 +361,8 @@
 			veritatis culpa consequatur sequi? Nam aut perferendis iusto ullam!
 		</main>
 		<script>
-			// Script to make the header's "stuck" state targetable by css
+			// Script to make the header's "stuck" state targetable by css because
+			//  for some reason there isn't a :stuck pseudo-class.
 			const header = document.querySelector("#header-wrapper");
 			const headerStickyObserver = new IntersectionObserver(
 				([e]) =>
