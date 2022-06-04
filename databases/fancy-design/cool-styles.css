@@ -161,6 +161,7 @@ header {
 	width: auto;
 	/* Stick to top of viewport when scrolling */
 	position: sticky;
+	top: var(--size-md);
 	/* Lay out children horisontaly */
 	display: flex;
 	/* Wrap content on small screens */
@@ -184,7 +185,8 @@ nav {
 nav>a {
 	color: var(--neuteral-800);
 	text-decoration: none;
-	padding: var(--size-sm);
+	padding: var(--size-xs);
+
 	border-radius: var(--rounded-xs);
 	border: 1px solid transparent;
 }
@@ -210,7 +212,13 @@ nav>a:active {
 		border-radius: var(--rounded-lg);
 		margin: 0;
 		margin-top: var(--size-lg);
+		top: var(--size-lg);
 		padding: var(--size-lg);
+
+	}
+
+	nav>a {
+		padding: var(--size-sm);
 
 	}
 
