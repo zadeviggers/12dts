@@ -124,7 +124,7 @@
 }
 
 *:focus-visible {
-	outline: 2px solid var(--attention-500);
+	outline: 4px solid var(--attention-500);
 }
 
 /* Base page layout */
@@ -211,9 +211,7 @@ nav>a:hover {
 	border-color: var(--primary-600);
 }
 
-nav>a:focus {
-	outline: none;
-}
+
 
 nav>a:active {
 	background-color: var(--primary-300);
