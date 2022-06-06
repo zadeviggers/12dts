@@ -119,12 +119,19 @@
 	accent-color: var(--primary-500);
 }
 
+/* Fancy styles for focus and slections and stuff */
+
 *:focus {
 	outline: none;
 }
 
 *:focus-visible {
 	outline: 4px solid var(--attention-500);
+}
+
+::selection {
+	color: var(--primary-800);
+	background-color: var(--primary-100);
 }
 
 /* Base page layout */
