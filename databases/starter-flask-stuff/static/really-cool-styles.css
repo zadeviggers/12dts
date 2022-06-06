@@ -1,0 +1,43 @@
+/* resset*/
+* {
+	box-sizing: border-box;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: normal;
+	font-size: 16px;
+}
+
+/* base setup*/
+html,
+body,
+main {
+	overflow-x: hidden;
+}
+
+body {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+main {
+	flex: 1;
+}
+
+/* variables */
+:root {
+	--spacing: 10px;
+}
+
+/* layout */
+
+/* floating header */
+header {
+	position: fixed;
+	top: calc(var(--spacing) * 2);
+	margin: auto 0;
+	padding: var(--spacing);
+	border-radius: var(--spacing);
+	box-shadow: 0px 0px 60px 12px rgba(0, 0, 0, 0.44);
+}
