@@ -232,6 +232,21 @@ nav > a:active {
 	}
 }
 
+/* Really small screens like iphone 5/iphne se gen 1 */
+@media screen and (max-width: 350px) {
+	header {
+		flex-direction: column;
+		align-items: center;
+		gap: var(--size-md);
+	}
+	nav {
+		margin-left: 0;
+	}
+	h1 {
+		display: none;
+	}
+}
+
 @media screen and (prefers-color-scheme: dark) {
 	header {
 		background-color: var(--neuteral-800);
