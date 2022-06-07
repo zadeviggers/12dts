@@ -130,22 +130,14 @@
 }
 
 ::selection {
-	color: var(--primary-800);
-	background-color: var(--primary-100);
-}
-header ::selection {
 	color: var(--primary-100);
-	background-color: var(--primary-800);
+	background-color: var(--primary-600);
 }
 
 @media screen and (prefers-color-scheme: dark) {
 	::selection {
 		color: var(--primary-100);
-		background-color: var(--primary-600);
-	}
-	header ::selection {
-		color: var(--primary-600);
-		background-color: var(--primary-100);
+		background-color: var(--primary-800);
 	}
 }
 
