@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{% block title %}{% endblock %} - Zade's website</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='cool-styles.css') }}" />
+	</head>
+
+	<body>
+		<div id="header-wrapper">
+			<header>
+				<h1>{{ self.title() }}</h1>
+				<nav>
+					<a href="#page-1">Page1</a>
+					<a href="#page-2">Page2</a>
+					<a href="#page-3">Page3</a>
+				</nav>
+			</header>
+		</div>
+		<main>{% block content %}{% endblock %}</main>
+		<script>
+			// Script to make the header's "stuck" state targetable by css because
+			//  for some reason there isn't a :stuck pseudo-class.
+			const header = document.querySelector("#header-wrapper");
+			const headerStickyObserver = new IntersectionObserver(
+				([e]) =>
+					e.target.toggleAttribute(
+						"data-stuck",
+						e.intersectionRatio < 1
+					),
+				{ threshold: [1] }
+			);
+
+			headerStickyObserver.observe(header);
+		</script>
+	</body>
+</html>
