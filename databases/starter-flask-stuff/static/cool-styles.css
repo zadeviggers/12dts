@@ -134,6 +134,13 @@
 	background-color: var(--primary-100);
 }
 
+@media screen and (prefers-color-scheme: dark) {
+	::selection {
+		color: var(--primary-100);
+		background-color: var(--primary-600);
+	}
+}
+
 /* Base page layout */
 html {
 	max-width: 100vw;
