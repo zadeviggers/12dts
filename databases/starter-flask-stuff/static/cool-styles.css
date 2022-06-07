@@ -286,3 +286,7 @@ nav > a:active {
 		color: var(--primary-900);
 	}
 }
+
+main {
+	padding-top: var(--size-md);
+}
