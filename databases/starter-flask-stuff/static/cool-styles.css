@@ -56,11 +56,11 @@
 	--primary-200: #dbdbff;
 	--primary-300: #bdbcf7;
 	--primary-400: #9d9cef;
-	--primary-500: #6967e5;
-	--primary-600: #4845e6;
-	--primary-700: #2e18bb;
-	--primary-800: #3316aa;
-	--primary-900: #240779;
+	--primary-500: #8381f2;
+	--primary-600: #7674dd;
+	--primary-700: #615fd2;
+	--primary-800: #4b49a8;
+	--primary-900: #302e72;
 	/* Attention-grabbing fuchsia  */
 	--attention-100: #fcedf2;
 	--attention-200: #fbc9db;
@@ -215,7 +215,7 @@ nav > a {
 }
 
 nav > a:hover {
-	border-color: var(--primary-600);
+	border-color: var(--primary-300);
 }
 
 nav > a:active {
@@ -264,14 +264,16 @@ nav > a:active {
 	}
 
 	nav > a {
-		color: var(--neuteral-200);
+		color: var(--primary-200);
 	}
 
 	nav > a:hover {
-		border-color: var(--neuteral-600);
+		border-color: var(--primary-200);
 	}
 
 	nav > a:active {
-		background-color: var(--neuteral-600);
+		border-color: var(--primary-300);
+		background-color: var(--primary-300);
+		color: var(--primary-900);
 	}
 }
