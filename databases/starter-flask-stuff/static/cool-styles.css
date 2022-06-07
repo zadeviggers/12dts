@@ -186,12 +186,13 @@ header {
 	border-radius: var(--rounded-lg);
 	padding: var(--size-md);
 	background-color: var(--neuteral-200);
-	transition: box-shadow 200ms;
+	transition: box-shadow 500ms;
 }
 
 [data-stuck] header {
+	/* Counteract the -1px top position of the wrapper */
 	margin-top: 1px;
-	box-shadow: 0px 5px 20px -5px var(--primary-400);
+	box-shadow: 0px 2px 20px -5px var(--primary-400);
 }
 
 h1 {
