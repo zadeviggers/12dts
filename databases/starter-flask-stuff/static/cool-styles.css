@@ -336,7 +336,7 @@ table caption {
 
 thead {
 	position: sticky;
-	top: var(--header-offset);
+	top: calc(var(--header-offset) + var(--size-sm));
 	z-index: 10;
 }
 
@@ -346,7 +346,7 @@ thead th {
 	color: var(--neuteral-900);
 	border-top: var(--table-border);
 	background: var(--background);
-	border-bottom-width: 2px;
+	border-bottom-width: 3px;
 }
 
 td,
@@ -392,5 +392,9 @@ tr:last-child td:last-child {
 	caption {
 		caption-side: bottom;
 		color: var(--neuteral-300);
+	}
+
+	thead th {
+		color: var(--neuteral-100);
 	}
 }
