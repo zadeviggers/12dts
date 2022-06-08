@@ -1,0 +1,31 @@
+{% extends 'layout.jinja' %}
+{% block title %}HTML Tags{% endblock %}
+{% block content %}
+    <table>
+        <caption>HTML Tags and CSS properties</caption>
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in tags %}
+                <tr>
+                    <td>
+                        <code>{{ tag["tag"] }}</code>
+                    </td>
+                    <td>
+                        <p>{{ tag["description"] }}</p>
+                    </td>
+                    {#
+                    <td>
+                        <a href="{{ url_for('tags.edit', id=tag.id) }}">Edit</a>
+                        <a href="{{ url_for('tags.delete', id=tag.id) }}">Delete</a>
+                    </td>
+                    #}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

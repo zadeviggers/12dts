@@ -150,7 +150,7 @@ html {
 html,
 body {
 	background-color: var(--neuteral-100);
-	color: var(--neuteral-900);
+	color: var(--neuteral-800);
 }
 
 body {
@@ -172,8 +172,13 @@ body {
 	html,
 	body {
 		background-color: var(--neuteral-900);
-		color: var(--neuteral-100);
+		color: var(--neuteral-200);
 	}
+}
+
+code {
+	font-family: monospace;
+	letter-spacing: 1px;
 }
 
 /* Navbar */
@@ -300,4 +305,74 @@ nav>a:active {
 
 main {
 	padding-top: var(--size-md);
+}
+
+
+
+/* Tables */
+
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+	width: 100%;
+	border-radius: var(--rounded-3xl);
+	--table-border: 1px solid var(--neuteral-300);
+}
+
+/* Table caption */
+caption {
+	caption-side: bottom;
+	color: var(--neuteral-700);
+}
+
+td,
+th {
+	padding: var(--size-sm);
+	border-bottom: var(--table-border);
+	border-right: var(--table-border);
+
+}
+
+/* Headings (first row) */
+th {
+	font-weight: bold;
+	color: var(--neuteral-900);
+	border-top: var(--table-border);
+}
+
+/* Left border on first column */
+tr th:first-child,
+tr td:first-child {
+	border-left: var(--table-border);
+}
+
+/* top-left border-radius */
+tr:first-child th:first-child {
+	border-top-left-radius: 6px;
+}
+
+/* top-right border-radius */
+tr:first-child th:last-child {
+	border-top-right-radius: 6px;
+}
+
+/* bottom-left border-radius */
+tr:last-child td:first-child {
+	border-bottom-left-radius: 6px;
+}
+
+/* bottom-right border-radius */
+tr:last-child td:last-child {
+	border-bottom-right-radius: 6px;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+	table {
+		--table-border: 1px solid var(--neuteral-800);
+	}
+
+	caption {
+		caption-side: bottom;
+		color: var(--neuteral-300);
+	}
 }
