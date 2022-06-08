@@ -168,6 +168,7 @@ body {
 }
 
 @media screen and (prefers-color-scheme: dark) {
+
 	html,
 	body {
 		background-color: var(--neuteral-900);
@@ -219,7 +220,7 @@ nav {
 	margin-left: auto;
 }
 
-nav > a {
+nav>a {
 	color: var(--primary-600);
 	text-decoration: none;
 	padding: var(--size-xs);
@@ -228,11 +229,11 @@ nav > a {
 	border: 1px solid transparent;
 }
 
-nav > a:hover {
+nav>a:hover {
 	border-color: var(--primary-300);
 }
 
-nav > a:active {
+nav>a:active {
 	background-color: var(--primary-300);
 	color: var(--primary-900);
 }
@@ -261,9 +262,11 @@ nav > a:active {
 		justify-content: center;
 		gap: var(--size-md);
 	}
+
 	nav {
 		margin-left: 0;
 	}
+
 	h1 {
 		display: none;
 	}
@@ -278,15 +281,15 @@ nav > a:active {
 		color: var(--primary-200);
 	}
 
-	nav > a {
+	nav>a {
 		color: var(--primary-200);
 	}
 
-	nav > a:hover {
+	nav>a:hover {
 		border-color: var(--primary-200);
 	}
 
-	nav > a:active {
+	nav>a:active {
 		border-color: var(--primary-300);
 		background-color: var(--primary-300);
 		color: var(--primary-900);
