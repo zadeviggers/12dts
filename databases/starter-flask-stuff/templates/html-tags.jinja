@@ -1,10 +1,27 @@
 {% extends 'layout.jinja' %}
-{% block title %}HTML Tags{% endblock %}
+{% block title %}HTML &amp; CSS Tags{% endblock %}
 {% block content %}
+    <p>Here is Sir's table of HTML tags and CSS properties.</p>
+    <p>
+        Lorem ipsum dolor sit amet
+        consectetur adipisicing elit. Molestias incidunt, sint nobis eligendi temporibus
+        numquam minus quos illum autem sed suscipit, ad facilis explicabo vel et minima
+        tempora. Odio, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Officia, eos. Rem iusto nemo optio facere, eveniet beatae eius corrupti officiis
+        consequuntur voluptatum necessitatibus saepe ex minus magnam! Dignissimos, magni
+        harum? Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque vitae
+        voluptatem nisi, voluptate tempore odio corrupti. Quos porro, illo maiores
+        temporibus quaerat dolores provident eaque earum, voluptates harum
+        exercitationem totam. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Consequatur beatae magnam eum eligendi accusamus aliquam modi natus id, quo ex
+        atque voluptas laborum explicabo harum porro blanditiis ullam ipsum optio. Lorem
+        ipsum dolor sit amet consectetur adipisicing elit.
+    </p>
     <table>
         <caption>HTML Tags and CSS properties</caption>
         <thead>
             <tr>
+                <th>Language</th>
                 <th>Tag</th>
                 <th>Description</th>
             </tr>
@@ -13,7 +30,13 @@
             {% for tag in tags %}
                 <tr>
                     <td>
-                        <code>{{ tag["tag"] }}</code>
+                        <p>{{ tag["type"] }}</p>
+                    </td>
+                    <td>
+                        <code>
+                            {# Adds arrow brackets around HTML tags #}
+                            {{ ("&lt;"+tag["tag"]+"&gt;") if tag["type"] == "HTML" else tag["tag"] }}
+                        </code>
                     </td>
                     <td>
                         <p>{{ tag["description"] }}</p>

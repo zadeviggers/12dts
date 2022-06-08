@@ -45,7 +45,8 @@ def html_tags():
     # HTML tags page
     db = get_db()
     cursor = db.cursor()
-    tags = cursor.execute("SELECT * FROM html_tags").fetchall()
+    tags = cursor.execute(
+        "SELECT * FROM html_tags ORDER BY type DESC").fetchall()
     return render_template("html-tags.jinja", tags=tags)
 
 
