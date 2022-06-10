@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, request
 
 # Constants
 DATABASE_NAME = 'zades-data.sqlite'
@@ -43,11 +43,29 @@ def index():
 @app.route("/html-tags")
 def html_tags():
     # HTML tags page
+
+    # Load databse reference
     db = get_db()
     cursor = db.cursor()
-    tags = cursor.execute(
-        "SELECT * FROM html_tags ORDER BY type DESC").fetchall()
-    return render_template("html-tags.jinja", tags=tags)
+
+    tags = None
+    search = False
+
+    # Get search query
+    search_text = request.args.get('search-text')
+
+    if (search_text is not None and search_text.strip() != ""):
+        # If a search paramter was provided, search for tags
+        search = True
+        tags = cursor.execute("SELECT * FROM html_tags WHERE tag LIKE ?",
+                              ("%" + search_text + "%",)).fetchall()
+
+    else:
+        # If there wasn't a seach paramater, get list of all tags
+        tags = cursor.execute(
+            "SELECT * FROM html_tags ORDER BY type DESC").fetchall()
+
+    return render_template("html-tags.jinja", tags=tags, search=search)
 
 
 # Start server, as long as this file is run directly
