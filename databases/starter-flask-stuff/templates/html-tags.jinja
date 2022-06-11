@@ -18,48 +18,54 @@
         ipsum dolor sit amet consectetur adipisicing elit.
     </p>
     <form action="/html-tags" method="get">
-        {% if search == True %}<a href="/html-tags">Clear Search</a>{% endif %}
         <label for="tag-searhbox">
             Search tags:
             <input type="search"
                    name="search-text"
                    id="tag-searhbox"
-                   placeholder="Enter tag name or description">
+                   placeholder="Enter tag name"
+                   value="{{ query }}">
         </label>
-        <button role="submit">Search</button>
+        <div class="form-control-row">
+            {% if search == True %}<a href="/html-tags">Clear Search</a>{% endif %}
+            <button role="submit">Search</button>
+        </div>
     </form>
-    <table>
-        <caption>HTML Tags and CSS properties</caption>
-        <thead>
-            <tr>
-                <th>Language</th>
-                <th>Tag</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tag in tags %}
+    {% if tags|length > 0 %}
+        <table>
+            <caption>HTML Tags and CSS properties</caption>
+            <thead>
                 <tr>
-                    <td>
-                        <p>{{ tag["type"] }}</p>
-                    </td>
-                    <td>
-                        <code>
-                            {# Adds arrow brackets around HTML tags #}
-                            {{ ("&lt;"+tag["tag"]+"&gt;") if tag["type"] == "HTML" else tag["tag"] }}
-                        </code>
-                    </td>
-                    <td>
-                        <p>{{ tag["description"] }}</p>
-                    </td>
-                    {#
-                    <td>
-                        <a href="{{ url_for('tags.edit', id=tag.id) }}">Edit</a>
-                        <a href="{{ url_for('tags.delete', id=tag.id) }}">Delete</a>
-                    </td>
-                    #}
+                    <th>Language</th>
+                    <th>Tag</th>
+                    <th>Description</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for tag in tags %}
+                    <tr>
+                        <td>
+                            <p>{{ tag.type }}</p>
+                        </td>
+                        <td>
+                            <code>
+                                {{ tag.tag }}
+                            </code>
+                        </td>
+                        <td>
+                            <p>{{ tag.description }}</p>
+                        </td>
+                        {#
+                        <td>
+                            <a href="{{ url_for('tags.edit', id=tag.id) }}">Edit</a>
+                            <a href="{{ url_for('tags.delete', id=tag.id) }}">Delete</a>
+                        </td>
+                        #}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No tags found for search query.</p>
+    {% endif %}
 {% endblock %}

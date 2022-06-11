@@ -190,11 +190,6 @@ body {
 	}
 }
 
-code {
-	font-family: monospace;
-	letter-spacing: 1px;
-}
-
 /* Navbar */
 
 #header-wrapper {
@@ -309,6 +304,7 @@ nav > a:active {
 
 	nav > a:hover {
 		border-color: var(--primary-200);
+		color: var(--primary-200);
 	}
 
 	nav > a:active {
@@ -328,18 +324,44 @@ main > * + * {
 	margin-top: var(--size-md);
 }
 
+code {
+	font-family: monospace;
+	letter-spacing: 1px;
+}
+
+.block {
+	display: block;
+}
+
 /* Links */
 a {
 	color: var(--primary-600);
 	text-decoration: none;
 }
+
 a:hover,
 a:focus-visible {
 	text-decoration: underline;
 	color: var(--primary-700);
 }
+
 a:active {
 	color: var(--primary-800);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+	a {
+		color: var(--primary-500);
+	}
+
+	a:hover,
+	a:focus-visible {
+		color: var(--primary-600);
+	}
+
+	a:active {
+		color: var(--primary-400);
+	}
 }
 
 /* Buttons */
@@ -348,9 +370,9 @@ button {
 	padding-bottom: var(--size-sm);
 	padding-left: var(--size-md);
 	padding-right: var(--size-md);
-	border-radius: var(--rounded-md);
+	border-radius: var(--rounded-sm);
 	border: 1px solid var(--primary-200);
-	background-color: var(--primary-100);
+	background-color: transparent;
 	transition-duration: var(--speed-fast);
 }
 
@@ -361,6 +383,23 @@ button:focus-visible {
 
 button:active {
 	background-color: var(--primary-300);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+	button {
+		border-color: var(--primary-600);
+	}
+
+	button:hover,
+	button:focus-visible {
+		background-color: var(--neuteral-700);
+		color: white;
+	}
+
+	button:active {
+		background-color: var(--neuteral-900);
+		color: white;
+	}
 }
 
 /* Tables */
@@ -438,9 +477,8 @@ tr:last-child td:last-child {
 		--table-border: 1px solid var(--neuteral-800);
 	}
 
-	caption {
-		caption-side: bottom;
-		color: var(--neuteral-300);
+	table caption {
+		color: var(--neuteral-400);
 	}
 
 	thead th {
@@ -463,12 +501,21 @@ form > * {
 
 form button[role="submit"] {
 	margin-top: var(--size-md);
+}
+
+.form-control-row {
+	gap: var(--size-md);
+	display: flex;
+	align-items: baseline;
+}
+
+.form-control-row > *:first-child {
 	margin-left: auto;
 }
 
 label {
 	display: flex;
-	gap: var(--size-sm);
+	gap: var(--size-md);
 	align-items: baseline;
 }
 
@@ -492,4 +539,28 @@ input[type="search"]:focus {
 	outline: none;
 	background-color: var(--primary-200);
 	border-color: var(--primary-400);
+}
+
+@media screen and (prefers-color-scheme: dark) {
+	form {
+		background-color: var(--neuteral-800);
+	}
+
+	form > * {
+		color: var(--neuteral-300);
+	}
+
+	input[type="search"] {
+		background-color: var(--neuteral-800);
+		border-color: var(--primary-600);
+	}
+
+	input[type="search"]:hover {
+		border-color: var(--primary-400);
+	}
+
+	input[type="search"]:focus {
+		background-color: var(--neuteral-900);
+		border-color: var(--primary-200);
+	}
 }

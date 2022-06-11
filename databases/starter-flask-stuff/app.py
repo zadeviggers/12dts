@@ -65,7 +65,27 @@ def html_tags():
         tags = cursor.execute(
             "SELECT * FROM html_tags ORDER BY type DESC").fetchall()
 
-    return render_template("html-tags.jinja", tags=tags, search=search)
+    def format_tags(tags):
+        def format_tag(tag):
+            def format_sub_tag(sub_tag):
+                return"&lt;"+sub_tag+"&gt;"
+
+            return " ".join(list(map(format_sub_tag,
+                                     tag["tag"].split(", "))))
+
+        return list(map(lambda tag: {
+            'tag': format_tag(tag) if tag["type"] == "HTML" else tag["tag"],
+            'type': tag['type'],
+            'description': tag["description"]
+        }, tags))
+
+    formatted_tags = format_tags(tags)
+
+    return render_template("html-tags.jinja",
+                           tags=formatted_tags,
+                           search=search,
+                           # If search_text is none, replace it with an empty string
+                           query=search_text or "")
 
 
 # Start server, as long as this file is run directly
