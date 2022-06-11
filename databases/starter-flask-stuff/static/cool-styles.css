@@ -415,6 +415,7 @@ table {
 /* Table caption */
 table caption {
 	caption-side: bottom;
+	margin-top: var(--size-sm);
 	color: var(--neuteral-700);
 }
 
