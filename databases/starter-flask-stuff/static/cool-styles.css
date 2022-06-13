@@ -114,6 +114,9 @@
 	--header-offset: calc(
 		var(--header-height) + calc(2 * var(--header-padding))
 	);
+
+	--background: var(--neuteral-100);
+	--text-colour: var(--neuteral-800);
 }
 
 /* Size/layout resets*/
@@ -128,6 +131,7 @@
 	font-size: var(--text-md);
 	/* Tell browser that the site supports light and dark mode */
 	color-scheme: light dark;
+	color: var(--text-colour);
 	/* Make form elements use theme colours */
 	accent-color: var(--primary-500);
 }
@@ -162,10 +166,7 @@ html {
 
 html,
 body {
-	--background: var(--neuteral-100);
-	--text-colour: var(--neuteral-800);
 	background: var(--background);
-	color: var(--text-colour);
 }
 
 body {
@@ -183,8 +184,7 @@ body {
 }
 
 @media screen and (prefers-color-scheme: dark) {
-	html,
-	body {
+	:root {
 		--background: var(--neuteral-900);
 		--text-colour: var(--neuteral-200);
 	}
