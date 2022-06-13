@@ -21,9 +21,9 @@ changeLayoutDropdown.addEventListener("change", (event) => {
 function filterTags(tags, filterMode) {
 	switch (filterMode) {
 		case "html":
-			return tags.filter((tag) => tag.type === "html");
+			return tags.filter((tag) => tag.type === "HTML");
 		case "css":
-			return tags.filter((tag) => tag.type === "css");
+			return tags.filter((tag) => tag.type === "CSS");
 		case "all":
 			return tags;
 		default:
