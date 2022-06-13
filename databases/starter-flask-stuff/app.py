@@ -75,7 +75,7 @@ def html_tags():
 
         return list(map(lambda tag: {
             'tag': format_tag(tag) if tag["type"] == "HTML" else tag["tag"],
-            'type': tag['type'],
+            'type': tag['type'].lower(),
             'description': tag["description"]
         }, tags))
 
