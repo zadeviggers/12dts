@@ -35,18 +35,22 @@
         {% if tags|length > 0 %}
             <label for="change-layout-dropdown">
                 Tags data layout mode:
-                <select name="change-layout-dropdown" id="change-layout-dropdown">
-                    <option value="grid">
-                        Grid
-                    </option>
+                <select name="change-layout-dropdown"
+                        id="change-layout-dropdown"
+                        value="table">
                     <option value="table">
                         Table
+                    </option>
+                    <option value="grid">
+                        Grid
                     </option>
                 </select>
             </label>
             <label for="change-tag-filter-dropdown">
                 Show tag types:
-                <select name="change-tag-filter-dropdown" id="change-tag-filter-dropdown">
+                <select name="change-tag-filter-dropdown"
+                        id="change-tag-filter-dropdown"
+                        value="all">
                     <option value="all">
                         All
                     </option>

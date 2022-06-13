@@ -3,7 +3,7 @@ const changeLayoutDropdown = document.getElementById("change-layout-dropdown");
 const changeTagFilterDropdown = document.getElementById(
 	"change-tag-filter-dropdown"
 );
-let currentLayout = "grid";
+let currentLayout = "table";
 let currentFilterMode = "all";
 let filteredSortedTags = tagsData;
 

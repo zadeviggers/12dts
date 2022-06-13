@@ -517,6 +517,12 @@ tr:last-child td:last-child {
 	color: var(--neuteral-400);
 }
 
+@media screen and (prefers-color-scheme: dark) {
+	.card .card-heading {
+		color: var(--neuteral-300);
+	}
+}
+
 .card .card-subheading {
 	color: var(--primary-400);
 }
