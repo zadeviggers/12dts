@@ -17,55 +17,66 @@
         atque voluptas laborum explicabo harum porro blanditiis ullam ipsum optio. Lorem
         ipsum dolor sit amet consectetur adipisicing elit.
     </p>
-    <form action="/html-tags" method="get">
-        <label for="tag-searhbox">
-            Search tags:
-            <input type="search"
-                   name="search-text"
-                   id="tag-searhbox"
-                   placeholder="Enter tag name"
-                   value="{{ query }}">
-        </label>
-        <div class="form-control-row">
-            {% if search == True %}<a href="/html-tags">Clear Search</a>{% endif %}
-            <button role="submit">Search</button>
-        </div>
-    </form>
-    {% if tags|length > 0 %}
-        <table>
-            <caption>HTML Tags and CSS properties</caption>
-            <thead>
-                <tr>
-                    <th>Language</th>
-                    <th>Tag</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for tag in tags %}
-                    <tr>
-                        <td>
-                            <p>{{ tag.type }}</p>
-                        </td>
-                        <td>
-                            <code>
-                                {{ tag.tag }}
-                            </code>
-                        </td>
-                        <td>
-                            <p>{{ tag.description }}</p>
-                        </td>
-                        {#
-                        <td>
-                            <a href="{{ url_for('tags.edit', id=tag.id) }}">Edit</a>
-                            <a href="{{ url_for('tags.delete', id=tag.id) }}">Delete</a>
-                        </td>
-                        #}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No tags found for search query.</p>
-    {% endif %}
+    <section>
+        <form action="/html-tags" method="get">
+            <label for="tag-searhbox">
+                Search tags:
+                <input type="search"
+                       name="search-text"
+                       id="tag-searhbox"
+                       placeholder="Enter tag name"
+                       value="{{ query }}">
+            </label>
+            <div class="form-control-row">
+                {% if search == True %}<a href="/html-tags">Clear Search</a>{% endif %}
+                <button role="submit">Search</button>
+            </div>
+        </form>
+        {% if tags|length > 0 %}
+            <label for="change-layout-dropdown">
+                Tags data layout mode:
+                <select name="change-layout-dropdown" id="change-layout-dropdown">
+                    <option value="table">
+                        Table
+                    </option>
+                    <option value="grid">
+                        Grid
+                    </option>
+                </select>
+            </label>
+            <div id="tags-data-wrapper">
+                <table>
+                    <caption>HTML Tags and CSS properties</caption>
+                    <thead>
+                        <tr>
+                            <th>Language</th>
+                            <th>Tag</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tag in tags %}
+                            <tr>
+                                <td>
+                                    <p>{{ tag.type }}</p>
+                                </td>
+                                <td>
+                                    <code>
+                                        {{ tag.tag }}
+                                    </code>
+                                </td>
+                                <td>
+                                    <p>{{ tag.description }}</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <script>const tagsData = {{ tags }};</script>
+            <script src="/static/tag-data-script.js"></script>
+        {% else %}
+            <p>No tags found for search query.</p>
+        {% endif %}
+    </section>
 {% endblock %}
