@@ -151,6 +151,10 @@
 	background-color: var(--primary-600);
 }
 
+strong {
+	font-weight: bold;
+}
+
 @media screen and (prefers-color-scheme: dark) {
 	::selection {
 		color: var(--primary-100);
