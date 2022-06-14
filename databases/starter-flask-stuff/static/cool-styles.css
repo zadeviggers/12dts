@@ -428,12 +428,15 @@ thead {
 
 /* Headings (first row) */
 thead th {
-	font-weight: bold;
 	color: var(--neuteral-900);
 	border-top: var(--table-border);
 	background: var(--background);
 	border-bottom: var(--table-border);
 	border-bottom-width: 3px;
+}
+
+thead th * {
+	font-weight: bold;
 }
 
 td,

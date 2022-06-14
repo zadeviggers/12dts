@@ -29,7 +29,7 @@
             </label>
             <div class="form-control-row">
                 {% if search == True %}<a href="/html-tags">Clear Search</a>{% endif %}
-                <button role="submit">Search</button>
+                <button type="submit">Search</button>
             </div>
         </form>
         {% if tags|length > 0 %}
@@ -67,9 +67,15 @@
                     <caption>HTML Tags and CSS properties</caption>
                     <thead>
                         <tr>
-                            <th>Language</th>
-                            <th>Tag</th>
-                            <th>Description</th>
+                            <th>
+                                <button type="button" id="sort-type">Type</button>
+                            </th>
+                            <th>
+                                <button type="button" id="sort-tag">Tag</button>
+                            </th>
+                            <th>
+                                <button type="button" id="sort-description">Description</button>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
