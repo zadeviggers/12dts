@@ -1,0 +1,93 @@
+{% extends 'layout.jinja' %}
+{% block title %}Game Sales{% endblock %}
+{% block content %}
+    <section>
+        <form action="/game-sales" method="get">
+            <label for="game-searhbox">
+                Search games:
+                <input type="search"
+                       name="search-text"
+                       id="game-searhbox"
+                       placeholder="Enter game name"
+                       value="{{ query }}">
+            </label>
+            <div class="form-control-row">
+                {% if search == True %}<a href="/game-sales">Clear Search</a>{% endif %}
+                <button type="submit">Search</button>
+            </div>
+        </form>
+        {% if games|length > 0 %}
+            <label for="change-layout-dropdown">
+                Game sales layout mode:
+                <select name="change-layout-dropdown"
+                        id="change-layout-dropdown"
+                        value="table">
+                    <option value="table">
+                        Table
+                    </option>
+                    <option value="grid">
+                        Grid
+                    </option>
+                </select>
+            </label>
+            <label for="change-game-filter-dropdown">
+                Show game platforms:
+                <select name="change-game-filter-dropdown"
+                        id="change-game-filter-dropdown"
+                        value="all">
+                    <option value="all">
+                        All
+                    </option>
+                    <option value="ps">
+                        Play Station
+                    </option>
+                    <option value="nintendo">
+                        Nintendo
+                    </option>
+                    <option value="xbox">
+                        XBox
+                    </option>
+                </select>
+            </label>
+            <div id="games-data-wrapper">
+                <table>
+                    <caption>HTML games and CSS properties</caption>
+                    <thead>
+                        <tr>
+                            <th>
+                                <button type="button" id="sort-type">Type</button>
+                            </th>
+                            <th>
+                                <button type="button" id="sort-game">game</button>
+                            </th>
+                            <th>
+                                <button type="button" id="sort-description">Description</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for game in games %}
+                            <tr>
+                                <td>
+                                    <p>{{ game.type }}</p>
+                                </td>
+                                <td>
+                                    <code>
+                                        {{ game.game }}
+                                    </code>
+                                </td>
+                                <td>
+                                    <p>{{ game.description }}</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <script>const gamesData = {{ games }};</script>
+            <script src="/static/game-sales-script.js"></script>
+        {% else %}
+            <p>No games found for search query.</p>
+        {% endif %}
+    </section>
+{% endblock %}
