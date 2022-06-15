@@ -61,15 +61,16 @@ function filterGames(games) {
 					"3DS",
 					"GC",
 					"WiiU",
-				].includes(game.Plaform)
+				].includes(game.Platform)
 			);
+
 		case "ps":
 			return games.filter((game) =>
-				["PS", "PS2", "PS3", "PS4", "PSP"].includes(game.Plaform)
+				["PS", "PS2", "PS3", "PS4", "PSP"].includes(game.Platform)
 			);
 		case "xbox":
 			return games.filter((game) =>
-				["X360", "XB", "XOne"].includes(game.Plaform)
+				["X360", "XB", "XOne"].includes(game.Platform)
 			);
 		case "all":
 			return games;
@@ -170,7 +171,7 @@ function renderGamesDataTable(games) {
 		<p>${game.Publisher}</p>
 	</td>
 	<td>
-		<p>${game.Global}</p>
+		<p>${game.Global}mm</p>
 	</td>
 </tr>`
 			)
