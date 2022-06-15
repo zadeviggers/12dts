@@ -19,9 +19,7 @@
         {% if games|length > 0 %}
             <label for="change-layout-dropdown">
                 Game sales layout mode:
-                <select name="change-layout-dropdown"
-                        id="change-layout-dropdown"
-                        value="table">
+                <select id="change-layout-dropdown" value="table">
                     <option value="table">
                         Table
                     </option>
@@ -32,7 +30,7 @@
             </label>
             <label for="change-game-filter-dropdown">
                 Show game platforms:
-                <select name="brand" id="change-game-filter-dropdown">
+                <select name="brand" id="change-game-filter-dropdown" value="all">
                     <option value="all">
                         All
                     </option>

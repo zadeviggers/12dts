@@ -189,10 +189,10 @@ function renderGamesDagamerid(games) {
 			(game) =>
 				`<div class="card">
                     <div class="card-header">
-                        <strong class="card-heading">${game.game}</strong>
-                        <span class="card-subheading">${game.type}</span>
+                        <strong class="card-heading">${game.GameTitle}</strong>
+                        <span class="card-subheading">${game.Platform}</span>
                     </div>
-                    <p class="card-body">${game.description}</p>
+                    <p class="card-body">${game.Category} - published by ${game.Publisher} - ${game.Global}mm global profit</p>
                 </div>`
 		)
 		.join("\n")}
