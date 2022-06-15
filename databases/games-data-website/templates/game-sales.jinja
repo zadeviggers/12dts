@@ -99,7 +99,9 @@
             <script>const gamesData = {{ games }};</script>
             <script src="/static/game-sales-script.js"></script>
         {% else %}
-            <p>No games found for search query.</p>
+            <div id="games-data-wrapper">
+                <p>No games found for search query.</p>
+            </div>
         {% endif %}
     </section>
 {% endblock %}

@@ -181,6 +181,10 @@ body {
 	padding: var(--size-sm);
 }
 
+#games-data-wrapper {
+	text-align: center;
+}
+
 /* CSS variables don't work in media queries yet :( */
 @media screen and (min-width: 768px) {
 	body {
