@@ -4,6 +4,7 @@ const changeGameFilterDropdown = document.getElementById(
 	"change-game-filter-dropdown"
 );
 const searchParams = new URLSearchParams(location.search);
+const searchText = searchParams.get("search-text");
 let currentLayout = "table";
 let currentFilterMode = searchParams.get("brand") || "all";
 let filteredSortedGames = gamesData;
@@ -16,7 +17,7 @@ changeGameFilterDropdown.addEventListener("change", (event) => {
 	currentFilterMode = event.target.value;
 	const pushStateSearchParams = new URLSearchParams();
 	pushStateSearchParams.set("brand", currentFilterMode);
-	pushStateSearchParams.set("search-text", searchParams.get("search-text"));
+	if (searchText) pushStateSearchParams.set("search-text", searchText);
 	history.pushState(
 		{},
 		null,
