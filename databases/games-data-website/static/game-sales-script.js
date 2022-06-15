@@ -3,13 +3,15 @@ const changeLayoutDropdown = document.getElementById("change-layout-dropdown");
 const changeGameFilterDropdown = document.getElementById(
 	"change-game-filter-dropdown"
 );
+const searchParams = new URLSearchParams(location.search);
 let currentLayout = "table";
-let currentFilterMode = "all";
+let currentFilterMode = searchParams.get("brand") || "all";
 let filteredSortedGames = gamesData;
 let sortDirection = "down";
 let sortColumn = "type";
 
 // "Hydrate" the UI
+changeGameFilterDropdown.value = currentFilterMode;
 changeGameFilterDropdown.addEventListener("change", (event) => {
 	currentFilterMode = event.target.value;
 	filteredSortedGames = applySortingAndFiltering();
@@ -33,14 +35,33 @@ function applySortingAndFiltering() {
 
 function filterGames(games) {
 	switch (currentFilterMode) {
+		case "pc":
+			return games.filter((game) => game.Platform === "PC");
+		case "atari":
+			return games.filter((game) => game.Platform === "2600");
 		case "nintendo":
 			return games.filter((game) =>
-				["Wii", "GB", "DS"].includes(game.plaform)
+				[
+					"Wii",
+					"GB",
+					"DS",
+					"N64",
+					"NES",
+					"SNES",
+					"GBA",
+					"3DS",
+					"GC",
+					"WiiU",
+				].includes(game.Plaform)
 			);
 		case "ps":
-			return games.filter((game) => game.type === "HTML");
+			return games.filter((game) =>
+				["PS", "PS2", "PS3", "PS4", "PSP"].includes(game.Plaform)
+			);
 		case "xbox":
-			return games.filter((game) => game.type === "CSS");
+			return games.filter((game) =>
+				["X360", "XB", "XOne"].includes(game.Plaform)
+			);
 		case "all":
 			return games;
 		default:
@@ -87,12 +108,20 @@ function makeSortHandler(column) {
 function setupSortingButtons() {
 	if (currentLayout !== "table") return null;
 
-	const typeButton = document.getElementById("sort-type");
-	const gameButton = document.getElementById("sort-game");
-	const descriptionButton = document.getElementById("sort-description");
-	typeButton.addEventListener("click", makeSortHandler("type"));
-	gameButton.addEventListener("click", makeSortHandler("raw_game")); // Raw game is the game name without the <>
-	descriptionButton.addEventListener("click", makeSortHandler("description"));
+	const titleButton = document.getElementById("sort-title");
+	titleButton.addEventListener("click", makeSortHandler("GameTitle"));
+
+	const categoryButton = document.getElementById("sort-category");
+	categoryButton.addEventListener("click", makeSortHandler("Category"));
+
+	const platformButton = document.getElementById("sort-platform");
+	platformButton.addEventListener("click", makeSortHandler("Platform"));
+
+	const publisherButton = document.getElementById("sort-publisher");
+	publisherButton.addEventListener("click", makeSortHandler("Publisher"));
+
+	const salesGlobalButton = document.getElementById("sort-sales-global");
+	salesGlobalButton.addEventListener("click", makeSortHandler("Global"));
 }
 
 function renderGamesDataTable(games) {
@@ -101,13 +130,19 @@ function renderGamesDataTable(games) {
     <thead>
 		<tr>
 			<th>
-				<button type="button" id="sort-type">Type</button>
+				<button type="button" id="sort-title">Game</button>
 			</th>
 			<th>
-				<button type="button" id="sort-game">Game</button>
+				<button type="button" id="sort-category">Category</button>
 			</th>
 			<th>
-				<button type="button" id="sort-description">Description</button>
+				<button type="button" id="sort-platform">Platform</button>
+			</th>
+			<th>
+				<button type="button" id="sort-publisher">Publisher</button>
+			</th>
+			<th>
+				<button type="button" id="sort-sales-global">Global sales</button>
 			</th>
 		</tr>
     </thead>
@@ -115,18 +150,22 @@ function renderGamesDataTable(games) {
         ${games
 			.map(
 				(game) => `<tr>
-                <td>
-                    <p>${game.type}</p>
-                </td>
-                <td>
-                    <code>
-                        ${game.game}
-                    </code>
-                </td>
-                <td>
-                    <p>${game.description}</p>
-                </td>
-            </tr>`
+	<td>
+		<p>${game.GameTitle}</p>
+	</td>
+	<td>
+		<p>${game.Category}</p>
+	</td>
+	<td>
+		<p>${game.Platform}</p>
+	</td>
+	<td>
+		<p>${game.Publisher}</p>
+	</td>
+	<td>
+		<p>${game.Global}</p>
+	</td>
+</tr>`
 			)
 			.join("\n")}
     </tbody>

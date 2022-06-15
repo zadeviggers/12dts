@@ -32,20 +32,24 @@
             </label>
             <label for="change-game-filter-dropdown">
                 Show game platforms:
-                <select name="change-game-filter-dropdown"
-                        id="change-game-filter-dropdown"
-                        value="all">
+                <select name="brand" id="change-game-filter-dropdown">
                     <option value="all">
                         All
+                    </option>
+                    <option value="pc">
+                        PC
                     </option>
                     <option value="ps">
                         Play Station
                     </option>
+                    <option value="xbox">
+                        XBox
+                    </option>
                     <option value="nintendo">
                         Nintendo
                     </option>
-                    <option value="xbox">
-                        XBox
+                    <option value="atari">
+                        Atari
                     </option>
                 </select>
             </label>
@@ -55,13 +59,19 @@
                     <thead>
                         <tr>
                             <th>
-                                <button type="button" id="sort-type">Type</button>
+                                <button type="button" id="sort-title">Game</button>
                             </th>
                             <th>
-                                <button type="button" id="sort-game">game</button>
+                                <button type="button" id="sort-category">Category</button>
                             </th>
                             <th>
-                                <button type="button" id="sort-description">Description</button>
+                                <button type="button" id="sort-platform">Platform</button>
+                            </th>
+                            <th>
+                                <button type="button" id="sort-publisher">Publisher</button>
+                            </th>
+                            <th>
+                                <button type="button" id="sort-sales-global">Global sales</button>
                             </th>
                         </tr>
                     </thead>
@@ -69,15 +79,19 @@
                         {% for game in games %}
                             <tr>
                                 <td>
-                                    <p>{{ game.type }}</p>
+                                    <p>{{ game.GameTitle }}</p>
                                 </td>
                                 <td>
-                                    <code>
-                                        {{ game.game }}
-                                    </code>
+                                    <p>{{ game.Category }}</p>
                                 </td>
                                 <td>
-                                    <p>{{ game.description }}</p>
+                                    <p>{{ game.Platform }}</p>
+                                </td>
+                                <td>
+                                    <p>{{ game.Publisher }}</p>
+                                </td>
+                                <td>
+                                    <p>{{ game.Global }}</p>
                                 </td>
                             </tr>
                         {% endfor %}

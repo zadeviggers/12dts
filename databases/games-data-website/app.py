@@ -65,25 +65,8 @@ def html_games():
         games = cursor.execute(
             "SELECT * FROM game_data ORDER BY Year DESC").fetchall()
 
-    def format_games(games):
-        def format_game(game):
-            def format_sub_game(sub_game):
-                return"&lt;"+sub_game+"&gt;"
-
-            return " ".join(list(map(format_sub_game,
-                                     game["game"].split(", "))))
-
-        return list(map(lambda game: {
-            'game': format_game(game) if game["type"] == "HTML" else game["game"],
-            'raw_game': game["game"],
-            'type': game['type'].upper(),
-            'description': game["description"]
-        }, games))
-
-    formatted_games = format_games(games)
-
     return render_template("game-sales.jinja",
-                           games=formatted_games,
+                           games=games,
                            search=search,
                            # If search_text is none, replace it with an empty string
                            query=search_text or "")
