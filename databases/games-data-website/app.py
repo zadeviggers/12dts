@@ -76,4 +76,5 @@ def html_games():
 
 
 # Start server, as long as this file is run directly
-app.run(port=PORT, debug=DEBUG)
+if __name__ == "__main__":
+    app.run(port=PORT, debug=DEBUG)
