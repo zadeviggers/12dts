@@ -1,8 +1,11 @@
 import sqlite3
 from flask import Flask, render_template, g, request
+import os
 
 # Constants
 DATABASE_NAME = 'games-data.sqlite'
+DEBUG = False if 'PORT' in os.environ else True
+PORT = os.environ["PORT"] or 6969
 
 
 # Create server application
@@ -74,4 +77,4 @@ def html_games():
 
 # Start server, as long as this file is run directly
 if __name__ == "__main__":
-    app.run(port=6969, debug=True)
+    app.run(port=PORT, debug=DEBUG)
