@@ -5,7 +5,7 @@ import os
 # Constants
 DATABASE_NAME = 'games-data.sqlite'
 DEBUG = False if 'ON_HEROKU' in os.environ else True
-PORT = os.environ["PORT"] or 6969
+PORT = 6969 if DEBUG else os.environ["PORT"]
 
 
 # Create server application
@@ -76,5 +76,4 @@ def html_games():
 
 
 # Start server, as long as this file is run directly
-if __name__ == "__main__":
-    app.run(port=PORT, debug=DEBUG)
+app.run(port=PORT, debug=DEBUG)
