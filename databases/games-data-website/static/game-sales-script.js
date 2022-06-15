@@ -14,6 +14,13 @@ let sortColumn = "type";
 changeGameFilterDropdown.value = currentFilterMode;
 changeGameFilterDropdown.addEventListener("change", (event) => {
 	currentFilterMode = event.target.value;
+	history.pushState(
+		{},
+		null,
+		`/game-sales${
+			currentFilterMode !== "all" ? `?brand=${currentFilterMode}` : ""
+		}`
+	);
 	filteredSortedGames = applySortingAndFiltering();
 	renderGamesData(filteredSortedGames);
 });
@@ -34,6 +41,8 @@ function applySortingAndFiltering() {
 }
 
 function filterGames(games) {
+	console.info(`Filtering to platofrm: ${currentFilterMode}`);
+
 	switch (currentFilterMode) {
 		case "pc":
 			return games.filter((game) => game.Platform === "PC");
@@ -82,11 +91,9 @@ function sortGames(games) {
 
 function renderGamesData(games) {
 	if (currentLayout === "table") {
-		console.info("Rendering table layout");
 		wrapper.innerHTML = renderGamesDataTable(games);
 		setupSortingButtons();
 	} else if (currentLayout === "grid") {
-		console.info("Rendering grid layout");
 		wrapper.innerHTML = renderGamesDagamerid(games);
 	}
 }
