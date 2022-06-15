@@ -4,7 +4,7 @@ import os
 
 # Constants
 DATABASE_NAME = 'games-data.sqlite'
-DEBUG = False if 'PORT' in os.environ else True
+DEBUG = False if 'ON_HEROKU' in os.environ else True
 PORT = os.environ["PORT"] or 6969
 
 
