@@ -171,6 +171,8 @@ html {
 html,
 body {
 	background: var(--background);
+	max-width: 100vw;
+	/* overflow-x: hidden; */
 }
 
 body {
@@ -416,7 +418,8 @@ button:active {
 table {
 	border-collapse: separate;
 	border-spacing: 0;
-	width: 100%;
+	/* width: 100%; */
+	overflow-x: auto;
 	border-radius: var(--rounded-3xl);
 	--table-border: 1px solid var(--neuteral-300);
 }
@@ -568,6 +571,7 @@ form button[role="submit"] {
 
 label {
 	display: flex;
+	flex-wrap: wrap;
 	gap: var(--size-md);
 	align-items: baseline;
 }
