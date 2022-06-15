@@ -14,12 +14,13 @@ let sortColumn = "type";
 changeGameFilterDropdown.value = currentFilterMode;
 changeGameFilterDropdown.addEventListener("change", (event) => {
 	currentFilterMode = event.target.value;
+	const pushStateSearchParams = new URLSearchParams();
+	pushStateSearchParams.set("brand", currentFilterMode);
+	pushStateSearchParams.set("search-text", searchParams.get("search-text"));
 	history.pushState(
 		{},
 		null,
-		`/game-sales${
-			currentFilterMode !== "all" ? `?brand=${currentFilterMode}` : ""
-		}`
+		`/game-sales${"?" + pushStateSearchParams.toString()}`
 	);
 	filteredSortedGames = applySortingAndFiltering();
 	renderGamesData(filteredSortedGames);
@@ -91,12 +92,13 @@ function sortGames(games) {
 }
 
 function renderGamesData(games) {
-	if (currentLayout === "table") {
+	if (games.length === 0)
+		wrapper.innerHTML = `<p>No games found for search query/filter options.</p>`;
+	else if (currentLayout === "table") {
 		wrapper.innerHTML = renderGamesDataTable(games);
 		setupSortingButtons();
-	} else if (currentLayout === "grid") {
+	} else if (currentLayout === "grid")
 		wrapper.innerHTML = renderGamesDagamerid(games);
-	}
 }
 
 function makeSortHandler(column) {
