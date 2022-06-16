@@ -1,0 +1,1 @@
+web: gunicorn --chdir ./databases/games-data-website app:app

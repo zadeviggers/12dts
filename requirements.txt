@@ -1,3 +1,4 @@
 colorama
 pygame
 Flask
+gunicorn
