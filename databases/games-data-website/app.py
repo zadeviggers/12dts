@@ -5,7 +5,7 @@ import os
 # Constants
 DATABASE_NAME = 'games-data.sqlite'
 DEBUG = False if 'ON_HEROKU' in os.environ else True
-PORT = 6969 if DEBUG else os.environ["PORT"]
+PORT = os.environ.get("PORT", 6969)
 
 
 # Create server application
