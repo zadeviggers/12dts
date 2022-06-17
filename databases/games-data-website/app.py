@@ -60,13 +60,13 @@ def html_games():
     if (search_text is not None and search_text.strip() != ""):
         # If a search paramter was provided, search for games
         search = True
-        games = cursor.execute("SELECT * FROM game_data WHERE GameTitle LIKE ? ORDER BY Year DESC",
+        games = cursor.execute("SELECT GameTitle, Year, Category, Platform, Publisher, Global FROM game_data WHERE GameTitle LIKE ? ORDER BY Year DESC",
                                ("%" + search_text + "%",)).fetchall()
 
     else:
         # If there wasn't a seach paramater, get list of all games
         games = cursor.execute(
-            "SELECT * FROM game_data ORDER BY Year DESC").fetchall()
+            "SELECT GameTitle, Year, Category, Platform, Publisher, Global FROM game_data ORDER BY Year DESC").fetchall()
 
     updated_games = []
     for game in games:
