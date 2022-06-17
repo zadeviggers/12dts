@@ -47,9 +47,9 @@ function filterGames(games) {
 
 	switch (currentFilterMode) {
 		case "pc":
-			return games.filter((game) => game.Platform === "PC");
+			return games.filter((game) => game.platform === "PC");
 		case "atari":
-			return games.filter((game) => game.Platform === "2600");
+			return games.filter((game) => game.platform === "2600");
 		case "nintendo":
 			return games.filter((game) =>
 				[
@@ -63,16 +63,16 @@ function filterGames(games) {
 					"3DS",
 					"GC",
 					"WiiU",
-				].includes(game.Platform)
+				].includes(game.platform)
 			);
 
 		case "ps":
 			return games.filter((game) =>
-				["PS", "PS2", "PS3", "PS4", "PSP"].includes(game.Platform)
+				["PS", "PS2", "PS3", "PS4", "PSP"].includes(game.platform)
 			);
 		case "xbox":
 			return games.filter((game) =>
-				["X360", "XB", "XOne"].includes(game.Platform)
+				["X360", "XB", "XOne"].includes(game.platform)
 			);
 		case "all":
 			return games;
@@ -120,19 +120,22 @@ function setupSortingButtons() {
 	if (currentLayout !== "table") return null;
 
 	const titleButton = document.getElementById("sort-title");
-	titleButton.addEventListener("click", makeSortHandler("GameTitle"));
+	titleButton.addEventListener("click", makeSortHandler("title"));
 
-	const categoryButton = document.getElementById("sort-category");
-	categoryButton.addEventListener("click", makeSortHandler("Category"));
+	const categoryButton = document.getElementById("sort-genre");
+	categoryButton.addEventListener("click", makeSortHandler("genre"));
 
 	const platformButton = document.getElementById("sort-platform");
-	platformButton.addEventListener("click", makeSortHandler("Platform"));
+	platformButton.addEventListener("click", makeSortHandler("platform"));
 
 	const publisherButton = document.getElementById("sort-publisher");
-	publisherButton.addEventListener("click", makeSortHandler("Publisher"));
+	publisherButton.addEventListener("click", makeSortHandler("publisher"));
 
 	const salesGlobalButton = document.getElementById("sort-sales-global");
-	salesGlobalButton.addEventListener("click", makeSortHandler("Global"));
+	salesGlobalButton.addEventListener("click", makeSortHandler("sales"));
+
+	const salesYearButton = document.getElementById("sort-year");
+	salesYearButton.addEventListener("click", makeSortHandler("year"));
 }
 
 function renderGamesDataTable(games) {
@@ -144,7 +147,7 @@ function renderGamesDataTable(games) {
 				<button type="button" id="sort-title">Game</button>
 			</th>
 			<th>
-				<button type="button" id="sort-category">Category</button>
+				<button type="button" id="sort-genre">Genre</button>
 			</th>
 			<th>
 				<button type="button" id="sort-platform">Platform</button>
@@ -153,7 +156,10 @@ function renderGamesDataTable(games) {
 				<button type="button" id="sort-publisher">Publisher</button>
 			</th>
 			<th>
-				<button type="button" id="sort-sales-global">Global sales</button>
+				<button type="button" id="sort-sales-global" title="globaly, in millions">Sales</button>
+			</th>
+			<th>
+				<button type="button" id="sort-year">Year</button>
 			</th>
 		</tr>
     </thead>
@@ -162,19 +168,22 @@ function renderGamesDataTable(games) {
 			.map(
 				(game) => `<tr>
 	<td>
-		<p>${game.GameTitle}</p>
+		<p>${game.title}</p>
 	</td>
 	<td>
-		<p>${game.Category}</p>
+		<p>${game.genre}</p>
 	</td>
 	<td>
-		<p>${game.Platform}</p>
+		<p>${game.platform}</p>
 	</td>
 	<td>
-		<p>${game.Publisher}</p>
+		<p>${game.publisher}</p>
 	</td>
 	<td>
-		<p>${game.Global}mm</p>
+		<p>${game.sales}</p>
+	</td>
+	<td>
+		<p>${game.year}</p>
 	</td>
 </tr>`
 			)
@@ -190,10 +199,10 @@ function renderGamesDagamerid(games) {
 			(game) =>
 				`<div class="card">
                     <div class="card-header">
-                        <strong class="card-heading">${game.GameTitle}</strong>
-                        <span class="card-subheading">${game.Platform}</span>
+                        <strong class="card-heading">${game.title}</strong>
+                        <span class="card-subheading">${game.platform}</span>
                     </div>
-                    <p class="card-body">${game.Category} - published by ${game.Publisher} - ${game.Global}mm global profit</p>
+                    <p class="card-body">${game.genre} - published by ${game.publisher} - ${game.sales} million global sales</p>
                 </div>`
 		)
 		.join("\n")}

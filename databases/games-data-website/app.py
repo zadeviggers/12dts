@@ -60,7 +60,7 @@ def html_games():
     if (search_text is not None and search_text.strip() != ""):
         # If a search paramter was provided, search for games
         search = True
-        games = cursor.execute("SELECT * FROM game_data WHERE GameTitle LIKE ?",
+        games = cursor.execute("SELECT * FROM game_data WHERE GameTitle LIKE ? ORDER BY Year DESC",
                                ("%" + search_text + "%",)).fetchall()
 
     else:
@@ -68,8 +68,19 @@ def html_games():
         games = cursor.execute(
             "SELECT * FROM game_data ORDER BY Year DESC").fetchall()
 
+    updated_games = []
+    for game in games:
+        updated_games.append({
+            "title": game["GameTitle"],
+            "year": game["Year"],
+            "genre": game["Category"],
+            "platform": game["Platform"],
+            "publisher": game["Publisher"],
+            "sales": game["Global"],
+        })
+
     return render_template("game-sales.jinja",
-                           games=games,
+                           games=updated_games,
                            search=search,
                            # If search_text is none, replace it with an empty string
                            query=search_text or "")
