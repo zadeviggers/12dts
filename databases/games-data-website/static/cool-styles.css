@@ -181,10 +181,6 @@ body {
 	padding: var(--size-sm);
 }
 
-#games-data-wrapper {
-	text-align: center;
-}
-
 /* CSS variables don't work in media queries yet :( */
 @media screen and (min-width: 768px) {
 	body {
@@ -206,9 +202,6 @@ body {
 	/* Stick to top of viewport when scrolling */
 	position: sticky;
 	top: -1px;
-}
-
-#header-wrapper {
 	padding-top: var(--header-padding);
 	z-index: 1000;
 }
@@ -272,6 +265,7 @@ nav > a:active {
 @media screen and (min-width: 768px) {
 	#header-wrapper {
 		padding-top: var(--size-lg);
+		/* display: none; */
 	}
 
 	header {
@@ -417,13 +411,20 @@ button:active {
 	}
 }
 
+/* Games data page */
+
+#games-data-wrapper {
+	text-align: center;
+	/* overflow-x: auto;
+	overflow-x: clip; */
+}
+
 /* Tables */
 
 table {
 	border-collapse: separate;
 	border-spacing: 0;
 	width: 100%;
-	overflow-x: auto;
 	border-radius: var(--rounded-3xl);
 	--table-border: 1px solid var(--neuteral-300);
 }
@@ -452,6 +453,10 @@ thead th {
 
 thead th * {
 	font-weight: bold;
+}
+
+tbody {
+	overflow-x: auto;
 }
 
 td,
