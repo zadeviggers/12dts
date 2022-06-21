@@ -278,7 +278,7 @@ nav > a:active {
 }
 
 /* Really small screens like iphone 5/iphne se gen 1 */
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 475px) {
 	header {
 		flex-direction: column;
 		/* Center horisontally */
