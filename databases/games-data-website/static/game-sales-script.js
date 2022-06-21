@@ -103,7 +103,7 @@ function renderGamesData(games) {
 }
 
 function makeSortHandler(column) {
-	return () => {
+	return (event) => {
 		if (column === sortColumn) {
 			sortDirection = sortDirection === "down" ? "up" : "down";
 		} else {
@@ -113,6 +113,7 @@ function makeSortHandler(column) {
 		console.log("Sorting by", column, sortDirection);
 		filteredSortedGames = applySortingAndFiltering();
 		renderGamesData(filteredSortedGames);
+		event.target.focus();
 	};
 }
 
