@@ -113,7 +113,14 @@ function makeSortHandler(column) {
 		console.log("Sorting by", column, sortDirection);
 		filteredSortedGames = applySortingAndFiltering();
 		renderGamesData(filteredSortedGames);
-		event.target.focus();
+		const newSortButton = document.getElementById(event.target.id);
+		newSortButton.focus();
+		document
+			.querySelectorAll(".table-sort-button")
+			.forEach((element) =>
+				element.removeAttribute("data-sort-direction")
+			);
+		newSortButton.setAttribute("data-sort-direction", sortDirection);
 	};
 }
 
@@ -144,22 +151,22 @@ function renderGamesDataTable(games) {
     <thead>
 		<tr>
 			<th>
-				<button type="button" id="sort-title">Game</button>
+				<button type="button" id="sort-title" class="table-sort-button">Game</button>
 			</th>
 			<th>
-				<button type="button" id="sort-genre">Genre</button>
+				<button type="button" id="sort-genre" class="table-sort-button">Genre</button>
 			</th>
 			<th>
-				<button type="button" id="sort-platform">Platform</button>
+				<button type="button" id="sort-platform" class="table-sort-button">Platform</button>
 			</th>
 			<th>
-				<button type="button" id="sort-publisher">Publisher</button>
+				<button type="button" id="sort-publisher" class="table-sort-button">Publisher</button>
 			</th>
 			<th>
-				<button type="button" id="sort-sales-global" title="globaly, in millions">Sales</button>
+				<button type="button" id="sort-sales-global" title="globaly, in millions" class="table-sort-button">Sales</button>
 			</th>
 			<th>
-				<button type="button" id="sort-year">Year</button>
+				<button type="button" id="sort-year" class="table-sort-button">Year</button>
 			</th>
 		</tr>
     </thead>

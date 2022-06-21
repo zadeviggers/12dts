@@ -394,6 +394,18 @@ button:active {
 	background-color: var(--primary-300);
 }
 
+button[data-sort-direction]::after {
+	font-weight: normal;
+	margin-left: var(--size-xs);
+	color: var(--primary-500);
+}
+button[data-sort-direction="down"]::after {
+	content: "v";
+}
+button[data-sort-direction="up"]::after {
+	content: "^";
+}
+
 @media screen and (prefers-color-scheme: dark) {
 	button {
 		border-color: var(--primary-600);
