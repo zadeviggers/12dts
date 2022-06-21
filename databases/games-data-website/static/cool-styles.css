@@ -415,8 +415,6 @@ button:active {
 
 #games-data-wrapper {
 	text-align: center;
-	/* overflow-x: auto;
-	overflow-x: clip; */
 }
 
 /* Tables */
@@ -427,13 +425,6 @@ table {
 	width: 100%;
 	border-radius: var(--rounded-3xl);
 	--table-border: 1px solid var(--neuteral-300);
-}
-
-/* Table caption */
-table caption {
-	caption-side: bottom;
-	margin-top: var(--size-sm);
-	color: var(--neuteral-700);
 }
 
 thead {
@@ -497,13 +488,19 @@ tr:last-child td:last-child {
 	border-bottom-right-radius: var(--rounded-md);
 }
 
+@media screen and (max-width: 800px) {
+	table thead {
+		position: static;
+		top: initial;
+	}
+	#games-data-wrapper {
+		overflow-x: auto;
+	}
+}
+
 @media screen and (prefers-color-scheme: dark) {
 	table {
 		--table-border: 1px solid var(--neuteral-800);
-	}
-
-	table caption {
-		color: var(--neuteral-400);
 	}
 
 	thead th {

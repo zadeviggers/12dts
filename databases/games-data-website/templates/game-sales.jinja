@@ -51,56 +51,57 @@
                     </option>
                 </select>
             </label>
-            <div id="games-data-wrapper">
-                <table>
-                    <caption>Game sales data</caption>
-                    <thead>
-                        <tr>
-                            <th>
-                                <button type="button" id="sort-title">Game</button>
-                            </th>
-                            <th>
-                                <button type="button" id="sort-genre">Genre</button>
-                            </th>
-                            <th>
-                                <button type="button" id="sort-platform">Platform</button>
-                            </th>
-                            <th>
-                                <button type="button" id="sort-publisher">Publisher</button>
-                            </th>
-                            <th>
-                                <button type="button" id="sort-sales-global" title="globaly, in millions">Sales</button>
-                            </th>
-                            <th>
-                                <button type="button" id="sort-year">Year</button>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for game in games %}
+            <div id="double-scroll-wrapper">
+                <div id="games-data-wrapper" data-double-scroll>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>
-                                    <p>{{ game.title }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ game.genre }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ game.platform }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ game.publisher }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ game.sales }}</p>
-                                </td>
-                                <td>
-                                    <p>{{ game.year }}</p>
-                                </td>
+                                <th>
+                                    <button type="button" id="sort-title">Game</button>
+                                </th>
+                                <th>
+                                    <button type="button" id="sort-genre">Genre</button>
+                                </th>
+                                <th>
+                                    <button type="button" id="sort-platform">Platform</button>
+                                </th>
+                                <th>
+                                    <button type="button" id="sort-publisher">Publisher</button>
+                                </th>
+                                <th>
+                                    <button type="button" id="sort-sales-global" title="globaly, in millions">Sales</button>
+                                </th>
+                                <th>
+                                    <button type="button" id="sort-year">Year</button>
+                                </th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for game in games %}
+                                <tr>
+                                    <td>
+                                        <p>{{ game.title }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ game.genre }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ game.platform }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ game.publisher }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ game.sales }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ game.year }}</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <script>const gamesData = {{ games }};</script>
             <script src="/static/game-sales-script.js"></script>
