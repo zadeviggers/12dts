@@ -1,0 +1,175 @@
+{% extends 'layout.jinja' %}
+{% block title %}Player statistics{% endblock %}
+{% block content %}
+    <section>
+        <form action="/cricket-stats" method="get">
+            <label for="player-searhbox">
+                Search players:
+                <input type="search"
+                       name="search-text"
+                       id="player-searhbox"
+                       placeholder="Enter player name"
+                       value="{{ query }}">
+            </label>
+            <div class="form-control-row">
+                {% if search == True %}<a href="/cricket-stats">Clear Search</a>{% endif %}
+                <button type="submit">Search</button>
+            </div>
+        </form>
+        {% if players|length > 0 %}
+            <label for="change-layout-dropdown">
+                Player stats layout mode:
+                <select id="change-layout-dropdown" value="table">
+                    <option value="table">
+                        Table
+                    </option>
+                    <option value="grid">
+                        Grid
+                    </option>
+                </select>
+            </label>
+            <label for="change-country-filter-dropdown">
+                Show players from country:
+                <select name="brand" id="change-country-filter-dropdown" value="all">
+                    <option value="all">
+                        All
+                    </option>
+                    <option value="SCOT">
+                        Scotland
+                    </option>
+                    <option value="BAN">
+                        Bangladesh
+                    </option>
+                    <option value="WI">
+                        West Indies
+                    </option>
+                    <option value="AUS">
+                        Australia
+                    </option>
+                    <option value="NZ">
+                        New Zealand
+                    </option>
+                    <option value="AFG">
+                        Afghanistan
+                    </option>
+                    <option value="UAE">
+                        UAE
+                    </option>
+                    <option value="ENG">
+                        England
+                    </option>
+                    <option value="SL">
+                        Sri Lanka
+                    </option>
+                    <option value="ZIM">
+                        Zimbabwe
+                    </option>
+                    <option value="HK">
+                        Hong Kong
+                    </option>
+                    <option value="IN">
+                        India
+                    </option>
+                    <option value="NEP">
+                        Nepal
+                    </option>
+                    <option value="IRE">
+                        Ireland
+                    </option>
+                    <option value="SA">
+                        South Africa
+                    </option>
+                    <option value="PNG">
+                        Paupa New Guinea
+                    </option>
+                </select>
+            </label>
+            <div id="double-scroll-wrapper">
+                <div id="players-data-wrapper" data-double-scroll>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    <button type="button" data-sort-column="name" class="table-sort-button">Player</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="country" class="table-sort-button">Country</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="matches" class="table-sort-button">Matches</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="innings" class="table-sort-button">Innings</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="not_outs" class="table-sort-button">Not Outs</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="runs" class="table-sort-button">Runs</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="high_score" class="table-sort-button">High Score</button>
+                                </th>
+                                <th>
+                                    <button type="button" data-sort-column="average" class="table-sort-button">Average</button>
+                                </th>
+                                <th>
+                                    <button type="button"
+                                            data-sort-column="balls_faced"
+                                            class="table-sort-button">Balls Faced</button>
+                                </th>
+                                <th>
+                                    <button type="button"
+                                            data-sort-column="strike_rate"
+                                            class="table-sort-button">Strike Rate</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in players %}
+                                <tr>
+                                    <td>
+                                        <p>{{ player.name }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.country }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.matches }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.innings }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.not_outs }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.runs }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.high_score }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.average }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.balls_faced }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ player.strike_rate }}</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <script>const playersData = {{ players }};</script>
+            <script src="/static/cricket-stats-script.js"></script>
+        {% else %}
+            <div id="players-data-wrapper">
+                <p>No players found for search query.</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -5,7 +5,7 @@ import os
 # Constants
 DATABASE_NAME = 'cwc-data.db'
 PORT = 6969
-
+DEBUG = True
 
 # Create server application
 app = Flask(__name__)
@@ -42,44 +42,48 @@ def index():
     return render_template("index.jinja")
 
 
-@app.route("/game-sales")
-def html_games():
-    # Game sales page
+@app.route("/cricket-stats")
+def cricket_stats():
+    # Cricket statistics page
 
     # Load databse reference
     db = get_db()
     cursor = db.cursor()
 
-    games = None
+    players = None
     search = False
 
     # Get search query
     search_text = request.args.get('search-text')
 
     if (search_text is not None and search_text.strip() != ""):
-        # If a search paramter was provided, search for games
+        # If a search paramter was provided, search for players
         search = True
-        games = cursor.execute("SELECT Player, Country, Matches, Innings, Not Outs, Runs, High Score, Ave, Balls Faced, Strike Rate FROM cricket_world_cup_data WHERE Player LIKE ? ORDER BY Country DESC",
-                               ("%" + search_text + "%",)).fetchall()
+        players = cursor.execute("SELECT Player, Country, Matches, Innings, NotOuts, Runs, HighScore, Ave, BallsFaced, StrikeRate FROM cricket_world_cup_data WHERE Player LIKE ? ORDER BY Country DESC",
+                                 ("%" + search_text + "%",)).fetchall()
 
     else:
-        # If there wasn't a seach paramater, get list of all games
-        games = cursor.execute(
-            "SELECT Player, Country, Matches, Innings, Not Outs, Runs, High Score, Ave, Balls Faced, Strike Rate FROM cricket_world_cup_data ORDER BY Country DESC").fetchall()
+        # If there wasn't a seach paramater, get list of all players
+        players = cursor.execute(
+            "SELECT Player, Country, Matches, Innings, NotOuts, Runs, HighScore, Ave, BallsFaced, StrikeRate FROM cricket_world_cup_data ORDER BY Country DESC").fetchall()
 
-    updated_games = []
-    for game in games:
-        updated_games.append({
-            "title": game["GameTitle"],
-            "year": game["Year"],
-            "genre": game["Category"],
-            "platform": game["Platform"],
-            "publisher": game["Publisher"],
-            "sales": game["Global"],
+    updated_players = []
+    for player in players:
+        updated_players.append({
+            "name": player["Player"],
+            "country": player["Country"],
+            "matches": player["Matches"],
+            "innings": player["Innings"],
+            "not_outs": player["NotOuts"],
+            "runs": player["Runs"],
+            "high_score": player["HighScore"],
+            "average": player["Ave"],
+            "balls_faced": player["BallsFaced"],
+            "strike_rate": player["StrikeRate"],
         })
 
-    return render_template("game-sales.jinja",
-                           games=updated_games,
+    return render_template("cricket-stats.jinja",
+                           players=updated_players,
                            search=search,
                            # If search_text is none, replace it with an empty string
                            query=search_text or "")
