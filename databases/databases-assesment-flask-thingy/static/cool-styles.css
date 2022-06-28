@@ -437,7 +437,12 @@ table {
 	/* width: 100%; */
 	border-radius: var(--rounded-3xl);
 	--table-border: 1px solid var(--neuteral-300);
-	overflow: auto;
+	overflow-x: auto;
+	width: 100%;
+	max-width: 100%;
+
+	position: absolute;
+	left: 0;
 }
 
 thead {

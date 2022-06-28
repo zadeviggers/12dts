@@ -53,9 +53,9 @@ function sortPlayers(players) {
 	return players.sort((a, b) => {
 		if (a[sortColumn] === b[sortColumn]) return 0;
 		if (sortDirection === "down") {
-			return a[sortColumn] < b[sortColumn] ? -1 : 1;
-		} else {
 			return a[sortColumn] > b[sortColumn] ? -1 : 1;
+		} else {
+			return a[sortColumn] < b[sortColumn] ? -1 : 1;
 		}
 	});
 }
