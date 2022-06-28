@@ -434,9 +434,10 @@ button[data-sort-direction="up"]::after {
 table {
 	border-collapse: separate;
 	border-spacing: 0;
-	width: 100%;
+	/* width: 100%; */
 	border-radius: var(--rounded-3xl);
 	--table-border: 1px solid var(--neuteral-300);
+	overflow: auto;
 }
 
 thead {
