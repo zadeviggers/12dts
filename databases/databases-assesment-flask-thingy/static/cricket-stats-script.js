@@ -205,6 +205,7 @@ function renderPlayersDataGrid(players) {
 }
 
 // Magical doublescrolling from here: https://stackoverflow.com/a/56952952
+// I added the resize observer and upgraded this to some more modern javscript then I updated the original answer
 function doubleScroll(element) {
 	const scrollbar = document.createElement("div");
 	scrollbar.appendChild(document.createElement("div"));
