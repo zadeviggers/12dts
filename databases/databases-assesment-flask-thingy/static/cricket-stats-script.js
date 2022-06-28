@@ -214,7 +214,7 @@ function doubleScroll(element) {
 	scrollbar.firstChild.style.paddingTop = "1px";
 	scrollbar.firstChild.appendChild(document.createTextNode("\xA0"));
 	let running = false;
-	// Keepp scrollbar in sync when element size changes
+	// Keep scrollbar in sync when element size changes
 	new ResizeObserver(() => {
 		scrollbar.firstChild.style.width = element.scrollWidth + "px";
 	}).observe(element);
