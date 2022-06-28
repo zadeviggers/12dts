@@ -9,7 +9,7 @@ let currentLayout = "table";
 let currentFilterMode = searchParams.get("brand") || "all";
 let filteredSortedPlayers = playersData;
 let sortDirection = "down";
-let sortColumn = "type";
+let sortColumn = "high_score";
 
 // "Hydrate" the UI
 changePlayerFilterDropdown.value = currentFilterMode;
