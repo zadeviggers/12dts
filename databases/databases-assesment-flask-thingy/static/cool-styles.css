@@ -394,7 +394,7 @@ button:active {
 	background-color: var(--primary-300);
 }
 
-button[data-sort-direction]::after {
+button[data-sort-direction]:not([data-sort-direction="none"])::after {
 	font-weight: normal;
 	margin-left: var(--size-xs);
 	color: var(--primary-500);

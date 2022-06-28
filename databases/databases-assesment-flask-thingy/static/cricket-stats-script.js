@@ -49,6 +49,7 @@ function filterPlayers(players) {
 }
 
 function sortPlayers(players) {
+	if (sortDirection === "none") return players;
 	return players.sort((a, b) => {
 		if (a[sortColumn] === b[sortColumn]) return 0;
 		if (sortDirection === "down") {
@@ -72,7 +73,9 @@ function renderPlayersData(players) {
 function makeSortHandler(column) {
 	return (event) => {
 		if (column === sortColumn) {
-			sortDirection = sortDirection === "down" ? "up" : "down";
+			if (sortDirection === "down") sortDirection = "up";
+			else if (sortDirection === "up") sortDirection = "none";
+			else sortDirection = "down";
 		} else {
 			sortDirection = "down";
 		}
@@ -80,7 +83,9 @@ function makeSortHandler(column) {
 		console.log("Sorting by", column, sortDirection);
 		filteredSortedPlayers = applySortingAndFiltering();
 		renderPlayersData(filteredSortedPlayers);
-		const newSortButton = document.getElementById(event.target.id);
+		const newSortButton = document.querySelector(
+			`[data-sort-column="${column}"]`
+		);
 		newSortButton.focus();
 		document
 			.querySelectorAll(".table-sort-button")
