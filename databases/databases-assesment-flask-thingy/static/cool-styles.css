@@ -425,10 +425,6 @@ button[data-sort-direction="up"]::after {
 
 /* Games data page */
 
-#games-data-wrapper {
-	text-align: center;
-}
-
 /* Tables */
 
 table {
@@ -438,11 +434,11 @@ table {
 	border-radius: var(--rounded-3xl);
 	--table-border: 1px solid var(--neuteral-300);
 	overflow-x: auto;
-	width: 100%;
-	max-width: 100%;
-
+	width: calc(100% - calc(var(--size-md) * 2));
 	position: absolute;
-	left: 0;
+	left: var(--size-md);
+	right: var(--size-md);
+	background: var(--background);
 }
 
 thead {
@@ -462,6 +458,7 @@ thead th {
 
 thead th * {
 	font-weight: bold;
+	min-width: max-content;
 }
 
 tbody {
@@ -506,12 +503,16 @@ tr:last-child td:last-child {
 	border-bottom-right-radius: var(--rounded-md);
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1200px) {
+	table {
+		width: 100%;
+		position: initial;
+	}
 	table thead {
 		position: static;
 		top: initial;
 	}
-	#games-data-wrapper {
+	#players-data-wrapper {
 		overflow-x: auto;
 	}
 }

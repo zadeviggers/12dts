@@ -206,14 +206,18 @@ function renderPlayersDataGrid(players) {
 
 // Magical doublescrolling from here: https://stackoverflow.com/a/56952952
 function doubleScroll(element) {
-	var scrollbar = document.createElement("div");
+	const scrollbar = document.createElement("div");
 	scrollbar.appendChild(document.createElement("div"));
 	scrollbar.style.overflow = "auto";
 	scrollbar.style.overflowY = "hidden";
 	scrollbar.firstChild.style.width = element.scrollWidth + "px";
 	scrollbar.firstChild.style.paddingTop = "1px";
 	scrollbar.firstChild.appendChild(document.createTextNode("\xA0"));
-	var running = false;
+	let running = false;
+	// Keepp scrollbar in sync when element size changes
+	new ResizeObserver(() => {
+		scrollbar.firstChild.style.width = element.scrollWidth + "px";
+	}).observe(element);
 	scrollbar.onscroll = function () {
 		if (running) {
 			running = false;
