@@ -6,7 +6,7 @@ const changePlayerFilterDropdown = document.getElementById(
 const searchParams = new URLSearchParams(location.search);
 const searchText = searchParams.get("search-text");
 let currentLayout = "table";
-let currentFilterMode = searchParams.get("brand") || "all";
+let currentFilterMode = searchParams.get("country") || "all";
 let filteredSortedPlayers = playersData;
 let sortDirection = "down";
 let sortColumn = "high_score";
@@ -16,7 +16,7 @@ changePlayerFilterDropdown.value = currentFilterMode;
 changePlayerFilterDropdown.addEventListener("change", (event) => {
 	currentFilterMode = event.target.value;
 	const pushStateSearchParams = new URLSearchParams();
-	pushStateSearchParams.set("brand", currentFilterMode);
+	pushStateSearchParams.set("country", currentFilterMode);
 	if (searchText) pushStateSearchParams.set("search-text", searchText);
 	history.pushState(
 		{},
