@@ -5,35 +5,41 @@ const changePlayerFilterDropdown = document.getElementById(
 );
 const searchParams = new URLSearchParams(location.search);
 const searchText = searchParams.get("search-text");
-let currentLayout = "table";
+let currentLayout = searchParams.get("layout") || "table";
 let currentFilterMode = searchParams.get("country") || "all";
 let filteredSortedPlayers = playersData;
 let sortDirection = "down";
 let sortColumn = "high_score";
 
+// First render
+renderPlayersData(playersData);
+
 // "Hydrate" the UI
 changePlayerFilterDropdown.value = currentFilterMode;
 changePlayerFilterDropdown.addEventListener("change", (event) => {
 	currentFilterMode = event.target.value;
-	const pushStateSearchParams = new URLSearchParams();
-	pushStateSearchParams.set("country", currentFilterMode);
-	if (searchText) pushStateSearchParams.set("search-text", searchText);
+	searchParams.set("country", currentFilterMode);
+	updateURLWithSearchParams();
+	filteredSortedPlayers = applySortingAndFiltering();
+	renderPlayersData(filteredSortedPlayers);
+});
+
+changeLayoutDropdown.value = currentLayout;
+changeLayoutDropdown.addEventListener("change", (event) => {
+	currentLayout = event.target.value;
+	searchParams.set("layout", currentLayout);
+	updateURLWithSearchParams();
+	filteredSortedPlayers = applySortingAndFiltering();
+	renderPlayersData(filteredSortedPlayers);
+});
+
+function updateURLWithSearchParams() {
 	history.pushState(
 		{},
 		null,
-		`/cricket-stats${"?" + pushStateSearchParams.toString()}`
+		`/cricket-stats${"?" + searchParams.toString()}`
 	);
-	filteredSortedPlayers = applySortingAndFiltering();
-	renderPlayersData(filteredSortedPlayers);
-});
-
-changeLayoutDropdown.addEventListener("change", (event) => {
-	currentLayout = event.target.value;
-	filteredSortedPlayers = applySortingAndFiltering();
-	renderPlayersData(filteredSortedPlayers);
-});
-
-setupSortingButtons();
+}
 
 function applySortingAndFiltering() {
 	let filtered = filterPlayers(playersData);
