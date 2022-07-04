@@ -52,55 +52,65 @@
 	--neuteral-800: #343841;
 	--neuteral-900: #282b31;
 	/* Primary lavender  */
-	--primary-100: #f0f0fd;
-	--primary-200: #dbdbff;
-	--primary-300: #bdbcf7;
-	--primary-400: #9d9cef;
-	--primary-500: #8381f2;
-	--primary-600: #7674dd;
-	--primary-700: #615fd2;
-	--primary-800: #4b49a8;
-	--primary-900: #302e72;
-	/* Attention-grabbing fuchsia  */
-	--attention-100: #fcedf2;
-	--attention-200: #fbc9db;
-	--attention-300: #fba4c3;
-	--attention-400: #f3709f;
-	--attention-500: #ff2272;
-	--attention-600: #e50053;
-	--attention-700: #bc0245;
-	--attention-800: #900034;
-	--attention-900: #720c31;
-	/* Destruvtive orangey-red */
-	--destructive-100: #fee8e7;
-	--destructive-200: #fbb8b4;
-	--destructive-300: #f98c85;
-	--destructive-400: #f55c52;
-	--destructive-500: #f82e21;
-	--destructive-600: #da180c;
-	--destructive-700: #a2170e;
-	--destructive-800: #820800;
-	--destructive-900: #640a05;
-	/* Warning brownish-orange */
-	--warning-100: #fef0e1;
-	--warning-200: #fad2a3;
-	--warning-300: #f8b76b;
-	--warning-400: #f49e3a;
-	--warning-500: #f78b0c;
-	--warning-600: #e7820c;
-	--warning-700: #cf750c;
-	--warning-800: #ac5e02;
-	--warning-900: #794300;
-	/* Positive lime */
-	--positive-100: #f5fdee;
-	--positive-200: #d7f4bf;
-	--positive-300: #bcf58a;
-	--positive-400: #9ff45c;
-	--positive-500: #7cdc30;
-	--positive-600: #61c313;
-	--positive-700: #57a917;
-	--positive-800: #3c770c;
-	--positive-900: #234e01;
+	--primary-hue: 4;
+	--primary-saturation: 69%;
+	--primary-100: hsl(var(--primary-hue), var(--primary-saturation), 97%);
+	--primary-200: hsl(var(--primary-hue), var(--primary-saturation), 93%);
+	--primary-300: hsl(var(--primary-hue), var(--primary-saturation), 85%);
+	--primary-400: hsl(var(--primary-hue), var(--primary-saturation), 77%);
+	--primary-500: hsl(var(--primary-hue), var(--primary-saturation), 73%);
+	--primary-600: hsl(var(--primary-hue), var(--primary-saturation), 66%);
+	--primary-700: hsl(var(--primary-hue), var(--primary-saturation), 60%);
+	--primary-800: hsl(var(--primary-hue), var(--primary-saturation), 47%);
+	--primary-900: hsl(var(--primary-hue), var(--primary-saturation), 31%);
+
+	--attention-hue: 200;
+	--attention-saturation: 90%;
+	--attention-100: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		97%
+	);
+	--attention-200: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		93%
+	);
+	--attention-300: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		85%
+	);
+	--attention-400: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		77%
+	);
+	--attention-500: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		73%
+	);
+	--attention-600: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		66%
+	);
+	--attention-700: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		60%
+	);
+	--attention-800: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		47%
+	);
+	--attention-900: hsl(
+		var(--attention-hue),
+		var(--attention-saturation),
+		31%
+	);
 
 	/* Transition speeds */
 	--speed-very-fast: 50ms;
@@ -111,9 +121,6 @@
 
 	--header-height: var(--size-3xl);
 	--header-padding: var(--size-md);
-	--header-offset: calc(
-		var(--header-height) + calc(2 * var(--header-padding))
-	);
 
 	--background: var(--neuteral-100);
 	--text-colour: var(--neuteral-800);
@@ -186,6 +193,7 @@ body {
 	body {
 		/* Center body horizontally */
 		margin: 0 auto;
+		margin-bottom: 10px;
 	}
 }
 
@@ -202,7 +210,7 @@ body {
 	/* Stick to top of viewport when scrolling */
 	position: sticky;
 	top: -1px;
-	padding-top: var(--header-padding);
+	padding-top: calc(var(--header-padding) + 1px);
 	z-index: 1000;
 }
 
@@ -439,11 +447,12 @@ table {
 	left: var(--size-md);
 	right: var(--size-md);
 	background: var(--background);
+	padding-bottom: var(--size-sm);
 }
 
 thead {
 	position: sticky;
-	top: calc(var(--header-offset) + var(--size-sm));
+	top: var(--size-md);
 	z-index: 10;
 }
 
