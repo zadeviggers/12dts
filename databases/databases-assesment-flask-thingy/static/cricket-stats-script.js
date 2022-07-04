@@ -197,7 +197,7 @@ function renderPlayersDataGrid(players) {
                         <strong class="card-heading">${player.name}</strong>
                         <span class="card-subheading">${player.country}</span>
                     </div>
-                    <p class="card-body">TODO</p>
+                    <p class="card-body">${player.matches} matches • ${player.innings} innings •  ${player.runs} runs • ${player.average} average • ${player.strike_rate} strike rate.</p>
                 </div>`
 		)
 		.join("\n")}
