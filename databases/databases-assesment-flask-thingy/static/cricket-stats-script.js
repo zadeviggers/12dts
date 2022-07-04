@@ -7,12 +7,12 @@ const searchParams = new URLSearchParams(location.search);
 const searchText = searchParams.get("search-text");
 let currentLayout = searchParams.get("layout") || "table";
 let currentFilterMode = searchParams.get("country") || "all";
-let filteredSortedPlayers = playersData;
 let sortDirection = "down";
 let sortColumn = "high_score";
+let filteredSortedPlayers = applySortingAndFiltering(playersData);
 
 // First render
-renderPlayersData(playersData);
+renderPlayersData(filteredSortedPlayers);
 
 // "Hydrate" the UI
 changePlayerFilterDropdown.value = currentFilterMode;
