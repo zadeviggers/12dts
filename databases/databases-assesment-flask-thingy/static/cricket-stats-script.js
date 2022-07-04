@@ -7,8 +7,10 @@ const searchParams = new URLSearchParams(location.search);
 const searchText = searchParams.get("search-text");
 let currentLayout = searchParams.get("layout") || "table";
 let currentFilterMode = searchParams.get("country") || "all";
-let sortDirection = "down";
-let sortColumn = "high_score";
+
+let sortDirection = searchParams.get("sort-direction") || "down";
+let sortColumn = searchParams.get("sort-column") || "high_score";
+
 let filteredSortedPlayers = applySortingAndFiltering(playersData);
 
 // First render
@@ -77,7 +79,8 @@ function renderPlayersData(players) {
 }
 
 function makeSortHandler(column) {
-	return (event) => {
+	return () => {
+		// Figure out what the sort direction should be
 		if (column === sortColumn) {
 			if (sortDirection === "down") sortDirection = "up";
 			else if (sortDirection === "up") sortDirection = "none";
@@ -85,13 +88,22 @@ function makeSortHandler(column) {
 		} else {
 			sortDirection = "down";
 		}
+
 		sortColumn = column;
-		console.log("Sorting by", column, sortDirection);
+
+		// Store sorting data in url
+		searchParams.set("sort-direction", sortDirection);
+		searchParams.set("sort-column", sortColumn);
+		updateURLWithSearchParams();
+
+		// Apply sorting and filtering
 		filteredSortedPlayers = applySortingAndFiltering();
 		renderPlayersData(filteredSortedPlayers);
 		const newSortButton = document.querySelector(
 			`[data-sort-column="${column}"]`
 		);
+
+		// Re-focus the button since it was destoryed and re-created
 		newSortButton.focus();
 		document
 			.querySelectorAll(".table-sort-button")
@@ -108,6 +120,12 @@ function setupSortingButtons() {
 	const sortButtons = document.querySelectorAll(".table-sort-button");
 	sortButtons.forEach((button) => {
 		const column = button.getAttribute("data-sort-column");
+
+		// Keep track of the sort direction
+		if (column === sortColumn)
+			button.setAttribute("data-sort-direction", sortDirection);
+		else button.removeAttribute("data-sort-direction");
+
 		button.addEventListener("click", makeSortHandler(column));
 	});
 }
