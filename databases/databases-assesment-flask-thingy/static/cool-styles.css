@@ -188,6 +188,14 @@ body {
 	padding: var(--size-sm);
 }
 
+noscript {
+	display: block;
+	margin-top: var(--size-md);
+	padding: var(--size-md);
+	border: 4px solid var(--attention-500);
+	border-radius: var(--rounded-md);
+}
+
 /* CSS variables don't work in media queries yet :( */
 @media screen and (min-width: 768px) {
 	body {
