@@ -180,28 +180,28 @@ function renderPlayersDataTable(players) {
 	<td>
 		<p>${player.country}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.matches}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.innings}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.not_outs}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.runs}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.high_score}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.average}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.balls_faced}</p>
 	</td>
-	<td>
+	<td class="right-aligned">
 		<p>${player.strike_rate}</p>
 	</td>
 </tr>`

@@ -435,6 +435,10 @@ table {
 	padding-bottom: var(--size-sm);
 }
 
+table .right-aligned {
+	text-align: right;
+}
+
 thead {
 	position: sticky;
 	top: var(--size-md);
