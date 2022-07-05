@@ -11,7 +11,7 @@ let currentFilterMode = searchParams.get("country") || "all";
 let sortDirection = searchParams.get("sort-direction") || "down";
 let sortColumn = searchParams.get("sort-column") || "high_score";
 
-let filteredSortedPlayers = applySortingAndFiltering(playersData);
+let filteredSortedPlayers = applySortingAndFiltering();
 
 // First render
 renderPlayersData(filteredSortedPlayers);
@@ -35,6 +35,11 @@ changeLayoutDropdown.addEventListener("change", (event) => {
 	renderPlayersData(filteredSortedPlayers);
 });
 
+function getRawData() {
+	// Make a copy of the data to avoid messing with the original data
+	return [...playersData];
+}
+
 function updateURLWithSearchParams() {
 	history.pushState(
 		{},
@@ -44,7 +49,7 @@ function updateURLWithSearchParams() {
 }
 
 function applySortingAndFiltering() {
-	let filtered = filterPlayers(playersData);
+	let filtered = filterPlayers(getRawData());
 	if (currentLayout !== "table") return filtered;
 	let sorted = sortPlayers(filtered);
 	return sorted;
