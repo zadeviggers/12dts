@@ -8,8 +8,8 @@ const searchText = searchParams.get("search-text");
 let currentLayout = searchParams.get("layout") || "table";
 let currentFilterMode = searchParams.get("country") || "all";
 
-let sortDirection = searchParams.get("sort-direction") || "down";
-let sortColumn = searchParams.get("sort-column") || "high_score";
+let sortDirection = searchParams.get("sort-direction") || "none";
+let sortColumn = searchParams.get("sort-column") || "none";
 
 let filteredSortedPlayers = applySortingAndFiltering();
 
@@ -62,7 +62,7 @@ function filterPlayers(players) {
 }
 
 function sortPlayers(players) {
-	if (sortDirection === "none") return players;
+	if (sortDirection === "none" || sortColumn === "none") return players;
 	return players.sort((a, b) => {
 		if (a[sortColumn] === b[sortColumn]) return 0;
 		if (sortDirection === "down") {
@@ -93,8 +93,8 @@ function makeSortHandler(column) {
 		} else {
 			sortDirection = "down";
 		}
-
-		sortColumn = column;
+		if (sortDirection === "none") sortColumn = "none";
+		else sortColumn = column;
 
 		// Store sorting data in url
 		searchParams.set("sort-direction", sortDirection);
@@ -115,7 +115,8 @@ function makeSortHandler(column) {
 			.forEach((element) =>
 				element.removeAttribute("data-sort-direction")
 			);
-		newSortButton.setAttribute("data-sort-direction", sortDirection);
+		if (sortDirection !== "none")
+			newSortButton.setAttribute("data-sort-direction", sortDirection);
 	};
 }
 

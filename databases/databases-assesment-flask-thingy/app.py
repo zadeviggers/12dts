@@ -59,13 +59,13 @@ def cricket_stats():
     if (search_text is not None and search_text.strip() != ""):
         # If a search paramter was provided, search for players
         search = True
-        players = cursor.execute("SELECT Player, Country, Matches, Innings, NotOuts, Runs, HighScore, Average, BallsFaced, StrikeRate FROM cricket_world_cup_data WHERE Player LIKE ? ORDER BY HighScore DESC",
+        players = cursor.execute("SELECT Player, Country, Matches, Innings, NotOuts, Runs, HighScore, Average, BallsFaced, StrikeRate FROM cricket_world_cup_data WHERE Player LIKE ?",
                                  ("%" + search_text + "%",)).fetchall()
 
     else:
         # If there wasn't a seach paramater, get list of all players
         players = cursor.execute(
-            "SELECT Player, Country, Matches, Innings, NotOuts, Runs, HighScore, Average, BallsFaced, StrikeRate FROM cricket_world_cup_data ORDER BY HighScore DESC").fetchall()
+            "SELECT Player, Country, Matches, Innings, NotOuts, Runs, HighScore, Average, BallsFaced, StrikeRate FROM cricket_world_cup_data").fetchall()
 
     updated_players = []
     for player in players:
