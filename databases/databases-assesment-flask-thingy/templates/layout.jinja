@@ -10,37 +10,19 @@
               href="{{ url_for('static', filename='cool-styles.css') }}"/>
     </head>
     <body>
-        <div id="header-wrapper">
-            <header>
-                <h1>{{ self.title() }}</h1>
-                <nav>
-                    <a href="/">Home</a>
-                    <a href="/cricket-stats">All Player Statistics</a>
-                    <a href="/cricket-stats?country=SCOT">Scotland</a>
-                    <a href="/cricket-stats?country=AUS">Australia</a>
-                    <a href="/cricket-stats?country=IND">India</a>
-                    <a href="/cricket-stats?country=NZ">New Zealand</a>
-                </nav>
-            </header>
-        </div>
+        <header>
+            <h1>{{ self.title() }}</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/cricket-stats">All Player Statistics</a>
+                <a href="/cricket-stats?country=SCOT">Scotland</a>
+                <a href="/cricket-stats?country=AUS">Australia</a>
+                <a href="/cricket-stats?country=IND">India</a>
+                <a href="/cricket-stats?country=NZ">New Zealand</a>
+            </nav>
+        </header>
         <main>
             {% block content %}{% endblock %}
         </main>
-        <script>
-			// Script to make the header's "stuck" state targetable by css because
-			//  for some reason there isn't a :stuck pseudo-class.
-			const header = document.querySelector("#header-wrapper");
-			const headerStickyObserver = new IntersectionObserver(
-				([e]) =>
-					e.target.toggleAttribute(
-						"data-stuck",
-						e.intersectionRatio < 1
-					),
-				{ threshold: [1] }
-			);
-
-			headerStickyObserver.observe(header);
-		
-        </script>
     </body>
 </html>

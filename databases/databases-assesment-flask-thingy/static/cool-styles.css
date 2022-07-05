@@ -206,14 +206,6 @@ body {
 
 /* Navbar */
 
-#header-wrapper {
-	/* Stick to top of viewport when scrolling */
-	position: sticky;
-	top: -1px;
-	padding-top: calc(var(--header-padding) + 1px);
-	z-index: 1000;
-}
-
 header {
 	/* Lay out children horisontaly */
 	display: flex;
@@ -226,13 +218,6 @@ header {
 	padding-left: var(--size-md);
 	padding-right: var(--size-md);
 	background-color: var(--neuteral-200);
-	transition: box-shadow var(--speed-slow);
-}
-
-[data-stuck] header {
-	/* Counteract the -1px top position of the wrapper */
-	margin-top: 1px;
-	box-shadow: 0px 2px 20px -5px var(--primary-400);
 }
 
 h1 {
