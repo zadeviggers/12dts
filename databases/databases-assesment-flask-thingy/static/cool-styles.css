@@ -52,8 +52,8 @@
 	--neuteral-800: #343841;
 	--neuteral-900: #282b31;
 	/* Primary lavender  */
-	--primary-hue: 4;
-	--primary-saturation: 69%;
+	--primary-hue: 200;
+	--primary-saturation: 90%;
 	--primary-100: hsl(var(--primary-hue), var(--primary-saturation), 97%);
 	--primary-200: hsl(var(--primary-hue), var(--primary-saturation), 93%);
 	--primary-300: hsl(var(--primary-hue), var(--primary-saturation), 85%);
@@ -64,8 +64,8 @@
 	--primary-800: hsl(var(--primary-hue), var(--primary-saturation), 47%);
 	--primary-900: hsl(var(--primary-hue), var(--primary-saturation), 31%);
 
-	--attention-hue: 200;
-	--attention-saturation: 90%;
+	--attention-hue: 2;
+	--attention-saturation: 69%;
 	--attention-100: hsl(
 		var(--attention-hue),
 		var(--attention-saturation),
@@ -132,7 +132,7 @@
 	margin: 0;
 	border: 0;
 	padding: 0;
-	font-family: -apple-system, "Segoe UI", Roboto, Noto Sans, Ubuntu, Cantarell,
+	font-family: -apple-system, "Noto Sans", "Ubuntu", "Cantarell",
 		"Helvetica Neue", sans-serif;
 	font-weight: normal;
 	font-size: var(--text-md);
@@ -324,6 +324,25 @@ nav > a:active {
 }
 
 /* Main content */
+.cool-homepage-list {
+	background-color: var(--neuteral-300);
+	padding: var(--size-sm);
+	border-radius: var(--rounded-md);
+	list-style-type: none;
+}
+
+.cool-homepage-list li {
+	border-radius: var(--rounded-md);
+	padding: var(--size-xs);
+	background-color: var(--neuteral-200);
+}
+.cool-homepage-list > li + li {
+	margin-top: var(--size-md);
+}
+
+.attention {
+	color: var(--attention-600);
+}
 
 main {
 	padding-top: var(--size-md);
@@ -371,6 +390,12 @@ a:active {
 
 	a:active {
 		color: var(--primary-400);
+	}
+	.cool-homepage-list li {
+		background-color: var(--neuteral-800);
+	}
+	.cool-homepage-list {
+		background-color: var(--neuteral-700);
 	}
 }
 
