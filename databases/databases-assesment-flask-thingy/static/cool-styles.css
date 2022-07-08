@@ -587,14 +587,15 @@ tr:last-child td:last-child {
 	color: var(--neuteral-400);
 }
 
+.card .card-subheading {
+	color: var(--primary-400);
+	font-weight: bold;
+}
+
 @media screen and (prefers-color-scheme: dark) {
 	.card .card-heading {
 		color: var(--neuteral-300);
 	}
-}
-
-.card .card-subheading {
-	color: var(--primary-400);
 }
 
 /* Form elements */
