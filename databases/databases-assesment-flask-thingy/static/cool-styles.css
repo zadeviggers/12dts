@@ -579,8 +579,6 @@ tr:last-child td:last-child {
 .card .card-header {
 	display: flex;
 	gap: var(--size-sm);
-	flex-direction: row-reverse;
-	justify-content: flex-end;
 }
 
 .card .card-heading {
@@ -590,6 +588,7 @@ tr:last-child td:last-child {
 .card .card-subheading {
 	color: var(--primary-400);
 	font-weight: bold;
+	margin-left: auto;
 }
 
 @media screen and (prefers-color-scheme: dark) {
