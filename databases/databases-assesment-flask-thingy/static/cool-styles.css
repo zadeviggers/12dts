@@ -64,54 +64,6 @@
 	--primary-800: hsl(var(--primary-hue), var(--primary-saturation), 47%);
 	--primary-900: hsl(var(--primary-hue), var(--primary-saturation), 31%);
 
-	--attention-hue: 2;
-	--attention-saturation: 69%;
-	--attention-100: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		97%
-	);
-	--attention-200: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		93%
-	);
-	--attention-300: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		85%
-	);
-	--attention-400: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		77%
-	);
-	--attention-500: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		73%
-	);
-	--attention-600: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		66%
-	);
-	--attention-700: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		60%
-	);
-	--attention-800: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		47%
-	);
-	--attention-900: hsl(
-		var(--attention-hue),
-		var(--attention-saturation),
-		31%
-	);
-
 	/* Transition speeds */
 	--speed-very-fast: 50ms;
 	--speed-fast: 100ms;
@@ -150,7 +102,7 @@
 }
 
 *:focus-visible {
-	outline: 4px solid var(--attention-500);
+	outline: 4px solid var(--primary-500);
 }
 
 ::selection {
@@ -192,7 +144,7 @@ noscript {
 	display: block;
 	margin-top: var(--size-md);
 	padding: var(--size-md);
-	border: 4px solid var(--attention-500);
+	border: 4px solid var(--primary-500);
 	border-radius: var(--rounded-md);
 }
 
@@ -341,7 +293,7 @@ nav > a:active {
 }
 
 .attention {
-	color: var(--attention-600);
+	color: var(--primary-600);
 }
 
 main {
