@@ -437,6 +437,7 @@ thead th {
 	background: var(--background);
 	border-bottom: var(--table-border);
 	border-bottom-width: 3px;
+	min-width: max-content;
 }
 
 thead th * {
