@@ -201,7 +201,7 @@ nav > a {
 	padding: var(--size-xs);
 	text-decoration: none;
 	border-radius: var(--rounded-xs);
-	border: 1px solid transparent;
+	border: 1px solid var(--neuteral-800);
 }
 
 nav > a:hover,
@@ -359,7 +359,7 @@ button {
 	padding-right: var(--size-md);
 	border-radius: var(--rounded-sm);
 	border: 1px solid var(--primary-200);
-	background-color: transparent;
+	background-color: var(--neuteral-800);
 	transition-duration: var(--speed-fast);
 }
 
@@ -609,7 +609,7 @@ input[type="search"]:focus {
 select {
 	padding: var(--size-sm);
 	border-radius: var(--rounded-sm);
-	background-color: transparent;
+	background-color: var(--neuteral-800);
 	border: 1px solid var(--neuteral-300);
 }
 
